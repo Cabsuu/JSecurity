@@ -1,0 +1,44 @@
+# jSecurity Configuration
+
+# Default reasons for punishments if not specified.
+default-reasons:
+  ban: "You have been banned."
+  mute: "You have been muted."
+
+# Default durations for temporary punishments.
+# Format: 1d2h3m4s (d=days, h=hours, m=minutes, s=seconds)
+default-durations:
+  tempban: "12h"
+  tempmute: "12h"
+
+# Ban Evasion Prevention
+# If true, players joining with the same IP as a banned player will also be banned.
+prevent-ban-evasion: false
+
+# Broadcast and Kick Messages
+# Placeholders: {player}, {staff}, {reason}, {duration}
+messages:
+  ban-broadcast: "&c{player} has been permanently banned by {staff} for: {reason}"
+  tempban-broadcast: "&c{player} has been temporarily banned by {staff} for {duration} for: {reason}"
+  ipban-broadcast: "&c{player} has been IP banned by {staff}."
+  mute-broadcast: "&c{player} has been permanently muted by {staff} for: {reason}"
+  tempmute-broadcast: "&c{player} has been temporarily muted by {staff} for {duration} for: {reason}"
+  unban-broadcast: "&a{player} has been unbanned by {staff}."
+  unmute-broadcast: "&a{player} has been unmuted by {staff}."
+
+  # Silent option can be used with [-s] on commands
+  silent-option:
+    ban-broadcast: "&c[Silent] {player} has been permanently banned by {staff} for: {reason}"
+    tempban-broadcast: "&c[Silent] {player} has been temporarily banned by {staff} for {duration} for: {reason}"
+    ipban-broadcast: "&c[Silent] {player} has been IP banned by {staff}."
+    mute-broadcast: "&c[Silent] {player} has been permanently muted by {staff} for: {reason}"
+    tempmute-broadcast: "&c[Silent] {player} has been temporarily muted by {staff} for {duration} for: {reason}"
+
+  kick-messages:
+    ban: "&cYou have been permanently banned.\n&cReason: {reason}"
+    tempban: "&cYou have been temporarily banned for {duration}.\n&cReason: {reason}"
+    ipban: "&cYou have been IP banned."
+    ban-evasion: "&cYou are banned for ban evasion."
+
+  mute-message: "&cYou are currently muted. Reason: {reason}"
+  tempmute-message: "&cYou are currently muted for {duration}. Reason: {reason}"

@@ -1,0 +1,71 @@
+name: JSecurity
+version: 0.1.0
+main: com.jerae.jsecurity.main
+softdepend: [Purpur]
+authors: [ Jerae ]
+description: A security plugin for Minecraft servers.
+commands:
+  ban:
+    description: Bans a player permanently.
+    usage: /ban <player> [reason] [-s]
+    permission: jsecurity.ban
+  tempban:
+    description: Temporarily bans a player.
+    usage: /tempban <player> [duration] [reason] [-s]
+    permission: jsecurity.tempban
+  ipban:
+    description: Bans a player's IP address.
+    usage: /ipban <player/ip> [-s]
+    permission: jsecurity.ipban
+  unban:
+    description: Unbans a player or IP address.
+    usage: /unban <player/ip>
+    permission: jsecurity.unban
+  mute:
+    description: Mutes a player permanently.
+    usage: /mute <player> [reason] [-s]
+    permission: jsecurity.mute
+  tempmute:
+    description: Temporarily mutes a player.
+    usage: /tempmute <player> [duration] [reason] [-s]
+    permission: jsecurity.tempmute
+  unmute:
+    description: Unmutes a player.
+    usage: /unmute <player>
+    permission: jsecurity.unmute
+permissions:
+  jsecurity.*:
+    description: Gives access to all jSecurity commands.
+    children:
+      jsecurity.ban: true
+      jsecurity.tempban: true
+      jsecurity.ipban: true
+      jsecurity.unban: true
+      jsecurity.mute: true
+      jsecurity.tempmute: true
+      jsecurity.unmute: true
+      jsecurity.reload: true
+  jsecurity.ban:
+    description: Allows banning players.
+    default: op
+  jsecurity.tempban:
+    description: Allows temporarily banning players.
+    default: op
+  jsecurity.ipban:
+    description: Allows IP banning players.
+    default: op
+  jsecurity.unban:
+    description: Allows unbanning players.
+    default: op
+  jsecurity.mute:
+    description: Allows muting players.
+    default: op
+  jsecurity.tempmute:
+    description: Allows temporarily muting players.
+    default: op
+  jsecurity.unmute:
+    description: Allows unmuting players.
+    default: op
+  jsecurity.reload:
+    description: Allows reloading the config.
+    default: op
