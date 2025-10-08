@@ -1,283 +1,74 @@
 -------------------------------------------------------------------------------
 Test set: com.jerae.jsecurity.FeatureTests
 -------------------------------------------------------------------------------
-Tests run: 10, Failures: 0, Errors: 10, Skipped: 0, Time elapsed: 3.720 s <<< FAILURE! -- in com.jerae.jsecurity.FeatureTests
-com.jerae.jsecurity.FeatureTests.testUnmuteCommandSilent -- Time elapsed: 3.563 s <<< ERROR!
-org.mockito.exceptions.misusing.InvalidUseOfMatchersException:
-
-Misplaced or misused argument matcher detected here:
-
--> at com.jerae.jsecurity.FeatureTests.lambda$setUp$3(FeatureTests.java:61)
-
-You cannot use argument matchers outside of verification or stubbing.
-Examples of correct usage of argument matchers:
-    when(mock.get(anyInt())).thenReturn(null);
-    doThrow(new RuntimeException()).when(mock).someVoidMethod(any());
-    verify(mock).someMethod(contains("foo"))
-
-This message may appear after an NullPointerException if the last matcher is returning an object
-like any() but the stubbed method signature expect a primitive argument, in this case,
-use primitive alternatives.
-    when(mock.get(any())); // bad use, will raise NPE
-    when(mock.get(anyInt())); // correct usage use
-
-Also, this error might show up because you use argument matchers with methods that cannot be mocked.
-Following methods *cannot* be stubbed/verified: final/private/equals()/hashCode().
-Mocking methods declared on non-public parent classes is not supported.
-
-	at com.jerae.jsecurity.FeatureTests.setUp(FeatureTests.java:61)
+Tests run: 7, Failures: 3, Errors: 2, Skipped: 0, Time elapsed: 3.380 s <<< FAILURE! -- in com.jerae.jsecurity.FeatureTests
+com.jerae.jsecurity.FeatureTests.testKickCommand -- Time elapsed: 0.020 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "String.replace(java.lang.CharSequence, java.lang.CharSequence)" because the return value of "com.jerae.jsecurity.managers.ConfigManager.getMessage(String, boolean)" is null
+	at com.jerae.jsecurity.commands.KickCommand.onCommand(KickCommand.java:54)
+	at com.jerae.jsecurity.FeatureTests.testKickCommand(FeatureTests.java:65)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
-com.jerae.jsecurity.FeatureTests.testUnbanCommandSilent -- Time elapsed: 0.008 s <<< ERROR!
-org.mockito.exceptions.misusing.InvalidUseOfMatchersException:
+com.jerae.jsecurity.FeatureTests.testReloadCommand -- Time elapsed: 0.128 s <<< FAILURE!
+Argument(s) are different! Wanted:
+commandSender.sendMessage(
+    <any net.kyori.adventure.text.Component>
+);
+-> at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+Actual invocations have different arguments:
+commandSender.sendMessage(
+    "§ajSecurity configuration reloaded."
+);
+-> at com.jerae.jsecurity.commands.JSecurityCommand.onCommand(JSecurityCommand.java:28)
 
-Misplaced or misused argument matcher detected here:
-
--> at com.jerae.jsecurity.FeatureTests.lambda$setUp$3(FeatureTests.java:61)
-
-You cannot use argument matchers outside of verification or stubbing.
-Examples of correct usage of argument matchers:
-    when(mock.get(anyInt())).thenReturn(null);
-    doThrow(new RuntimeException()).when(mock).someVoidMethod(any());
-    verify(mock).someMethod(contains("foo"))
-
-This message may appear after an NullPointerException if the last matcher is returning an object
-like any() but the stubbed method signature expect a primitive argument, in this case,
-use primitive alternatives.
-    when(mock.get(any())); // bad use, will raise NPE
-    when(mock.get(anyInt())); // correct usage use
-
-Also, this error might show up because you use argument matchers with methods that cannot be mocked.
-Following methods *cannot* be stubbed/verified: final/private/equals()/hashCode().
-Mocking methods declared on non-public parent classes is not supported.
-
-	at com.jerae.jsecurity.FeatureTests.setUp(FeatureTests.java:61)
+	at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+	at com.jerae.jsecurity.FeatureTests.testReloadCommand(FeatureTests.java:113)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
-com.jerae.jsecurity.FeatureTests.testReloadCommand -- Time elapsed: 0.006 s <<< ERROR!
-org.mockito.exceptions.misusing.InvalidUseOfMatchersException:
+com.jerae.jsecurity.FeatureTests.testUnfreezeCommand -- Time elapsed: 0.018 s <<< FAILURE!
+Argument(s) are different! Wanted:
+commandSender.sendMessage(
+    <any net.kyori.adventure.text.Component>
+);
+-> at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+Actual invocations have different arguments:
+commandSender.sendMessage(
+    "§aYou have unfrozen testPlayer."
+);
+-> at com.jerae.jsecurity.commands.UnfreezeCommand.onCommand(UnfreezeCommand.java:42)
 
-Misplaced or misused argument matcher detected here:
-
--> at com.jerae.jsecurity.FeatureTests.lambda$setUp$3(FeatureTests.java:61)
-
-You cannot use argument matchers outside of verification or stubbing.
-Examples of correct usage of argument matchers:
-    when(mock.get(anyInt())).thenReturn(null);
-    doThrow(new RuntimeException()).when(mock).someVoidMethod(any());
-    verify(mock).someMethod(contains("foo"))
-
-This message may appear after an NullPointerException if the last matcher is returning an object
-like any() but the stubbed method signature expect a primitive argument, in this case,
-use primitive alternatives.
-    when(mock.get(any())); // bad use, will raise NPE
-    when(mock.get(anyInt())); // correct usage use
-
-Also, this error might show up because you use argument matchers with methods that cannot be mocked.
-Following methods *cannot* be stubbed/verified: final/private/equals()/hashCode().
-Mocking methods declared on non-public parent classes is not supported.
-
-	at com.jerae.jsecurity.FeatureTests.setUp(FeatureTests.java:61)
+	at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+	at com.jerae.jsecurity.FeatureTests.testUnfreezeCommand(FeatureTests.java:138)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
-com.jerae.jsecurity.FeatureTests.testBanCommandWithReason -- Time elapsed: 0.007 s <<< ERROR!
-org.mockito.exceptions.misusing.InvalidUseOfMatchersException:
-
-Misplaced or misused argument matcher detected here:
-
--> at com.jerae.jsecurity.FeatureTests.lambda$setUp$3(FeatureTests.java:61)
-
-You cannot use argument matchers outside of verification or stubbing.
-Examples of correct usage of argument matchers:
-    when(mock.get(anyInt())).thenReturn(null);
-    doThrow(new RuntimeException()).when(mock).someVoidMethod(any());
-    verify(mock).someMethod(contains("foo"))
-
-This message may appear after an NullPointerException if the last matcher is returning an object
-like any() but the stubbed method signature expect a primitive argument, in this case,
-use primitive alternatives.
-    when(mock.get(any())); // bad use, will raise NPE
-    when(mock.get(anyInt())); // correct usage use
-
-Also, this error might show up because you use argument matchers with methods that cannot be mocked.
-Following methods *cannot* be stubbed/verified: final/private/equals()/hashCode().
-Mocking methods declared on non-public parent classes is not supported.
-
-	at com.jerae.jsecurity.FeatureTests.setUp(FeatureTests.java:61)
+com.jerae.jsecurity.FeatureTests.testKickCommandSilent -- Time elapsed: 0.007 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "String.replace(java.lang.CharSequence, java.lang.CharSequence)" because the return value of "com.jerae.jsecurity.managers.ConfigManager.getMessage(String, boolean)" is null
+	at com.jerae.jsecurity.commands.KickCommand.onCommand(KickCommand.java:54)
+	at com.jerae.jsecurity.FeatureTests.testKickCommandSilent(FeatureTests.java:75)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
-com.jerae.jsecurity.FeatureTests.testUnfreezeCommand -- Time elapsed: 0.007 s <<< ERROR!
-org.mockito.exceptions.misusing.InvalidUseOfMatchersException:
+com.jerae.jsecurity.FeatureTests.testFreezeCommand -- Time elapsed: 0.008 s <<< FAILURE!
+Argument(s) are different! Wanted:
+commandSender.sendMessage(
+    <any net.kyori.adventure.text.Component>
+);
+-> at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+Actual invocations have different arguments:
+commandSender.sendMessage(
+    "§aYou have frozen testPlayer."
+);
+-> at com.jerae.jsecurity.commands.FreezeCommand.onCommand(FreezeCommand.java:37)
 
-Misplaced or misused argument matcher detected here:
-
--> at com.jerae.jsecurity.FeatureTests.lambda$setUp$3(FeatureTests.java:61)
-
-You cannot use argument matchers outside of verification or stubbing.
-Examples of correct usage of argument matchers:
-    when(mock.get(anyInt())).thenReturn(null);
-    doThrow(new RuntimeException()).when(mock).someVoidMethod(any());
-    verify(mock).someMethod(contains("foo"))
-
-This message may appear after an NullPointerException if the last matcher is returning an object
-like any() but the stubbed method signature expect a primitive argument, in this case,
-use primitive alternatives.
-    when(mock.get(any())); // bad use, will raise NPE
-    when(mock.get(anyInt())); // correct usage use
-
-Also, this error might show up because you use argument matchers with methods that cannot be mocked.
-Following methods *cannot* be stubbed/verified: final/private/equals()/hashCode().
-Mocking methods declared on non-public parent classes is not supported.
-
-	at com.jerae.jsecurity.FeatureTests.setUp(FeatureTests.java:61)
+	at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+	at com.jerae.jsecurity.FeatureTests.testFreezeCommand(FeatureTests.java:124)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
-com.jerae.jsecurity.FeatureTests.testKickCommandSilent -- Time elapsed: 0.010 s <<< ERROR!
-org.mockito.exceptions.misusing.InvalidUseOfMatchersException:
-
-Misplaced or misused argument matcher detected here:
-
--> at com.jerae.jsecurity.FeatureTests.lambda$setUp$3(FeatureTests.java:61)
-
-You cannot use argument matchers outside of verification or stubbing.
-Examples of correct usage of argument matchers:
-    when(mock.get(anyInt())).thenReturn(null);
-    doThrow(new RuntimeException()).when(mock).someVoidMethod(any());
-    verify(mock).someMethod(contains("foo"))
-
-This message may appear after an NullPointerException if the last matcher is returning an object
-like any() but the stubbed method signature expect a primitive argument, in this case,
-use primitive alternatives.
-    when(mock.get(any())); // bad use, will raise NPE
-    when(mock.get(anyInt())); // correct usage use
-
-Also, this error might show up because you use argument matchers with methods that cannot be mocked.
-Following methods *cannot* be stubbed/verified: final/private/equals()/hashCode().
-Mocking methods declared on non-public parent classes is not supported.
-
-	at com.jerae.jsecurity.FeatureTests.setUp(FeatureTests.java:61)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-
-com.jerae.jsecurity.FeatureTests.testKickCommandWithReason -- Time elapsed: 0.007 s <<< ERROR!
-org.mockito.exceptions.misusing.InvalidUseOfMatchersException:
-
-Misplaced or misused argument matcher detected here:
-
--> at com.jerae.jsecurity.FeatureTests.lambda$setUp$3(FeatureTests.java:61)
-
-You cannot use argument matchers outside of verification or stubbing.
-Examples of correct usage of argument matchers:
-    when(mock.get(anyInt())).thenReturn(null);
-    doThrow(new RuntimeException()).when(mock).someVoidMethod(any());
-    verify(mock).someMethod(contains("foo"))
-
-This message may appear after an NullPointerException if the last matcher is returning an object
-like any() but the stubbed method signature expect a primitive argument, in this case,
-use primitive alternatives.
-    when(mock.get(any())); // bad use, will raise NPE
-    when(mock.get(anyInt())); // correct usage use
-
-Also, this error might show up because you use argument matchers with methods that cannot be mocked.
-Following methods *cannot* be stubbed/verified: final/private/equals()/hashCode().
-Mocking methods declared on non-public parent classes is not supported.
-
-	at com.jerae.jsecurity.FeatureTests.setUp(FeatureTests.java:61)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-
-com.jerae.jsecurity.FeatureTests.testBanCommandWithoutReason -- Time elapsed: 0.005 s <<< ERROR!
-org.mockito.exceptions.misusing.InvalidUseOfMatchersException:
-
-Misplaced or misused argument matcher detected here:
-
--> at com.jerae.jsecurity.FeatureTests.lambda$setUp$3(FeatureTests.java:61)
-
-You cannot use argument matchers outside of verification or stubbing.
-Examples of correct usage of argument matchers:
-    when(mock.get(anyInt())).thenReturn(null);
-    doThrow(new RuntimeException()).when(mock).someVoidMethod(any());
-    verify(mock).someMethod(contains("foo"))
-
-This message may appear after an NullPointerException if the last matcher is returning an object
-like any() but the stubbed method signature expect a primitive argument, in this case,
-use primitive alternatives.
-    when(mock.get(any())); // bad use, will raise NPE
-    when(mock.get(anyInt())); // correct usage use
-
-Also, this error might show up because you use argument matchers with methods that cannot be mocked.
-Following methods *cannot* be stubbed/verified: final/private/equals()/hashCode().
-Mocking methods declared on non-public parent classes is not supported.
-
-	at com.jerae.jsecurity.FeatureTests.setUp(FeatureTests.java:61)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-
-com.jerae.jsecurity.FeatureTests.testFreezeCommand -- Time elapsed: 0.006 s <<< ERROR!
-org.mockito.exceptions.misusing.InvalidUseOfMatchersException:
-
-Misplaced or misused argument matcher detected here:
-
--> at com.jerae.jsecurity.FeatureTests.lambda$setUp$3(FeatureTests.java:61)
-
-You cannot use argument matchers outside of verification or stubbing.
-Examples of correct usage of argument matchers:
-    when(mock.get(anyInt())).thenReturn(null);
-    doThrow(new RuntimeException()).when(mock).someVoidMethod(any());
-    verify(mock).someMethod(contains("foo"))
-
-This message may appear after an NullPointerException if the last matcher is returning an object
-like any() but the stubbed method signature expect a primitive argument, in this case,
-use primitive alternatives.
-    when(mock.get(any())); // bad use, will raise NPE
-    when(mock.get(anyInt())); // correct usage use
-
-Also, this error might show up because you use argument matchers with methods that cannot be mocked.
-Following methods *cannot* be stubbed/verified: final/private/equals()/hashCode().
-Mocking methods declared on non-public parent classes is not supported.
-
-	at com.jerae.jsecurity.FeatureTests.setUp(FeatureTests.java:61)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-
-com.jerae.jsecurity.FeatureTests.testKickCommandWithoutReason -- Time elapsed: 0.005 s <<< ERROR!
-org.mockito.exceptions.misusing.InvalidUseOfMatchersException:
-
-Misplaced or misused argument matcher detected here:
-
--> at com.jerae.jsecurity.FeatureTests.lambda$setUp$3(FeatureTests.java:61)
-
-You cannot use argument matchers outside of verification or stubbing.
-Examples of correct usage of argument matchers:
-    when(mock.get(anyInt())).thenReturn(null);
-    doThrow(new RuntimeException()).when(mock).someVoidMethod(any());
-    verify(mock).someMethod(contains("foo"))
-
-This message may appear after an NullPointerException if the last matcher is returning an object
-like any() but the stubbed method signature expect a primitive argument, in this case,
-use primitive alternatives.
-    when(mock.get(any())); // bad use, will raise NPE
-    when(mock.get(anyInt())); // correct usage use
-
-Also, this error might show up because you use argument matchers with methods that cannot be mocked.
-Following methods *cannot* be stubbed/verified: final/private/equals()/hashCode().
-Mocking methods declared on non-public parent classes is not supported.
-
-	at com.jerae.jsecurity.FeatureTests.setUp(FeatureTests.java:61)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)

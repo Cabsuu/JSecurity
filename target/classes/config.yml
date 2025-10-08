@@ -1,10 +1,5 @@
 # jSecurity Configuration
 
-# Default reasons for punishments if not specified.
-default-reasons:
-  ban: "You have been banned."
-  mute: "You have been muted."
-
 # Default durations for temporary punishments.
 # Format: 1d2h3m4s (d=days, h=hours, m=minutes, s=seconds)
 default-durations:

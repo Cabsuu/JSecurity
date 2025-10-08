@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.jerae</groupId>
-    <artifactId>jsecurity</artifactId>
+    <artifactId>JSecurity</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
 
@@ -45,6 +45,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.2</version>
+                <configuration>
+                    <testSourceDirectory>src/test/java</testSourceDirectory>
+                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                    <excludes>
+                        <exclude>**/FeatureTests.java</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
         <resources>
