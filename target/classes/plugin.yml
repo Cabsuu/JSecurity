@@ -41,6 +41,14 @@ commands:
     description: jSecurity admin commands.
     usage: /js <reload>
     permission: jsecurity.admin
+  freeze:
+    description: Freezes a player.
+    usage: /freeze <player>
+    permission: jsecurity.freeze
+  unfreeze:
+    description: Unfreezes a player.
+    usage: /unfreeze <player>
+    permission: jsecurity.unfreeze
 permissions:
   jsecurity.*:
     description: Gives access to all jSecurity commands.
@@ -54,6 +62,8 @@ permissions:
       jsecurity.unmute: true
       jsecurity.kick: true
       jsecurity.admin: true
+      jsecurity.freeze: true
+      jsecurity.unfreeze: true
   jsecurity.ban:
     description: Allows banning players.
     default: op
