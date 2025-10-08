@@ -4,8 +4,9 @@ import com.jerae.jsecurity.managers.BanEntry;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
 import com.jerae.jsecurity.utils.TimeUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -31,47 +32,42 @@ public class TempBanCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length < 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: /tempban <player> [duration] [reason] [-s]");
+        if (args.length < 2) {
+            Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /tempban <player> <duration> [reason] [-s]");
+            sender.sendMessage(usageMessage);
             return true;
         }
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-        if (target == null || !target.hasPlayedBefore() && !target.isOnline()) {
-            sender.sendMessage(ChatColor.RED + "Player not found.");
+        if (!target.hasPlayedBefore() && !target.isOnline()) {
+            Component playerNotFoundMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cPlayer not found.");
+            sender.sendMessage(playerNotFoundMessage);
             return true;
         }
 
         UUID targetUUID = target.getUniqueId();
         if (punishmentManager.isBanned(targetUUID)) {
-            sender.sendMessage(ChatColor.RED + "That player is already banned.");
+            Component alreadyBannedMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cThat player is already banned.");
+            sender.sendMessage(alreadyBannedMessage);
             return true;
         }
 
-        boolean silent = Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("-s"));
-
-        List<String> reasonParts = new ArrayList<>();
-        String durationStr = null;
-
-        for (int i = 1; i < args.length; i++) {
-            if (args[i].equalsIgnoreCase("-s")) continue;
-            // Check if it's a duration string
-            if (durationStr == null && TimeUtil.parseDuration(args[i]) > 0) {
-                durationStr = args[i];
-            } else {
-                reasonParts.add(args[i]);
-            }
-        }
-
-        if (durationStr == null) {
-            durationStr = configManager.getDefaultTempBanDuration();
-        }
-
+        String durationStr = args[1];
         long duration = TimeUtil.parseDuration(durationStr);
+        if (duration <= 0) {
+            durationStr = configManager.getDefaultTempBanDuration();
+            duration = TimeUtil.parseDuration(durationStr);
+        }
         long expiration = System.currentTimeMillis() + duration;
 
-        String reason = String.join(" ", reasonParts);
-        if (reason.isEmpty()) {
+        boolean silent = Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("-s"));
+        String reason = Arrays.stream(args)
+                .skip(2)
+                .filter(arg -> !arg.equalsIgnoreCase("-s"))
+                .collect(Collectors.joining(" "));
+
+        boolean hasReason = !reason.isEmpty();
+        if (!hasReason) {
             reason = configManager.getDefaultBanReason();
         }
 
@@ -83,28 +79,26 @@ public class TempBanCommand implements CommandExecutor, TabCompleter {
 
         String formattedDuration = TimeUtil.formatDuration(duration);
 
-        String kickMessage = configManager.getMessage("kick-messages.tempban")
+        String kickMessagePath = "tempban-kick-message";
+        String kickMessageStr = configManager.getMessage(kickMessagePath, hasReason)
                 .replace("{reason}", reason)
                 .replace("{duration}", formattedDuration);
+        Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessageStr);
 
         if (target.isOnline()) {
-            target.getPlayer().kickPlayer(ChatColor.translateAlternateColorCodes('&', kickMessage));
+            target.getPlayer().kick(kickMessage);
         }
 
-        String broadcastMessage;
-        if (silent) {
-            broadcastMessage = configManager.getMessage("silent-option.tempban-broadcast");
-        } else {
-            broadcastMessage = configManager.getMessage("tempban-broadcast");
+        if (!silent) {
+            String broadcastMessagePath = "tempban-broadcast";
+            String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason)
+                    .replace("{player}", target.getName())
+                    .replace("{staff}", staffName)
+                    .replace("{reason}", reason)
+                    .replace("{duration}", formattedDuration);
+            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(broadcastMessageStr);
+            Bukkit.getServer().broadcast(broadcastMessage);
         }
-
-        broadcastMessage = broadcastMessage
-                .replace("{player}", target.getName())
-                .replace("{staff}", staffName)
-                .replace("{reason}", reason)
-                .replace("{duration}", formattedDuration);
-
-        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
 
         return true;
     }
@@ -117,9 +111,9 @@ public class TempBanCommand implements CommandExecutor, TabCompleter {
                     .filter(name -> name.toLowerCase().startsWith(args[0].toLowerCase()))
                     .collect(Collectors.toList());
         }
-        if (args.length > 1) {
-            if ("-s".startsWith(args[args.length -1].toLowerCase())) {
-                return new ArrayList<>(Arrays.asList("-s"));
+        if (args.length > 2) {
+            if ("-s".startsWith(args[args.length - 1].toLowerCase())) {
+                return new ArrayList<>(List.of("-s"));
             }
         }
         return new ArrayList<>();

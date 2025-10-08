@@ -1,9 +1,9 @@
 package com.jerae.jsecurity.commands;
 
 import com.jerae.jsecurity.managers.ConfigManager;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -26,39 +26,48 @@ public class KickCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: /kick <player> [reason] [-s]");
+            Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /kick <player> [reason] [-s]");
+            sender.sendMessage(usageMessage);
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            sender.sendMessage(ChatColor.RED + "Player not found.");
+            Component playerNotFoundMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cPlayer not found.");
+            sender.sendMessage(playerNotFoundMessage);
             return true;
         }
 
         boolean silent = Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("-s"));
         String reason = Arrays.stream(args)
-                .filter(arg -> !arg.equalsIgnoreCase(target.getName()) && !arg.equalsIgnoreCase("-s"))
+                .skip(1)
+                .filter(arg -> !arg.equalsIgnoreCase("-s"))
                 .collect(Collectors.joining(" "));
 
-        if (reason.isEmpty()) {
-            reason = configManager.getMessage("default-kick-reason");
+        boolean hasReason = !reason.isEmpty();
+        if (!hasReason) {
+            reason = configManager.getDefaultKickReason();
         }
 
-        String kickMessage = configManager.getMessage("kick-message")
+        String kickMessagePath = "kick-message";
+        String kickMessageStr = configManager.getMessage(kickMessagePath, hasReason)
                 .replace("{reason}", reason);
+        Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessageStr);
 
-        target.kick(LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessage));
+        target.kick(kickMessage);
 
         if (!silent) {
-            String broadcastMessage = configManager.getMessage("kick-broadcast")
+            String broadcastMessagePath = "kick-broadcast";
+            String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason)
                     .replace("{player}", target.getName())
                     .replace("{staff}", sender.getName())
                     .replace("{reason}", reason);
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
+            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(broadcastMessageStr);
+            Bukkit.getServer().broadcast(broadcastMessage);
         }
 
-        sender.sendMessage(ChatColor.GREEN + "Kicked " + target.getName() + ".");
+        Component successMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&aKicked " + target.getName() + ".");
+        sender.sendMessage(successMessage);
         return true;
     }
 
@@ -69,6 +78,11 @@ public class KickCommand implements CommandExecutor, TabCompleter {
                     .map(Player::getName)
                     .filter(name -> name.toLowerCase().startsWith(args[0].toLowerCase()))
                     .collect(Collectors.toList());
+        }
+        if (args.length > 1) {
+            if ("-s".startsWith(args[args.length - 1].toLowerCase())) {
+                return new ArrayList<>(List.of("-s"));
+            }
         }
         return new ArrayList<>();
     }

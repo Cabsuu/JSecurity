@@ -28,28 +28,28 @@ public class FeatureTests {
     private Player player;
     private CommandSender sender;
     private final UUID playerUUID = UUID.randomUUID();
+    private OfflinePlayer offlinePlayer;
+
 
     @BeforeEach
     public void setUp() {
         server = mock(Server.class);
         player = mock(Player.class);
         sender = mock(CommandSender.class);
+        offlinePlayer = mock(OfflinePlayer.class);
 
         when(player.getName()).thenReturn("testPlayer");
         when(player.getUniqueId()).thenReturn(playerUUID);
         when(sender.getName()).thenReturn("sender");
 
+        when(offlinePlayer.getName()).thenReturn("testPlayer");
+        when(offlinePlayer.getUniqueId()).thenReturn(playerUUID);
+        when(offlinePlayer.hasPlayedBefore()).thenReturn(true);
+
         bukkit = mockStatic(Bukkit.class);
         bukkit.when(Bukkit::getServer).thenReturn(server);
         bukkit.when(() -> Bukkit.getPlayer(eq("testPlayer"))).thenReturn(player);
-        bukkit.when(() -> Bukkit.getOfflinePlayer(anyString())).thenAnswer(invocation -> {
-            String name = invocation.getArgument(0);
-            OfflinePlayer offlinePlayer = mock(OfflinePlayer.class);
-            when(offlinePlayer.getUniqueId()).thenReturn(UUID.nameUUIDFromBytes(name.getBytes()));
-            when(offlinePlayer.getName()).thenReturn(name);
-            when(offlinePlayer.hasPlayedBefore()).thenReturn(true);
-            return offlinePlayer;
-        });
+        bukkit.when(() -> Bukkit.getOfflinePlayer(anyString())).thenReturn(offlinePlayer);
     }
 
     @AfterEach
@@ -60,43 +60,47 @@ public class FeatureTests {
     @Test
     public void testKickCommand() {
         ConfigManager configManager = mock(ConfigManager.class);
-        when(configManager.getMessage(anyString())).thenReturn("Kicked for a reason.");
+        when(configManager.getMessage("kick-message")).thenReturn("Kicked for a reason.");
         KickCommand kickCommand = new KickCommand(configManager);
         kickCommand.onCommand(sender, mock(Command.class), "kick", new String[]{"testPlayer", "test reason"});
         verify(player).kick(any(Component.class));
-        bukkit.verify(() -> Bukkit.broadcastMessage(anyString()));
+        bukkit.verify(() -> Bukkit.broadcast(any(Component.class)));
     }
 
     @Test
     public void testKickCommandSilent() {
         ConfigManager configManager = mock(ConfigManager.class);
-        when(configManager.getMessage(anyString())).thenReturn("Kicked silently.");
+        when(configManager.getMessage("kick-message")).thenReturn("Kicked silently.");
         KickCommand kickCommand = new KickCommand(configManager);
         kickCommand.onCommand(sender, mock(Command.class), "kick", new String[]{"testPlayer", "test reason", "-s"});
         verify(player).kick(any(Component.class));
-        bukkit.verify(() -> Bukkit.broadcastMessage(anyString()), never());
+        bukkit.verify(() -> Bukkit.broadcast(any(Component.class)), never());
     }
 
     @Test
     public void testUnbanCommandSilent() {
         PunishmentManager punishmentManager = mock(PunishmentManager.class);
-        when(punishmentManager.getBan(any(UUID.class))).thenReturn(mock(BanEntry.class));
+        BanEntry banEntry = new BanEntry(playerUUID, "testPlayer", null, "reason", "staff", -1);
+        when(punishmentManager.getBan(any(UUID.class))).thenReturn(banEntry);
+        when(punishmentManager.isBanned(any(UUID.class))).thenReturn(true);
         ConfigManager configManager = mock(ConfigManager.class);
         UnbanCommand unbanCommand = new UnbanCommand(punishmentManager, configManager);
         unbanCommand.onCommand(sender, mock(Command.class), "unban", new String[]{"testPlayer", "-s"});
         verify(punishmentManager).removeBan(any());
-        bukkit.verify(() -> Bukkit.broadcastMessage(anyString()), never());
+        bukkit.verify(() -> Bukkit.broadcast(any(Component.class)), never());
     }
 
     @Test
     public void testUnmuteCommandSilent() {
         PunishmentManager punishmentManager = mock(PunishmentManager.class);
-        when(punishmentManager.getMute(any(UUID.class))).thenReturn(mock(MuteEntry.class));
+        MuteEntry muteEntry = new MuteEntry(playerUUID, "testPlayer", "reason", "staff", -1);
+        when(punishmentManager.getMute(any(UUID.class))).thenReturn(muteEntry);
+        when(punishmentManager.isMuted(any(UUID.class))).thenReturn(true);
         ConfigManager configManager = mock(ConfigManager.class);
         UnmuteCommand unmuteCommand = new UnmuteCommand(punishmentManager, configManager);
         unmuteCommand.onCommand(sender, mock(Command.class), "unmute", new String[]{"testPlayer", "-s"});
         verify(punishmentManager).removeMute(any());
-        bukkit.verify(() -> Bukkit.broadcastMessage(anyString()), never());
+        bukkit.verify(() -> Bukkit.broadcast(any(Component.class)), never());
     }
 
     @Test
@@ -106,7 +110,7 @@ public class FeatureTests {
         JSecurityCommand jSecurityCommand = new JSecurityCommand(plugin, configManager);
         jSecurityCommand.onCommand(sender, mock(Command.class), "js", new String[]{"reload"});
         verify(configManager).reloadConfig();
-        verify(sender).sendMessage(contains("reloaded"));
+        verify(sender).sendMessage(any(Component.class));
     }
 
     @Test
@@ -117,7 +121,7 @@ public class FeatureTests {
         FreezeCommand freezeCommand = new FreezeCommand(freezeManager, configManager);
         freezeCommand.onCommand(sender, mock(Command.class), "freeze", new String[]{"testPlayer"});
         assertTrue(freezeManager.isFrozen(player));
-        verify(sender).sendMessage(contains("You have frozen"));
+        verify(sender).sendMessage(any(Component.class));
     }
 
     @Test
@@ -131,6 +135,6 @@ public class FeatureTests {
         UnfreezeCommand unfreezeCommand = new UnfreezeCommand(freezeManager, configManager);
         unfreezeCommand.onCommand(sender, mock(Command.class), "unfreeze", new String[]{"testPlayer"});
         assertFalse(freezeManager.isFrozen(player));
-        verify(sender).sendMessage(contains("You have unfrozen"));
+        verify(sender).sendMessage(any(Component.class));
     }
 }

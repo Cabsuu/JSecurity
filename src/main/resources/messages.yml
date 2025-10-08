@@ -1,0 +1,47 @@
+# jSecurity Messages
+
+# Messages for punishments with a specified reason.
+# Placeholders: {player}, {staff}, {reason}, {duration}
+punishments:
+  with_reason:
+    ban-broadcast: "&c{player} has been permanently banned by {staff} for: {reason}"
+    tempban-broadcast: "&c{player} has been temporarily banned by {staff} for {duration} for: {reason}"
+    mute-broadcast: "&c{player} has been permanently muted by {staff} for: {reason}"
+    tempmute-broadcast: "&c{player} has been temporarily muted by {staff} for {duration} for: {reason}"
+    kick-broadcast: "&c{player} has been kicked by {staff} for: {reason}"
+    ipban-broadcast: "&c{player} has been IP banned by {staff} for: {reason}"
+    kick-message: "&cYou have been kicked. Reason: {reason}"
+    ban-kick-message: "&cYou have been permanently banned.\n&cReason: {reason}"
+    tempban-kick-message: "&cYou have been temporarily banned for {duration}.\n&cReason: {reason}"
+    mute-message: "&cYou are currently muted. Reason: {reason}"
+    tempmute-message: "&cYou are currently muted for {duration}. Reason: {reason}"
+    ipban-kick-message: "&cYou have been IP banned.\n&cReason: {reason}"
+
+  # Messages for punishments without a specified reason.
+  # Placeholders: {player}, {staff}, {duration}
+  without_reason:
+    ban-broadcast: "&c{player} has been permanently banned by {staff}."
+    tempban-broadcast: "&c{player} has been temporarily banned by {staff} for {duration}."
+    mute-broadcast: "&c{player} has been permanently muted by {staff}."
+    tempmute-broadcast: "&c{player} has been temporarily muted by {staff} for {duration}."
+    kick-broadcast: "&c{player} has been kicked by {staff}."
+    ipban-broadcast: "&c{player} has been IP banned by {staff}."
+    kick-message: "&cYou have been kicked."
+    ban-kick-message: "&cYou have been permanently banned."
+    tempban-kick-message: "&cYou have been temporarily banned for {duration}."
+    mute-message: "&cYou are currently muted."
+    tempmute-message: "&cYou are currently muted for {duration}."
+    ipban-kick-message: "&cYou have been IP banned."
+
+# Other messages
+other:
+  unban-broadcast: "&a{player} has been unbanned by {staff}."
+  unmute-broadcast: "&a{player} has been unmuted by {staff}."
+  freeze-message: "&cYou have been frozen by a staff member."
+  unfreeze-message: "&aYou have been unfrozen."
+  ban-evasion-reason: "Ban Evasion ({banned_player})"
+  ban-evasion-kick-message: "&cYour IP is associated with a banned account ({banned_player})."
+
+# Default reason for kick command
+default-kick-reason: "Kicked by a staff member."
+default-ipban-reason: "IP Banned by a staff member."

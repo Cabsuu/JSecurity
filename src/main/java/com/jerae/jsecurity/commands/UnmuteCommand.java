@@ -3,18 +3,19 @@ package com.jerae.jsecurity.commands;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.MuteEntry;
 import com.jerae.jsecurity.managers.PunishmentManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class UnmuteCommand implements CommandExecutor, TabCompleter {
@@ -30,37 +31,36 @@ public class UnmuteCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: /unmute <player> [-s]");
+            Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /unmute <player> [-s]");
+            sender.sendMessage(usageMessage);
             return true;
         }
 
-        OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(args[0]);
-        if (targetPlayer == null || !targetPlayer.hasPlayedBefore() && !targetPlayer.isOnline()) {
-            sender.sendMessage(ChatColor.RED + "Player not found.");
-            return true;
-        }
-
-        boolean silent = Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("-s"));
-        MuteEntry muteEntry = punishmentManager.getMute(targetPlayer.getUniqueId());
+        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+        UUID targetUUID = target.getUniqueId();
+        MuteEntry muteEntry = punishmentManager.getMute(targetUUID);
 
         if (muteEntry == null) {
-            sender.sendMessage(ChatColor.RED + "That player is not muted.");
+            Component notMutedMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cThat player is not muted.");
+            sender.sendMessage(notMutedMessage);
             return true;
         }
 
-        punishmentManager.removeMute(muteEntry.getUuid());
+        punishmentManager.removeMute(targetUUID);
 
-        String staffName = (sender instanceof Player) ? sender.getName() : "Console";
-        String targetName = targetPlayer.getName() != null ? targetPlayer.getName() : args[0];
+        String targetName = muteEntry.getUsername();
 
+        boolean silent = Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("-s"));
         if (!silent) {
-            String broadcastMessage = configManager.getMessage("unmute-broadcast")
+            String broadcastMessageStr = configManager.getMessage("unmute-broadcast")
                     .replace("{player}", targetName)
-                    .replace("{staff}", staffName);
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
+                    .replace("{staff}", sender.getName());
+            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(broadcastMessageStr);
+            Bukkit.getServer().broadcast(broadcastMessage);
         }
 
-        sender.sendMessage(ChatColor.GREEN + "Successfully unmuted " + targetName + ".");
+        Component successMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&aSuccessfully unmuted " + targetName + ".");
+        sender.sendMessage(successMessage);
 
         return true;
     }
@@ -68,11 +68,15 @@ public class UnmuteCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            // Again, ideally we'd list muted players.
-            return Bukkit.getOnlinePlayers().stream()
-                    .map(Player::getName)
+            return punishmentManager.getMutedPlayers().stream()
+                    .map(MuteEntry::getUsername)
                     .filter(name -> name.toLowerCase().startsWith(args[0].toLowerCase()))
                     .collect(Collectors.toList());
+        }
+        if (args.length > 1) {
+            if ("-s".startsWith(args[args.length - 1].toLowerCase())) {
+                return new ArrayList<>(List.of("-s"));
+            }
         }
         return new ArrayList<>();
     }

@@ -27,6 +27,10 @@ public class BanEntry {
         return playerName;
     }
 
+    public String getUsername() {
+        return playerName;
+    }
+
     public String getIpAddress() {
         return ipAddress;
     }

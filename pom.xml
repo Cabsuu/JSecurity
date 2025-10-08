@@ -123,11 +123,17 @@
         </profile>
         <profile>
             <id>1.21.9</id>
+            <properties>
+                <minecraft.version>1.21.9-R0.1-SNAPSHOT</minecraft.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>1.21.10</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <minecraft.version>1.21.9-R0.1-SNAPSHOT</minecraft.version>
+                <minecraft.version>1.21.10-R0.1-SNAPSHOT</minecraft.version>
             </properties>
         </profile>
     </profiles>
@@ -154,13 +160,13 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.19.0</version>
+            <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.19.0</version>
+            <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
