@@ -3,8 +3,9 @@ package com.jerae.jsecurity.commands;
 import com.jerae.jsecurity.managers.BanEntry;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -31,7 +32,8 @@ public class IpBanCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: /ipban <player/ip> [-s]");
+            Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /ipban <player/ip> [reason] [-s]");
+            sender.sendMessage(usageMessage);
             return true;
         }
 
@@ -39,62 +41,68 @@ public class IpBanCommand implements CommandExecutor, TabCompleter {
         boolean silent = Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("-s"));
         String staffName = (sender instanceof Player) ? sender.getName() : "Console";
 
-        Player targetPlayer = Bukkit.getPlayer(targetIdentifier);
+        OfflinePlayer target = null;
+        String ipAddress = null;
 
-        // If target is an IP address
-        if (targetPlayer == null && targetIdentifier.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")) {
-            String ip = targetIdentifier;
-            if (punishmentManager.isIpBanned(ip)) {
-                sender.sendMessage(ChatColor.RED + "That IP is already banned.");
-                return true;
-            }
-
-            // Find an online player with this IP
-            Player playerToBan = null;
+        if (targetIdentifier.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")) {
+            ipAddress = targetIdentifier;
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                if (onlinePlayer.getAddress().getAddress().getHostAddress().equals(ip)) {
-                    playerToBan = onlinePlayer;
+                if (onlinePlayer.getAddress().getAddress().getHostAddress().equals(ipAddress)) {
+                    target = onlinePlayer;
                     break;
                 }
             }
-
-            if (playerToBan == null) {
-                sender.sendMessage(ChatColor.RED + "No online player found with that IP. You can ban an offline player with /ban <player>.");
-                // Or we could implement a way to ban an IP without a player, but this is safer.
+            if (target == null) {
+                // If no player is online with that IP, we can still ban the IP, but we won't have a player name.
+                target = Bukkit.getOfflinePlayer(UUID.nameUUIDFromBytes(ipAddress.getBytes()));
+            }
+        } else {
+            target = Bukkit.getOfflinePlayer(targetIdentifier);
+            if (target.isOnline()) {
+                ipAddress = target.getPlayer().getAddress().getAddress().getHostAddress();
+            } else {
+                sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&cCannot get IP address of an offline player. Please ban their IP directly if known."));
                 return true;
             }
-            targetPlayer = playerToBan;
-        } else if (targetPlayer == null) {
-            sender.sendMessage(ChatColor.RED + "Player not found or invalid IP address.");
+        }
+
+        if (punishmentManager.isIpBanned(ipAddress) || (target.hasPlayedBefore() && punishmentManager.isBanned(target.getUniqueId()))) {
+            sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&cThat player or IP is already banned."));
             return true;
         }
 
-        if (punishmentManager.isBanned(targetPlayer.getUniqueId())) {
-            sender.sendMessage(ChatColor.RED + "That player is already banned.");
-            return true;
+        String reason = Arrays.stream(args)
+                .skip(1)
+                .filter(arg -> !arg.equalsIgnoreCase("-s"))
+                .collect(Collectors.joining(" "));
+
+        boolean hasReason = !reason.isEmpty();
+        if (!hasReason) {
+            reason = configManager.getDefaultIpbanReason();
         }
 
-        String ipAddress = targetPlayer.getAddress().getAddress().getHostAddress();
-        String reason = "IP Ban"; // IP bans generally don't need a detailed reason.
-
-        BanEntry ban = new BanEntry(targetPlayer.getUniqueId(), targetPlayer.getName(), ipAddress, reason, staffName, -1);
+        String targetName = target.getName() != null ? target.getName() : targetIdentifier;
+        BanEntry ban = new BanEntry(target.getUniqueId(), targetName, ipAddress, reason, staffName, -1);
         punishmentManager.addBan(ban);
 
-        String kickMessage = configManager.getMessage("kick-messages.ipban");
-        targetPlayer.kickPlayer(ChatColor.translateAlternateColorCodes('&', kickMessage));
+        String kickMessagePath = "ipban-kick-message";
+        String kickMessageStr = configManager.getMessage(kickMessagePath, hasReason)
+                .replace("{reason}", reason);
+        Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessageStr);
 
-        String broadcastMessage;
-        if (silent) {
-            broadcastMessage = configManager.getMessage("silent-option.ipban-broadcast");
-        } else {
-            broadcastMessage = configManager.getMessage("ipban-broadcast");
+        if (target.isOnline()) {
+            target.getPlayer().kick(kickMessage);
         }
 
-        broadcastMessage = broadcastMessage
-                .replace("{player}", targetPlayer.getName())
-                .replace("{staff}", staffName);
-
-        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
+        if (!silent) {
+            String broadcastMessagePath = "ipban-broadcast";
+            String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason)
+                    .replace("{player}", targetName)
+                    .replace("{staff}", staffName)
+                    .replace("{reason}", reason);
+            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(broadcastMessageStr);
+            Bukkit.getServer().broadcast(broadcastMessage);
+        }
 
         return true;
     }
@@ -109,7 +117,7 @@ public class IpBanCommand implements CommandExecutor, TabCompleter {
         }
         if (args.length > 1) {
             if ("-s".startsWith(args[args.length - 1].toLowerCase())) {
-                return new ArrayList<>(Arrays.asList("-s"));
+                return new ArrayList<>(List.of("-s"));
             }
         }
         return new ArrayList<>();

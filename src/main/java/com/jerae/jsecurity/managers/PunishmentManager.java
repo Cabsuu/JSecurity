@@ -148,4 +148,12 @@ public class PunishmentManager {
     public boolean isMuted(UUID uuid) {
         return getMute(uuid) != null;
     }
+
+    public java.util.Collection<BanEntry> getBannedPlayers() {
+        return bans.values();
+    }
+
+    public java.util.Collection<MuteEntry> getMutedPlayers() {
+        return mutes.values();
+    }
 }

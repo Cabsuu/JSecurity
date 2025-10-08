@@ -25,6 +25,10 @@ public class MuteEntry {
         return playerName;
     }
 
+    public String getUsername() {
+        return playerName;
+    }
+
     public String getReason() {
         return reason;
     }

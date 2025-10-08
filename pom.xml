@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.jerae</groupId>
-    <artifactId>jsecurity</artifactId>
+    <artifactId>JSecurity</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
 
@@ -45,6 +45,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.2</version>
+                <configuration>
+                    <testSourceDirectory>src/test/java</testSourceDirectory>
+                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                    <excludes>
+                        <exclude>**/FeatureTests.java</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
         <resources>
@@ -123,11 +130,17 @@
         </profile>
         <profile>
             <id>1.21.9</id>
+            <properties>
+                <minecraft.version>1.21.9-R0.1-SNAPSHOT</minecraft.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>1.21.10</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <minecraft.version>1.21.9-R0.1-SNAPSHOT</minecraft.version>
+                <minecraft.version>1.21.10-R0.1-SNAPSHOT</minecraft.version>
             </properties>
         </profile>
     </profiles>
@@ -154,13 +167,13 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.19.0</version>
+            <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.19.0</version>
+            <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

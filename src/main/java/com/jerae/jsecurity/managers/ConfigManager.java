@@ -1,28 +1,48 @@
 package com.jerae.jsecurity.managers;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class ConfigManager {
 
     private final JavaPlugin plugin;
     private FileConfiguration config;
+    private FileConfiguration messagesConfig;
+    private File messagesFile;
 
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
         loadConfig();
+        loadMessages();
     }
 
     private void loadConfig() {
-        // This saves the default config.yml from the jar if it doesn't exist
         plugin.saveDefaultConfig();
-        // This gets the config, creating it if it doesn't exist.
         config = plugin.getConfig();
+    }
+
+    public void loadMessages() {
+        messagesFile = new File(plugin.getDataFolder(), "messages.yml");
+        if (!messagesFile.exists()) {
+            plugin.saveResource("messages.yml", false);
+        }
+        messagesConfig = YamlConfiguration.loadConfiguration(messagesFile);
+
+        InputStream defMessagesStream = plugin.getResource("messages.yml");
+        if (defMessagesStream != null) {
+            messagesConfig.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defMessagesStream)));
+        }
     }
 
     public void reloadConfig() {
         plugin.reloadConfig();
         config = plugin.getConfig();
+        loadMessages();
     }
 
     public String getString(String path) {
@@ -34,11 +54,19 @@ public class ConfigManager {
     }
 
     public String getDefaultBanReason() {
-        return getString("default-reasons.ban");
+        return messagesConfig.getString("default-reasons.ban", "You have been banned.");
     }
 
     public String getDefaultMuteReason() {
-        return getString("default-reasons.mute");
+        return messagesConfig.getString("default-reasons.mute", "You have been muted.");
+    }
+
+    public String getDefaultKickReason() {
+        return messagesConfig.getString("default-reasons.kick", "Kicked by a staff member.");
+    }
+
+    public String getDefaultIpbanReason() {
+        return messagesConfig.getString("default-reasons.ipban", "IP Banned by a staff member.");
     }
 
     public String getDefaultTempBanDuration() {
@@ -53,7 +81,18 @@ public class ConfigManager {
         return getBoolean("prevent-ban-evasion");
     }
 
+    public String getMessage(String path, boolean hasReason) {
+        String reasonPath = hasReason ? "punishments.with_reason." : "punishments.without_reason.";
+        String fullPath = reasonPath + path;
+        String message = messagesConfig.getString(fullPath);
+
+        if (message == null || message.isEmpty()) {
+            return getMessage(path);
+        }
+        return message;
+    }
+
     public String getMessage(String path) {
-        return getString("messages." + path);
+        return messagesConfig.getString("other." + path, "");
     }
 }

@@ -1,4 +1,74 @@
 -------------------------------------------------------------------------------
 Test set: com.jerae.jsecurity.FeatureTests
 -------------------------------------------------------------------------------
-Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.016 s -- in com.jerae.jsecurity.FeatureTests
+Tests run: 7, Failures: 3, Errors: 2, Skipped: 0, Time elapsed: 3.380 s <<< FAILURE! -- in com.jerae.jsecurity.FeatureTests
+com.jerae.jsecurity.FeatureTests.testKickCommand -- Time elapsed: 0.020 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "String.replace(java.lang.CharSequence, java.lang.CharSequence)" because the return value of "com.jerae.jsecurity.managers.ConfigManager.getMessage(String, boolean)" is null
+	at com.jerae.jsecurity.commands.KickCommand.onCommand(KickCommand.java:54)
+	at com.jerae.jsecurity.FeatureTests.testKickCommand(FeatureTests.java:65)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.FeatureTests.testReloadCommand -- Time elapsed: 0.128 s <<< FAILURE!
+Argument(s) are different! Wanted:
+commandSender.sendMessage(
+    <any net.kyori.adventure.text.Component>
+);
+-> at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+Actual invocations have different arguments:
+commandSender.sendMessage(
+    "§ajSecurity configuration reloaded."
+);
+-> at com.jerae.jsecurity.commands.JSecurityCommand.onCommand(JSecurityCommand.java:28)
+
+	at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+	at com.jerae.jsecurity.FeatureTests.testReloadCommand(FeatureTests.java:113)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.FeatureTests.testUnfreezeCommand -- Time elapsed: 0.018 s <<< FAILURE!
+Argument(s) are different! Wanted:
+commandSender.sendMessage(
+    <any net.kyori.adventure.text.Component>
+);
+-> at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+Actual invocations have different arguments:
+commandSender.sendMessage(
+    "§aYou have unfrozen testPlayer."
+);
+-> at com.jerae.jsecurity.commands.UnfreezeCommand.onCommand(UnfreezeCommand.java:42)
+
+	at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+	at com.jerae.jsecurity.FeatureTests.testUnfreezeCommand(FeatureTests.java:138)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.FeatureTests.testKickCommandSilent -- Time elapsed: 0.007 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "String.replace(java.lang.CharSequence, java.lang.CharSequence)" because the return value of "com.jerae.jsecurity.managers.ConfigManager.getMessage(String, boolean)" is null
+	at com.jerae.jsecurity.commands.KickCommand.onCommand(KickCommand.java:54)
+	at com.jerae.jsecurity.FeatureTests.testKickCommandSilent(FeatureTests.java:75)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.FeatureTests.testFreezeCommand -- Time elapsed: 0.008 s <<< FAILURE!
+Argument(s) are different! Wanted:
+commandSender.sendMessage(
+    <any net.kyori.adventure.text.Component>
+);
+-> at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+Actual invocations have different arguments:
+commandSender.sendMessage(
+    "§aYou have frozen testPlayer."
+);
+-> at com.jerae.jsecurity.commands.FreezeCommand.onCommand(FreezeCommand.java:37)
+
+	at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+	at com.jerae.jsecurity.FeatureTests.testFreezeCommand(FeatureTests.java:124)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

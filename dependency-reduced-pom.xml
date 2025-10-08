@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.jerae</groupId>
-  <artifactId>jsecurity</artifactId>
+  <artifactId>JSecurity</artifactId>
   <name>jsecurity</name>
   <version>0.1.0</version>
   <build>
@@ -37,6 +37,13 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.2.2</version>
+        <configuration>
+          <testSourceDirectory>src/test/java</testSourceDirectory>
+          <redirectTestOutputToFile>false</redirectTestOutputToFile>
+          <excludes>
+            <exclude>**/FeatureTests.java</exclude>
+          </excludes>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -101,6 +108,12 @@
         <minecraft.version>1.21.9-R0.1-SNAPSHOT</minecraft.version>
       </properties>
     </profile>
+    <profile>
+      <id>1.21.10</id>
+      <properties>
+        <minecraft.version>1.21.10-R0.1-SNAPSHOT</minecraft.version>
+      </properties>
+    </profile>
   </profiles>
   <repositories>
     <repository>
@@ -116,7 +129,7 @@
     <dependency>
       <groupId>io.papermc.paper</groupId>
       <artifactId>paper-api</artifactId>
-      <version>1.21.9-R0.1-SNAPSHOT</version>
+      <version>1.21.10-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -158,7 +171,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>5.19.0</version>
+      <version>5.10.0</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -178,7 +191,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
-      <version>5.19.0</version>
+      <version>5.10.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
