@@ -54,19 +54,19 @@ public class ConfigManager {
     }
 
     public String getDefaultBanReason() {
-        return getString("default-reasons.ban");
+        return messagesConfig.getString("default-reasons.ban", "You have been banned.");
     }
 
     public String getDefaultMuteReason() {
-        return getString("default-reasons.mute");
+        return messagesConfig.getString("default-reasons.mute", "You have been muted.");
     }
 
     public String getDefaultKickReason() {
-        return messagesConfig.getString("default-kick-reason", "Kicked by a staff member.");
+        return messagesConfig.getString("default-reasons.kick", "Kicked by a staff member.");
     }
 
     public String getDefaultIpbanReason() {
-        return messagesConfig.getString("default-ipban-reason", "IP Banned by a staff member.");
+        return messagesConfig.getString("default-reasons.ipban", "IP Banned by a staff member.");
     }
 
     public String getDefaultTempBanDuration() {
@@ -82,8 +82,8 @@ public class ConfigManager {
     }
 
     public String getMessage(String path, boolean hasReason) {
-        String reasonPath = hasReason ? "punishments.with_reason." : "without_reason.";
-        String fullPath = "punishments." + reasonPath + path;
+        String reasonPath = hasReason ? "punishments.with_reason." : "punishments.without_reason.";
+        String fullPath = reasonPath + path;
         String message = messagesConfig.getString(fullPath);
 
         if (message == null || message.isEmpty()) {

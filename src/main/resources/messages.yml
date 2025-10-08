@@ -1,5 +1,12 @@
 # jSecurity Messages
 
+# Default reasons for punishments if not specified.
+default-reasons:
+  ban: "You have been banned."
+  mute: "You have been muted."
+  kick: "Kicked by a staff member."
+  ipban: "IP Banned by a staff member."
+
 # Messages for punishments with a specified reason.
 # Placeholders: {player}, {staff}, {reason}, {duration}
 punishments:
@@ -41,7 +48,3 @@ other:
   unfreeze-message: "&aYou have been unfrozen."
   ban-evasion-reason: "Ban Evasion ({banned_player})"
   ban-evasion-kick-message: "&cYour IP is associated with a banned account ({banned_player})."
-
-# Default reason for kick command
-default-kick-reason: "Kicked by a staff member."
-default-ipban-reason: "IP Banned by a staff member."
