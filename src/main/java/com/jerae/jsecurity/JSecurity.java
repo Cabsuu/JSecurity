@@ -1,10 +1,13 @@
 package com.jerae.jsecurity;
 
 import com.jerae.jsecurity.commands.*;
+import com.jerae.jsecurity.commands.*;
 import com.jerae.jsecurity.listeners.PlayerFreezeListener;
+import com.jerae.jsecurity.listeners.PlayerDataListener;
 import com.jerae.jsecurity.listeners.PlayerListener;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.FreezeManager;
+import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -13,6 +16,7 @@ public final class JSecurity extends JavaPlugin {
     private ConfigManager configManager;
     private PunishmentManager punishmentManager;
     private FreezeManager freezeManager;
+    private PlayerDataManager playerDataManager;
 
     @Override
     public void onEnable() {
@@ -20,6 +24,7 @@ public final class JSecurity extends JavaPlugin {
         configManager = new ConfigManager(this);
         punishmentManager = new PunishmentManager(this);
         freezeManager = new FreezeManager();
+        playerDataManager = new PlayerDataManager(this);
 
         // Register commands
         getCommand("ban").setExecutor(new BanCommand(punishmentManager, configManager));
@@ -30,13 +35,14 @@ public final class JSecurity extends JavaPlugin {
         getCommand("unban").setExecutor(new UnbanCommand(punishmentManager, configManager));
         getCommand("unmute").setExecutor(new UnmuteCommand(punishmentManager, configManager));
         getCommand("kick").setExecutor(new KickCommand(configManager));
-        getCommand("js").setExecutor(new JSecurityCommand(this, configManager));
+        getCommand("js").setExecutor(new JSecurityCommand(this, configManager, punishmentManager, playerDataManager));
         getCommand("freeze").setExecutor(new FreezeCommand(freezeManager, configManager));
         getCommand("unfreeze").setExecutor(new UnfreezeCommand(freezeManager, configManager));
 
         // Register listeners
         getServer().getPluginManager().registerEvents(new PlayerListener(punishmentManager, configManager), this);
         getServer().getPluginManager().registerEvents(new PlayerFreezeListener(freezeManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerDataListener(playerDataManager, configManager), this);
 
 
         getLogger().info("jSecurity has been enabled.");
@@ -48,6 +54,17 @@ public final class JSecurity extends JavaPlugin {
         if (punishmentManager != null) {
             punishmentManager.savePunishments();
         }
+        if (playerDataManager != null) {
+            playerDataManager.savePlayerData();
+        }
         getLogger().info("jSecurity has been disabled.");
+    }
+
+    public PunishmentManager getPunishmentManager() {
+        return punishmentManager;
+    }
+
+    public PlayerDataManager getPlayerDataManager() {
+        return playerDataManager;
     }
 }
