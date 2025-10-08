@@ -1,6 +1,6 @@
 name: JSecurity
 version: 0.1.0
-main: com.jerae.jsecurity.main
+main: com.jerae.jsecurity.JSecurity
 softdepend: [Purpur]
 authors: [ Jerae ]
 description: A security plugin for Minecraft servers.
@@ -19,7 +19,7 @@ commands:
     permission: jsecurity.ipban
   unban:
     description: Unbans a player or IP address.
-    usage: /unban <player/ip>
+    usage: /unban <player/ip> [-s]
     permission: jsecurity.unban
   mute:
     description: Mutes a player permanently.
@@ -31,8 +31,24 @@ commands:
     permission: jsecurity.tempmute
   unmute:
     description: Unmutes a player.
-    usage: /unmute <player>
+    usage: /unmute <player> [-s]
     permission: jsecurity.unmute
+  kick:
+    description: Kicks a player from the server.
+    usage: /kick <player> [reason] [-s]
+    permission: jsecurity.kick
+  js:
+    description: jSecurity admin commands.
+    usage: /js <reload>
+    permission: jsecurity.admin
+  freeze:
+    description: Freezes a player.
+    usage: /freeze <player>
+    permission: jsecurity.freeze
+  unfreeze:
+    description: Unfreezes a player.
+    usage: /unfreeze <player>
+    permission: jsecurity.unfreeze
 permissions:
   jsecurity.*:
     description: Gives access to all jSecurity commands.
@@ -44,7 +60,10 @@ permissions:
       jsecurity.mute: true
       jsecurity.tempmute: true
       jsecurity.unmute: true
-      jsecurity.reload: true
+      jsecurity.kick: true
+      jsecurity.admin: true
+      jsecurity.freeze: true
+      jsecurity.unfreeze: true
   jsecurity.ban:
     description: Allows banning players.
     default: op
@@ -66,6 +85,9 @@ permissions:
   jsecurity.unmute:
     description: Allows unmuting players.
     default: op
-  jsecurity.reload:
-    description: Allows reloading the config.
+  jsecurity.kick:
+    description: Allows kicking players.
+    default: op
+  jsecurity.admin:
+    description: Allows access to jSecurity admin commands.
     default: op

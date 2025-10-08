@@ -13,6 +13,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,12 +30,13 @@ public class UnbanCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: /unban <player/ip>");
+            sender.sendMessage(ChatColor.RED + "Usage: /unban <player/ip> [-s]");
             return true;
         }
 
         String targetIdentifier = args[0];
         String staffName = (sender instanceof Player) ? sender.getName() : "Console";
+        boolean silent = Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("-s"));
 
         BanEntry banEntry = null;
         OfflinePlayer targetPlayer = null;
@@ -59,13 +61,16 @@ public class UnbanCommand implements CommandExecutor, TabCompleter {
 
         punishmentManager.removeBan(banEntry.getUuid());
 
-        String broadcastMessage = configManager.getMessage("unban-broadcast")
-                .replace("{player}", targetPlayer.getName())
-                .replace("{staff}", staffName);
+        String targetName = targetPlayer.getName() != null ? targetPlayer.getName() : targetIdentifier;
 
-        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
+        if (!silent) {
+            String broadcastMessage = configManager.getMessage("unban-broadcast")
+                    .replace("{player}", targetName)
+                    .replace("{staff}", staffName);
+            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
+        }
 
-        sender.sendMessage(ChatColor.GREEN + "Successfully unbanned " + targetPlayer.getName() + ".");
+        sender.sendMessage(ChatColor.GREEN + "Successfully unbanned " + targetName + ".");
 
         return true;
     }

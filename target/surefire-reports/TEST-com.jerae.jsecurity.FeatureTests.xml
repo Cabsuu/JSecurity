@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.jerae.jsecurity.utils.TimeUtilTest" time="0.02" tests="2" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.jerae.jsecurity.FeatureTests" time="4.016" tests="7" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -53,6 +53,18 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testParseDuration" classname="com.jerae.jsecurity.utils.TimeUtilTest" time="0.002"/>
-  <testcase name="testFormatDuration" classname="com.jerae.jsecurity.utils.TimeUtilTest" time="0.011"/>
+  <testcase name="testUnmuteCommandSilent" classname="com.jerae.jsecurity.FeatureTests" time="3.671">
+    <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/home/jules/.m2/repository/net/bytebuddy/byte-buddy-agent/1.17.6/byte-buddy-agent-1.17.6.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+  </testcase>
+  <testcase name="testKickCommand" classname="com.jerae.jsecurity.FeatureTests" time="0.096"/>
+  <testcase name="testUnbanCommandSilent" classname="com.jerae.jsecurity.FeatureTests" time="0.048"/>
+  <testcase name="testReloadCommand" classname="com.jerae.jsecurity.FeatureTests" time="0.089"/>
+  <testcase name="testUnfreezeCommand" classname="com.jerae.jsecurity.FeatureTests" time="0.015"/>
+  <testcase name="testKickCommandSilent" classname="com.jerae.jsecurity.FeatureTests" time="0.006"/>
+  <testcase name="testFreezeCommand" classname="com.jerae.jsecurity.FeatureTests" time="0.006"/>
 </testsuite>

@@ -49,15 +49,19 @@ public class PlayerListener implements Listener {
             BanEntry ipBan = punishmentManager.getBanByIp(ipAddress);
             if (ipBan != null) {
                 // The player's IP is banned, but their UUID is not. This is ban evasion.
-                String kickMessage = configManager.getMessage("kick-messages.ban-evasion");
+                String originalBannedPlayer = ipBan.getPlayerName();
+                String kickMessage = configManager.getMessage("kick-messages.ban-evasion")
+                        .replace("{banned_player}", originalBannedPlayer);
                 event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.translateAlternateColorCodes('&', kickMessage));
 
                 // Create a new ban entry for the evading account
+                String evasionReason = configManager.getMessage("ban-evasion-reason")
+                        .replace("{banned_player}", originalBannedPlayer);
                 BanEntry evasionBan = new BanEntry(
                         player.getUniqueId(),
                         player.getName(),
                         ipAddress,
-                        "Ban Evasion",
+                        evasionReason,
                         "jSecurity",
                         ipBan.getExpiration() // Match the original ban's expiration
                 );
