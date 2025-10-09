@@ -169,6 +169,11 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         }
 
         List<PunishmentLogEntry> logs = punishmentManager.getPunishmentLogs();
+        if (logs.isEmpty()) {
+            sender.sendMessage(ChatColor.YELLOW + "There are no punishment logs.");
+            return;
+        }
+
         int totalPages = (int) Math.ceil(logs.size() / 10.0);
         if (page < 1) page = 1;
         if (page > totalPages) page = totalPages;
@@ -207,6 +212,11 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         }
 
         List<PunishmentLogEntry> history = punishmentManager.getPlayerHistory(target.getUniqueId());
+        if (history.isEmpty()) {
+            sender.sendMessage(ChatColor.YELLOW + "This player has no punishment history.");
+            return;
+        }
+
         int totalPages = (int) Math.ceil(history.size() / 10.0);
         if (page < 1) page = 1;
         if (page > totalPages) page = totalPages;
