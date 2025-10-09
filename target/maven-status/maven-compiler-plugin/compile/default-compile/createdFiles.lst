@@ -1,6 +1,7 @@
 com\jerae\jsecurity\managers\PunishmentManager$1.class
 com\jerae\jsecurity\managers\FreezeManager.class
 com\jerae\jsecurity\commands\MuteCommand.class
+com\jerae\jsecurity\managers\PlayerDataManager$1.class
 com\jerae\jsecurity\commands\UnfreezeCommand.class
 com\jerae\jsecurity\JSecurity.class
 com\jerae\jsecurity\commands\FreezeCommand.class
@@ -18,5 +19,8 @@ com\jerae\jsecurity\commands\BanCommand.class
 com\jerae\jsecurity\listeners\PlayerFreezeListener.class
 com\jerae\jsecurity\managers\BanEntry.class
 com\jerae\jsecurity\commands\TempMuteCommand.class
+com\jerae\jsecurity\managers\PlayerDataManager.class
+com\jerae\jsecurity\models\PlayerData.class
+com\jerae\jsecurity\listeners\PlayerDataListener.class
 com\jerae\jsecurity\managers\MuteEntry.class
 com\jerae\jsecurity\managers\PunishmentManager.class

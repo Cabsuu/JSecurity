@@ -1,23 +1,34 @@
 package com.jerae.jsecurity;
 
 import com.jerae.jsecurity.commands.*;
+import com.jerae.jsecurity.listeners.PlayerDataListener;
 import com.jerae.jsecurity.managers.*;
+import com.jerae.jsecurity.models.PlayerData;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -60,21 +71,22 @@ public class FeatureTests {
     @Test
     public void testKickCommand() {
         ConfigManager configManager = mock(ConfigManager.class);
-        when(configManager.getMessage("kick-message")).thenReturn("Kicked for a reason.");
+        when(configManager.getMessage(anyString(), anyBoolean())).thenReturn("Kicked for a reason.");
+        when(configManager.getMessage(anyString())).thenReturn("Kicked for a reason.");
         KickCommand kickCommand = new KickCommand(configManager);
         kickCommand.onCommand(sender, mock(Command.class), "kick", new String[]{"testPlayer", "test reason"});
         verify(player).kick(any(Component.class));
-        bukkit.verify(() -> Bukkit.broadcast(any(Component.class)));
+        verify(server).broadcast(any(Component.class));
     }
 
     @Test
     public void testKickCommandSilent() {
         ConfigManager configManager = mock(ConfigManager.class);
-        when(configManager.getMessage("kick-message")).thenReturn("Kicked silently.");
+        when(configManager.getMessage(anyString(), anyBoolean())).thenReturn("Kicked silently.");
         KickCommand kickCommand = new KickCommand(configManager);
         kickCommand.onCommand(sender, mock(Command.class), "kick", new String[]{"testPlayer", "test reason", "-s"});
         verify(player).kick(any(Component.class));
-        bukkit.verify(() -> Bukkit.broadcast(any(Component.class)), never());
+        verify(server, never()).broadcast(any(Component.class));
     }
 
     @Test
@@ -87,7 +99,7 @@ public class FeatureTests {
         UnbanCommand unbanCommand = new UnbanCommand(punishmentManager, configManager);
         unbanCommand.onCommand(sender, mock(Command.class), "unban", new String[]{"testPlayer", "-s"});
         verify(punishmentManager).removeBan(any());
-        bukkit.verify(() -> Bukkit.broadcast(any(Component.class)), never());
+        verify(server, never()).broadcast(any(Component.class));
     }
 
     @Test
@@ -100,28 +112,31 @@ public class FeatureTests {
         UnmuteCommand unmuteCommand = new UnmuteCommand(punishmentManager, configManager);
         unmuteCommand.onCommand(sender, mock(Command.class), "unmute", new String[]{"testPlayer", "-s"});
         verify(punishmentManager).removeMute(any());
-        bukkit.verify(() -> Bukkit.broadcast(any(Component.class)), never());
+        verify(server, never()).broadcast(any(Component.class));
     }
 
     @Test
     public void testReloadCommand() {
         JSecurity plugin = mock(JSecurity.class);
         ConfigManager configManager = mock(ConfigManager.class);
-        JSecurityCommand jSecurityCommand = new JSecurityCommand(plugin, configManager);
+        when(configManager.getReloadMessage()).thenReturn("Configuration reloaded.");
+        PunishmentManager punishmentManager = mock(PunishmentManager.class);
+        PlayerDataManager playerDataManager = mock(PlayerDataManager.class);
+        JSecurityCommand jSecurityCommand = new JSecurityCommand(plugin, configManager, punishmentManager, playerDataManager);
         jSecurityCommand.onCommand(sender, mock(Command.class), "js", new String[]{"reload"});
         verify(configManager).reloadConfig();
-        verify(sender).sendMessage(any(Component.class));
+        verify(sender).sendMessage(anyString());
     }
 
     @Test
     public void testFreezeCommand() {
         FreezeManager freezeManager = new FreezeManager();
         ConfigManager configManager = mock(ConfigManager.class);
-        when(configManager.getMessage("freeze-message")).thenReturn("You are frozen.");
+        when(configManager.getMessage(anyString())).thenReturn("You are frozen.");
         FreezeCommand freezeCommand = new FreezeCommand(freezeManager, configManager);
         freezeCommand.onCommand(sender, mock(Command.class), "freeze", new String[]{"testPlayer"});
         assertTrue(freezeManager.isFrozen(player));
-        verify(sender).sendMessage(any(Component.class));
+        verify(sender).sendMessage(anyString());
     }
 
     @Test
@@ -135,6 +150,57 @@ public class FeatureTests {
         UnfreezeCommand unfreezeCommand = new UnfreezeCommand(freezeManager, configManager);
         unfreezeCommand.onCommand(sender, mock(Command.class), "unfreeze", new String[]{"testPlayer"});
         assertFalse(freezeManager.isFrozen(player));
-        verify(sender).sendMessage(any(Component.class));
+        verify(sender).sendMessage(anyString());
+    }
+
+    @Test
+    public void testJsRecordCommand() {
+        JSecurity plugin = mock(JSecurity.class);
+        ConfigManager configManager = mock(ConfigManager.class);
+        PunishmentManager punishmentManager = mock(PunishmentManager.class);
+        PlayerDataManager playerDataManager = mock(PlayerDataManager.class);
+
+        List<PlayerData> players = new ArrayList<>();
+        players.add(new PlayerData(1, UUID.randomUUID(), "PlayerA", Collections.singletonList("1.1.1.1"), "2025-01-01, 12:00"));
+        players.add(new PlayerData(2, UUID.randomUUID(), "PlayerB", Collections.singletonList("2.2.2.2"), "2025-01-02, 12:00"));
+
+        when(playerDataManager.getAllPlayerData()).thenReturn(players);
+
+        JSecurityCommand jSecurityCommand = new JSecurityCommand(plugin, configManager, punishmentManager, playerDataManager);
+        jSecurityCommand.onCommand(sender, mock(Command.class), "js", new String[]{"record"});
+
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(sender, times(3)).sendMessage(captor.capture()); // Title + 2 players
+
+        List<String> messages = captor.getAllValues();
+        assertEquals(ChatColor.GOLD + "--- Player Records (Page 1/1) ---", messages.get(0));
+        assertEquals(ChatColor.YELLOW + "" + 1 + ". " + ChatColor.WHITE + "PlayerA", messages.get(1));
+        assertEquals(ChatColor.YELLOW + "" + 2 + ". " + ChatColor.WHITE + "PlayerB", messages.get(2));
+    }
+
+    @Test
+    public void testPlayerDataListenerNewPlayer() throws Exception {
+        PlayerDataManager playerDataManager = mock(PlayerDataManager.class);
+        ConfigManager configManager = mock(ConfigManager.class);
+        PlayerJoinEvent event = mock(PlayerJoinEvent.class);
+        Player newPlayer = mock(Player.class);
+        InetSocketAddress address = new InetSocketAddress(InetAddress.getByName("1.2.3.4"), 12345);
+
+        when(newPlayer.getUniqueId()).thenReturn(playerUUID);
+        when(newPlayer.getName()).thenReturn("testPlayer");
+        when(newPlayer.getAddress()).thenReturn(address);
+        when(event.getPlayer()).thenReturn(newPlayer);
+
+        when(playerDataManager.getPlayerData(playerUUID)).thenReturn(null);
+        when(configManager.isAnnounceNewPlayerEnabled()).thenReturn(true);
+        when(configManager.getAnnounceMilestones()).thenReturn(Collections.emptyList());
+        when(playerDataManager.getAllPlayerData()).thenReturn(Collections.singletonList(mock(PlayerData.class)));
+        when(configManager.getNewPlayerBroadcastMessage()).thenReturn("Welcome our {player_count}th player!");
+
+        PlayerDataListener listener = new PlayerDataListener(playerDataManager, configManager);
+        listener.onPlayerJoin(event);
+
+        verify(playerDataManager).createPlayerData(playerUUID, "testPlayer", "1.2.3.4");
+        verify(server).broadcast(any(Component.class));
     }
 }

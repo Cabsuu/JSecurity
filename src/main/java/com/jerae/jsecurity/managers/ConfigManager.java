@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 public class ConfigManager {
 
@@ -15,10 +16,16 @@ public class ConfigManager {
     private FileConfiguration messagesConfig;
     private File messagesFile;
 
+    private boolean announceNewPlayer;
+    private List<Integer> announceMilestones;
+    private String reloadMessage;
+    private String newPlayerBroadcastMessage;
+
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
         loadConfig();
         loadMessages();
+        loadValues();
     }
 
     private void loadConfig() {
@@ -39,10 +46,18 @@ public class ConfigManager {
         }
     }
 
+    private void loadValues() {
+        announceNewPlayer = config.getBoolean("announce-new-player", true);
+        announceMilestones = config.getIntegerList("announce-milestones");
+        reloadMessage = messagesConfig.getString("other.reload-message", "&aConfiguration reloaded.");
+        newPlayerBroadcastMessage = messagesConfig.getString("other.new-player-broadcast", "&aWelcome our {player_count}th player!");
+    }
+
     public void reloadConfig() {
         plugin.reloadConfig();
         config = plugin.getConfig();
         loadMessages();
+        loadValues();
     }
 
     public String getString(String path) {
@@ -94,5 +109,21 @@ public class ConfigManager {
 
     public String getMessage(String path) {
         return messagesConfig.getString("other." + path, "");
+    }
+
+    public boolean isAnnounceNewPlayerEnabled() {
+        return announceNewPlayer;
+    }
+
+    public List<Integer> getAnnounceMilestones() {
+        return announceMilestones;
+    }
+
+    public String getReloadMessage() {
+        return reloadMessage;
+    }
+
+    public String getNewPlayerBroadcastMessage() {
+        return newPlayerBroadcastMessage;
     }
 }

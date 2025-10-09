@@ -9,3 +9,11 @@ default-durations:
 # Ban Evasion Prevention
 # If true, players joining with the same IP as a banned player will also be banned.
 prevent-ban-evasion: false
+
+# New Player Announcements
+# Announce when a new player joins the server.
+announce-new-player: true
+# Announce only when the total player count reaches one of these milestones.
+# Leave empty to announce every new player.
+# Example: [100, 200, 500, 1000]
+announce-milestones: []

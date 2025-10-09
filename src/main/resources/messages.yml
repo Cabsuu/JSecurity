@@ -48,3 +48,5 @@ other:
   unfreeze-message: "&aYou have been unfrozen."
   ban-evasion-reason: "Ban Evasion ({banned_player})"
   ban-evasion-kick-message: "&cYour IP is associated with a banned account ({banned_player})."
+  reload-message: "&aConfiguration reloaded."
+  new-player-broadcast: "&aWelcome {player} to the server! &bPlayer Count: &e{player_count}"
