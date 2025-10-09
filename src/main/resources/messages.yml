@@ -49,4 +49,4 @@ other:
   ban-evasion-reason: "Ban Evasion ({banned_player})"
   ban-evasion-kick-message: "&cYour IP is associated with a banned account ({banned_player})."
   reload-message: "&aConfiguration reloaded."
-  new-player-broadcast: "&aWelcome our {player_count}th player!"
+  new-player-broadcast: "&aWelcome {player} to the server! &bPlayer Count: &e{player_count}"
