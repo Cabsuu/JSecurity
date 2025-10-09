@@ -49,6 +49,10 @@ commands:
     description: Unfreezes a player.
     usage: /unfreeze <player>
     permission: jsecurity.unfreeze
+  warn:
+    description: Warns a player.
+    usage: /warn <player> <reason> [-s]
+    permission: jsecurity.warn
 permissions:
   jsecurity.*:
     description: Gives access to all jSecurity commands.
@@ -64,6 +68,8 @@ permissions:
       jsecurity.admin: true
       jsecurity.freeze: true
       jsecurity.unfreeze: true
+      jsecurity.warn: true
+      jsecurity.alt.alert: true
   jsecurity.ban:
     description: Allows banning players.
     default: op
@@ -90,4 +96,10 @@ permissions:
     default: op
   jsecurity.admin:
     description: Allows access to jSecurity admin commands.
+    default: op
+  jsecurity.warn:
+    description: Allows warning players.
+    default: op
+  jsecurity.alt.alert:
+    description: Notifies staff on possible alt account join.
     default: op

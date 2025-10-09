@@ -23,6 +23,8 @@ punishments:
     mute-message: "&cYou are currently muted. Reason: {reason}"
     tempmute-message: "&cYou are currently muted for {duration}. Reason: {reason}"
     ipban-kick-message: "&cYou have been IP banned.\n&cReason: {reason}"
+    warn-broadcast: "&e{player} has been warned by {staff} for: {reason}"
+    warn-message: "&cYou have been warned for: {reason}"
 
   # Messages for punishments without a specified reason.
   # Placeholders: {player}, {staff}, {duration}
@@ -48,5 +50,7 @@ other:
   unfreeze-message: "&aYou have been unfrozen."
   ban-evasion-reason: "Ban Evasion ({banned_player})"
   ban-evasion-kick-message: "&cYour IP is associated with a banned account ({banned_player})."
+  alt-account-alert: "&c{player} may be an alt of {alt_player}."
+  kick-messages.alt-account-banned: "&cYour other account {banned_player} was banned."
   reload-message: "&aConfiguration reloaded."
   new-player-broadcast: "&aWelcome {player} to the server! &bPlayer Count: &e{player_count}"

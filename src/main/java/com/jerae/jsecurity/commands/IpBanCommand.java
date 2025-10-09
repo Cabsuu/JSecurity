@@ -1,5 +1,6 @@
 package com.jerae.jsecurity.commands;
 
+import com.jerae.jsecurity.listeners.PlayerListener;
 import com.jerae.jsecurity.managers.BanEntry;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
@@ -23,10 +24,12 @@ public class IpBanCommand implements CommandExecutor, TabCompleter {
 
     private final PunishmentManager punishmentManager;
     private final ConfigManager configManager;
+    private final PlayerListener playerListener;
 
-    public IpBanCommand(PunishmentManager punishmentManager, ConfigManager configManager) {
+    public IpBanCommand(PunishmentManager punishmentManager, ConfigManager configManager, PlayerListener playerListener) {
         this.punishmentManager = punishmentManager;
         this.configManager = configManager;
+        this.playerListener = playerListener;
     }
 
     @Override
@@ -91,7 +94,9 @@ public class IpBanCommand implements CommandExecutor, TabCompleter {
         Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessageStr);
 
         if (target.isOnline()) {
-            target.getPlayer().kick(kickMessage);
+            Player player = target.getPlayer();
+            player.kick(kickMessage);
+            playerListener.onPlayerBan(player);
         }
 
         if (!silent) {

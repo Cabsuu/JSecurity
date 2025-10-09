@@ -96,6 +96,10 @@ public class ConfigManager {
         return getBoolean("prevent-ban-evasion");
     }
 
+    public boolean isAltAccountAlertEnabled() {
+        return getBoolean("alt-account-alert");
+    }
+
     public String getMessage(String path, boolean hasReason) {
         String reasonPath = hasReason ? "punishments.with_reason." : "punishments.without_reason.";
         String fullPath = reasonPath + path;

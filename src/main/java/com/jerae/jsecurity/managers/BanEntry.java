@@ -43,6 +43,10 @@ public class BanEntry {
         return staff;
     }
 
+    public String getStaffName() {
+        return staff;
+    }
+
     public long getExpiration() {
         return expiration;
     }

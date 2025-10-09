@@ -26,23 +26,25 @@ public final class JSecurity extends JavaPlugin {
         freezeManager = new FreezeManager();
         playerDataManager = new PlayerDataManager(this);
 
+        // Register listeners
+        PlayerListener playerListener = new PlayerListener(punishmentManager, configManager);
+        getServer().getPluginManager().registerEvents(playerListener, this);
+        getServer().getPluginManager().registerEvents(new PlayerFreezeListener(freezeManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerDataListener(playerDataManager, configManager), this);
+
         // Register commands
-        getCommand("ban").setExecutor(new BanCommand(punishmentManager, configManager));
-        getCommand("tempban").setExecutor(new TempBanCommand(punishmentManager, configManager));
-        getCommand("ipban").setExecutor(new IpBanCommand(punishmentManager, configManager));
+        getCommand("ban").setExecutor(new BanCommand(punishmentManager, configManager, playerListener));
+        getCommand("tempban").setExecutor(new TempBanCommand(punishmentManager, configManager, playerListener));
+        getCommand("ipban").setExecutor(new IpBanCommand(punishmentManager, configManager, playerListener));
         getCommand("mute").setExecutor(new MuteCommand(punishmentManager, configManager));
         getCommand("tempmute").setExecutor(new TempMuteCommand(punishmentManager, configManager));
         getCommand("unban").setExecutor(new UnbanCommand(punishmentManager, configManager));
         getCommand("unmute").setExecutor(new UnmuteCommand(punishmentManager, configManager));
         getCommand("kick").setExecutor(new KickCommand(configManager));
+        getCommand("warn").setExecutor(new WarnCommand(punishmentManager, configManager));
         getCommand("js").setExecutor(new JSecurityCommand(this, configManager, punishmentManager, playerDataManager));
         getCommand("freeze").setExecutor(new FreezeCommand(freezeManager, configManager));
         getCommand("unfreeze").setExecutor(new UnfreezeCommand(freezeManager, configManager));
-
-        // Register listeners
-        getServer().getPluginManager().registerEvents(new PlayerListener(punishmentManager, configManager), this);
-        getServer().getPluginManager().registerEvents(new PlayerFreezeListener(freezeManager), this);
-        getServer().getPluginManager().registerEvents(new PlayerDataListener(playerDataManager, configManager), this);
 
 
         getLogger().info("jSecurity has been enabled.");

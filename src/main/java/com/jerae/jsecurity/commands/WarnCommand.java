@@ -1,9 +1,8 @@
 package com.jerae.jsecurity.commands;
 
-import com.jerae.jsecurity.listeners.PlayerListener;
-import com.jerae.jsecurity.managers.BanEntry;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
+import com.jerae.jsecurity.models.WarnEntry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -17,40 +16,28 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class BanCommand implements CommandExecutor, TabCompleter {
+public class WarnCommand implements CommandExecutor, TabCompleter {
 
     private final PunishmentManager punishmentManager;
     private final ConfigManager configManager;
-    private final PlayerListener playerListener;
 
-    public BanCommand(PunishmentManager punishmentManager, ConfigManager configManager, PlayerListener playerListener) {
+    public WarnCommand(PunishmentManager punishmentManager, ConfigManager configManager) {
         this.punishmentManager = punishmentManager;
         this.configManager = configManager;
-        this.playerListener = playerListener;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length < 1) {
-            Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /ban <player> [reason] [-s]");
-            sender.sendMessage(usageMessage);
+        if (args.length < 2) {
+            sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /warn <player> <reason> [-s]"));
             return true;
         }
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (!target.hasPlayedBefore() && !target.isOnline()) {
-            Component playerNotFoundMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cPlayer not found.");
-            sender.sendMessage(playerNotFoundMessage);
-            return true;
-        }
-
-        UUID targetUUID = target.getUniqueId();
-        if (punishmentManager.isBanned(targetUUID)) {
-            Component alreadyBannedMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cThat player is already banned.");
-            sender.sendMessage(alreadyBannedMessage);
+            sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&cPlayer not found."));
             return true;
         }
 
@@ -60,36 +47,28 @@ public class BanCommand implements CommandExecutor, TabCompleter {
                 .filter(arg -> !arg.equalsIgnoreCase("-s"))
                 .collect(Collectors.joining(" "));
 
-        boolean hasReason = !reason.isEmpty();
-        if (!hasReason) {
-            reason = configManager.getDefaultBanReason();
+        if (reason.isEmpty()) {
+            sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&cPlease provide a reason for the warning."));
+            return true;
         }
 
         String staffName = (sender instanceof Player) ? sender.getName() : "Console";
-        String ipAddress = target.isOnline() ? target.getPlayer().getAddress().getAddress().getHostAddress() : null;
 
-        BanEntry ban = new BanEntry(targetUUID, target.getName(), ipAddress, reason, staffName, -1);
-        punishmentManager.addBan(ban);
-
-        String kickMessagePath = "ban-kick-message";
-        String kickMessageStr = configManager.getMessage(kickMessagePath, hasReason)
-                .replace("{reason}", reason);
-        Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessageStr);
+        WarnEntry warn = new WarnEntry(target.getUniqueId(), target.getName(), reason, staffName);
+        punishmentManager.addWarn(warn);
 
         if (target.isOnline()) {
-            Player player = target.getPlayer();
-            player.kick(kickMessage);
-            playerListener.onPlayerBan(player);
+            String warnMessage = configManager.getMessage("warn-message")
+                    .replace("{reason}", reason);
+            target.getPlayer().sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(warnMessage));
         }
 
         if (!silent) {
-            String broadcastMessagePath = "ban-broadcast";
-            String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason)
+            String broadcastMessage = configManager.getMessage("warn-broadcast")
                     .replace("{player}", target.getName())
                     .replace("{staff}", staffName)
                     .replace("{reason}", reason);
-            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(broadcastMessageStr);
-            Bukkit.getServer().broadcast(broadcastMessage);
+            Bukkit.getServer().broadcast(LegacyComponentSerializer.legacyAmpersand().deserialize(broadcastMessage));
         }
 
         return true;

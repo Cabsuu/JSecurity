@@ -37,6 +37,10 @@ public class MuteEntry {
         return staff;
     }
 
+    public String getStaffName() {
+        return staff;
+    }
+
     public long getExpiration() {
         return expiration;
     }

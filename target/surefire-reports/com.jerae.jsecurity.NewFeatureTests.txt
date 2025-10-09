@@ -1,0 +1,80 @@
+-------------------------------------------------------------------------------
+Test set: com.jerae.jsecurity.NewFeatureTests
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 4, Errors: 2, Skipped: 0, Time elapsed: 0.113 s <<< FAILURE! -- in com.jerae.jsecurity.NewFeatureTests
+com.jerae.jsecurity.NewFeatureTests.testBanEvasionKickMessage -- Time elapsed: 0.022 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "com.destroystokyo.paper.profile.PlayerProfile.getId()" because "this.profile" is null
+	at org.bukkit.event.player.AsyncPlayerPreLoginEvent.getUniqueId(AsyncPlayerPreLoginEvent.java:258)
+	at com.jerae.jsecurity.listeners.PlayerListener.onAsyncPlayerPreLogin(PlayerListener.java:34)
+	at com.jerae.jsecurity.NewFeatureTests.testBanEvasionKickMessage(NewFeatureTests.java:93)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.NewFeatureTests.testAltAccountAlert -- Time elapsed: 0.019 s <<< FAILURE!
+Wanted but not invoked:
+player.sendMessage(
+    "Alt alert: testPlayer and altPlayer"
+);
+-> at com.jerae.jsecurity.NewFeatureTests.testAltAccountAlert(NewFeatureTests.java:130)
+
+However, there was exactly 1 interaction with this mock:
+player.getAddress();
+-> at com.jerae.jsecurity.listeners.PlayerListener.onPlayerJoin(PlayerListener.java:83)
+
+
+	at com.jerae.jsecurity.NewFeatureTests.testAltAccountAlert(NewFeatureTests.java:130)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.NewFeatureTests.testAltAccountBanKick -- Time elapsed: 0.007 s <<< FAILURE!
+Wanted but not invoked:
+player.kick(<Capturing argument: Component>);
+-> at org.bukkit.entity.Player.kick(Player.java:355)
+Actually, there were zero interactions with this mock.
+
+	at org.bukkit.entity.Player.kick(Player.java:355)
+	at com.jerae.jsecurity.NewFeatureTests.testAltAccountBanKick(NewFeatureTests.java:146)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.NewFeatureTests.testWarnCommand -- Time elapsed: 0.008 s <<< FAILURE!
+Wanted but not invoked:
+punishmentManager.addWarn(
+    <any com.jerae.jsecurity.models.WarnEntry>
+);
+-> at com.jerae.jsecurity.managers.PunishmentManager.addWarn(PunishmentManager.java:192)
+Actually, there were zero interactions with this mock.
+
+	at com.jerae.jsecurity.managers.PunishmentManager.addWarn(PunishmentManager.java:192)
+	at com.jerae.jsecurity.NewFeatureTests.testWarnCommand(NewFeatureTests.java:111)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.NewFeatureTests.testPunishmentLogging -- Time elapsed: 0.005 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "java.io.File.mkdirs()" because the return value of "org.bukkit.plugin.java.JavaPlugin.getDataFolder()" is null
+	at com.jerae.jsecurity.managers.PunishmentManager.loadPunishments(PunishmentManager.java:45)
+	at com.jerae.jsecurity.managers.PunishmentManager.<init>(PunishmentManager.java:41)
+	at com.jerae.jsecurity.NewFeatureTests.testPunishmentLogging(NewFeatureTests.java:152)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.NewFeatureTests.testJsHistoryCommand -- Time elapsed: 0.009 s <<< FAILURE!
+org.mockito.exceptions.verification.TooFewActualInvocations:
+
+commandSender.sendMessage(
+    <Capturing argument: String>
+);
+Wanted 2 times:
+-> at com.jerae.jsecurity.NewFeatureTests.testJsHistoryCommand(NewFeatureTests.java:200)
+But was 1 time:
+-> at com.jerae.jsecurity.commands.JSecurityCommand.handleHistory(JSecurityCommand.java:195)
+
+	at com.jerae.jsecurity.NewFeatureTests.testJsHistoryCommand(NewFeatureTests.java:200)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
