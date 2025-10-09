@@ -39,11 +39,12 @@ public class PlayerListener implements Listener {
         BanEntry ban = punishmentManager.getBan(uuid);
         if (ban != null) {
             String kickMessage;
+            boolean hasReason = ban.getReason() != null && !ban.getReason().isEmpty() && !ban.getReason().equals(configManager.getDefaultBanReason());
             if (ban.isPermanent()) {
-                kickMessage = configManager.getMessage("kick-messages.ban")
+                kickMessage = configManager.getMessage("ban-kick-message", hasReason)
                         .replace("{reason}", ban.getReason());
             } else {
-                kickMessage = configManager.getMessage("kick-messages.tempban")
+                kickMessage = configManager.getMessage("tempban-kick-message", hasReason)
                         .replace("{reason}", ban.getReason())
                         .replace("{duration}", TimeUtil.formatRemainingTime(ban.getExpiration()));
             }
@@ -57,7 +58,7 @@ public class PlayerListener implements Listener {
             if (ipBan != null) {
                 // The player's IP is banned, but their UUID is not. This is ban evasion.
                 String originalBannedPlayer = ipBan.getPlayerName();
-                String kickMessage = configManager.getMessage("kick-messages.ban-evasion")
+                String kickMessage = configManager.getMessage("ban-evasion-kick-message")
                         .replace("{banned_player}", originalBannedPlayer);
                 event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, ChatColor.translateAlternateColorCodes('&', kickMessage));
 
@@ -116,11 +117,10 @@ public class PlayerListener implements Listener {
         }
     }
 
-    public void onPlayerBan(Player bannedPlayer) {
-        if (configManager.isBanEvasionPreventionEnabled()) {
-            String ipAddress = bannedPlayer.getAddress().getAddress().getHostAddress();
+    public void onPlayerBan(OfflinePlayer bannedPlayer, String ipAddress) {
+        if (configManager.isBanEvasionPreventionEnabled() && ipAddress != null) {
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                if (onlinePlayer != bannedPlayer && onlinePlayer.getAddress().getAddress().getHostAddress().equals(ipAddress)) {
+                if (!onlinePlayer.getUniqueId().equals(bannedPlayer.getUniqueId()) && onlinePlayer.getAddress().getAddress().getHostAddress().equals(ipAddress)) {
                     String kickMessage = configManager.getMessage("kick-messages.alt-account-banned")
                             .replace("{banned_player}", bannedPlayer.getName());
                     Component kickComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessage);

@@ -33,9 +33,9 @@ public final class JSecurity extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerDataListener(playerDataManager, configManager), this);
 
         // Register commands
-        getCommand("ban").setExecutor(new BanCommand(punishmentManager, configManager, playerListener));
-        getCommand("tempban").setExecutor(new TempBanCommand(punishmentManager, configManager, playerListener));
-        getCommand("ipban").setExecutor(new IpBanCommand(punishmentManager, configManager, playerListener));
+        getCommand("ban").setExecutor(new BanCommand(punishmentManager, configManager, playerListener, playerDataManager));
+        getCommand("tempban").setExecutor(new TempBanCommand(punishmentManager, configManager, playerListener, playerDataManager));
+        getCommand("ipban").setExecutor(new IpBanCommand(punishmentManager, configManager, playerListener, playerDataManager));
         getCommand("mute").setExecutor(new MuteCommand(punishmentManager, configManager));
         getCommand("tempmute").setExecutor(new TempMuteCommand(punishmentManager, configManager));
         getCommand("unban").setExecutor(new UnbanCommand(punishmentManager, configManager));

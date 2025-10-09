@@ -3,7 +3,9 @@ package com.jerae.jsecurity.commands;
 import com.jerae.jsecurity.listeners.PlayerListener;
 import com.jerae.jsecurity.managers.BanEntry;
 import com.jerae.jsecurity.managers.ConfigManager;
+import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
+import com.jerae.jsecurity.models.PlayerData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -25,11 +27,13 @@ public class IpBanCommand implements CommandExecutor, TabCompleter {
     private final PunishmentManager punishmentManager;
     private final ConfigManager configManager;
     private final PlayerListener playerListener;
+    private final PlayerDataManager playerDataManager;
 
-    public IpBanCommand(PunishmentManager punishmentManager, ConfigManager configManager, PlayerListener playerListener) {
+    public IpBanCommand(PunishmentManager punishmentManager, ConfigManager configManager, PlayerListener playerListener, PlayerDataManager playerDataManager) {
         this.punishmentManager = punishmentManager;
         this.configManager = configManager;
         this.playerListener = playerListener;
+        this.playerDataManager = playerDataManager;
     }
 
     @Override
@@ -49,6 +53,7 @@ public class IpBanCommand implements CommandExecutor, TabCompleter {
 
         if (targetIdentifier.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")) {
             ipAddress = targetIdentifier;
+            // Find an online player with this IP to get a name, otherwise, create a dummy player
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 if (onlinePlayer.getAddress().getAddress().getHostAddress().equals(ipAddress)) {
                     target = onlinePlayer;
@@ -56,7 +61,6 @@ public class IpBanCommand implements CommandExecutor, TabCompleter {
                 }
             }
             if (target == null) {
-                // If no player is online with that IP, we can still ban the IP, but we won't have a player name.
                 target = Bukkit.getOfflinePlayer(UUID.nameUUIDFromBytes(ipAddress.getBytes()));
             }
         } else {
@@ -64,8 +68,13 @@ public class IpBanCommand implements CommandExecutor, TabCompleter {
             if (target.isOnline()) {
                 ipAddress = target.getPlayer().getAddress().getAddress().getHostAddress();
             } else {
-                sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&cCannot get IP address of an offline player. Please ban their IP directly if known."));
-                return true;
+                PlayerData playerData = playerDataManager.getPlayerData(target.getUniqueId());
+                if (playerData != null && !playerData.getIps().isEmpty()) {
+                    ipAddress = playerData.getIps().get(playerData.getIps().size() - 1);
+                } else {
+                    sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&cCannot get IP address of an offline player. Please ban their IP directly if known."));
+                    return true;
+                }
             }
         }
 
@@ -94,10 +103,10 @@ public class IpBanCommand implements CommandExecutor, TabCompleter {
         Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessageStr);
 
         if (target.isOnline()) {
-            Player player = target.getPlayer();
-            player.kick(kickMessage);
-            playerListener.onPlayerBan(player);
+            target.getPlayer().kick(kickMessage);
         }
+
+        playerListener.onPlayerBan(target, ipAddress);
 
         if (!silent) {
             String broadcastMessagePath = "ipban-broadcast";

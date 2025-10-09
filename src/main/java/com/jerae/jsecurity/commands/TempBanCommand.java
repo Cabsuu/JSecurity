@@ -3,7 +3,9 @@ package com.jerae.jsecurity.commands;
 import com.jerae.jsecurity.listeners.PlayerListener;
 import com.jerae.jsecurity.managers.BanEntry;
 import com.jerae.jsecurity.managers.ConfigManager;
+import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
+import com.jerae.jsecurity.models.PlayerData;
 import com.jerae.jsecurity.utils.TimeUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -26,11 +28,13 @@ public class TempBanCommand implements CommandExecutor, TabCompleter {
     private final PunishmentManager punishmentManager;
     private final ConfigManager configManager;
     private final PlayerListener playerListener;
+    private final PlayerDataManager playerDataManager;
 
-    public TempBanCommand(PunishmentManager punishmentManager, ConfigManager configManager, PlayerListener playerListener) {
+    public TempBanCommand(PunishmentManager punishmentManager, ConfigManager configManager, PlayerListener playerListener, PlayerDataManager playerDataManager) {
         this.punishmentManager = punishmentManager;
         this.configManager = configManager;
         this.playerListener = playerListener;
+        this.playerDataManager = playerDataManager;
     }
 
     @Override
@@ -75,7 +79,15 @@ public class TempBanCommand implements CommandExecutor, TabCompleter {
         }
 
         String staffName = (sender instanceof Player) ? sender.getName() : "Console";
-        String ipAddress = target.isOnline() ? target.getPlayer().getAddress().getAddress().getHostAddress() : null;
+        String ipAddress = null;
+        if (target.isOnline()) {
+            ipAddress = target.getPlayer().getAddress().getAddress().getHostAddress();
+        } else {
+            PlayerData playerData = playerDataManager.getPlayerData(target.getUniqueId());
+            if (playerData != null && !playerData.getIps().isEmpty()) {
+                ipAddress = playerData.getIps().get(playerData.getIps().size() - 1);
+            }
+        }
 
         BanEntry ban = new BanEntry(targetUUID, target.getName(), ipAddress, reason, staffName, expiration);
         punishmentManager.addBan(ban);
@@ -89,10 +101,10 @@ public class TempBanCommand implements CommandExecutor, TabCompleter {
         Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessageStr);
 
         if (target.isOnline()) {
-            Player player = target.getPlayer();
-            player.kick(kickMessage);
-            playerListener.onPlayerBan(player);
+            target.getPlayer().kick(kickMessage);
         }
+
+        playerListener.onPlayerBan(target, ipAddress);
 
         if (!silent) {
             String broadcastMessagePath = "tempban-broadcast";
