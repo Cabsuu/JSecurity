@@ -4,14 +4,21 @@ import com.jerae.jsecurity.managers.BanEntry;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
 import com.jerae.jsecurity.utils.TimeUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+
+import java.util.UUID;
 
 public class PlayerListener implements Listener {
 
@@ -24,23 +31,25 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerLogin(PlayerLoginEvent event) {
-        Player player = event.getPlayer();
+    public void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
+        UUID uuid = event.getUniqueId();
+        String playerName = event.getName();
         String ipAddress = event.getAddress().getHostAddress();
 
         // Check for existing ban on the UUID
-        BanEntry ban = punishmentManager.getBan(player.getUniqueId());
+        BanEntry ban = punishmentManager.getBan(uuid);
         if (ban != null) {
             String kickMessage;
+            boolean hasReason = ban.getReason() != null && !ban.getReason().isEmpty() && !ban.getReason().equals(configManager.getDefaultBanReason());
             if (ban.isPermanent()) {
-                kickMessage = configManager.getMessage("kick-messages.ban")
+                kickMessage = configManager.getMessage("ban-kick-message", hasReason)
                         .replace("{reason}", ban.getReason());
             } else {
-                kickMessage = configManager.getMessage("kick-messages.tempban")
+                kickMessage = configManager.getMessage("tempban-kick-message", hasReason)
                         .replace("{reason}", ban.getReason())
                         .replace("{duration}", TimeUtil.formatRemainingTime(ban.getExpiration()));
             }
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.translateAlternateColorCodes('&', kickMessage));
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, ChatColor.translateAlternateColorCodes('&', kickMessage));
             return;
         }
 
@@ -50,22 +59,41 @@ public class PlayerListener implements Listener {
             if (ipBan != null) {
                 // The player's IP is banned, but their UUID is not. This is ban evasion.
                 String originalBannedPlayer = ipBan.getPlayerName();
-                String kickMessage = configManager.getMessage("kick-messages.ban-evasion")
+                String kickMessage = configManager.getMessage("ban-evasion-kick-message")
                         .replace("{banned_player}", originalBannedPlayer);
-                event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.translateAlternateColorCodes('&', kickMessage));
+                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, ChatColor.translateAlternateColorCodes('&', kickMessage));
 
                 // Create a new ban entry for the evading account
                 String evasionReason = configManager.getMessage("ban-evasion-reason")
                         .replace("{banned_player}", originalBannedPlayer);
                 BanEntry evasionBan = new BanEntry(
-                        player.getUniqueId(),
-                        player.getName(),
+                        uuid,
+                        playerName,
                         ipAddress,
                         evasionReason,
                         "jSecurity",
                         ipBan.getExpiration() // Match the original ban's expiration
                 );
                 punishmentManager.addBan(evasionBan);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        String ipAddress = player.getAddress().getAddress().getHostAddress();
+
+        if (configManager.isAltAccountAlertEnabled()) {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                if (onlinePlayer != player && onlinePlayer.getAddress().getAddress().getHostAddress().equals(ipAddress)) {
+                    String alertMessage = configManager.getMessage("alt-account-alert")
+                            .replace("{player}", player.getName())
+                            .replace("{alt_player}", onlinePlayer.getName());
+                    Bukkit.getOnlinePlayers().stream()
+                            .filter(p -> p.hasPermission("jsecurity.alt.alert"))
+                            .forEach(p -> p.sendMessage(ChatColor.translateAlternateColorCodes('&', alertMessage)));
+                }
             }
         }
     }
@@ -87,6 +115,19 @@ public class PlayerListener implements Listener {
                         .replace("{duration}", TimeUtil.formatRemainingTime(mute.getExpiration()));
             }
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', muteMessage));
+        }
+    }
+
+    public void onPlayerBan(OfflinePlayer bannedPlayer, String ipAddress) {
+        if (configManager.isBanEvasionPreventionEnabled() && ipAddress != null) {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                if (!onlinePlayer.getUniqueId().equals(bannedPlayer.getUniqueId()) && onlinePlayer.getAddress().getAddress().getHostAddress().equals(ipAddress)) {
+                    String kickMessage = configManager.getMessage("kick-messages.alt-account-banned")
+                            .replace("{banned_player}", bannedPlayer.getName());
+                    Component kickComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessage);
+                    onlinePlayer.kick(kickComponent);
+                }
+            }
         }
     }
 }
