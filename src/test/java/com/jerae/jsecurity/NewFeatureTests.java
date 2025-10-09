@@ -169,7 +169,7 @@ public class NewFeatureTests {
         when(configManager.isBanEvasionPreventionEnabled()).thenReturn(true);
         when(configManager.getMessage("kick-messages.alt-account-banned")).thenReturn("Alt account {banned_player} banned");
 
-        listener.onPlayerBan(player);
+        listener.onPlayerBan(player, playerIp);
 
         verify(altPlayer).kick(any(Component.class));
     }

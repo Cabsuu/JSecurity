@@ -58,13 +58,13 @@ public class WarnCommand implements CommandExecutor, TabCompleter {
         punishmentManager.addWarn(warn);
 
         if (target.isOnline()) {
-            String warnMessage = configManager.getMessage("warn-message")
+            String warnMessage = configManager.getMessage("warn-message", true)
                     .replace("{reason}", reason);
             target.getPlayer().sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(warnMessage));
         }
 
         if (!silent) {
-            String broadcastMessage = configManager.getMessage("warn-broadcast")
+            String broadcastMessage = configManager.getMessage("warn-broadcast", true)
                     .replace("{player}", target.getName())
                     .replace("{staff}", staffName)
                     .replace("{reason}", reason);

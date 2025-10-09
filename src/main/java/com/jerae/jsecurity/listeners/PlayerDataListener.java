@@ -33,7 +33,7 @@ public class PlayerDataListener implements Listener {
         if (playerData == null) {
             // New player
             playerDataManager.createPlayerData(player.getUniqueId(), player.getName(), ipAddress);
-            handleNewPlayerAnnouncement();
+            handleNewPlayerAnnouncement(player);
         } else {
             // Existing player
             playerData.addIp(ipAddress);
@@ -41,7 +41,7 @@ public class PlayerDataListener implements Listener {
         }
     }
 
-    private void handleNewPlayerAnnouncement() {
+    private void handleNewPlayerAnnouncement(Player player) {
         if (!configManager.isAnnounceNewPlayerEnabled()) {
             return;
         }
@@ -50,7 +50,9 @@ public class PlayerDataListener implements Listener {
         List<Integer> milestones = configManager.getAnnounceMilestones();
 
         if (milestones.isEmpty() || milestones.contains(playerCount)) {
-            String message = configManager.getNewPlayerBroadcastMessage().replace("{player_count}", String.valueOf(playerCount));
+            String message = configManager.getNewPlayerBroadcastMessage()
+                    .replace("{player_count}", String.valueOf(playerCount))
+                    .replace("{player}", player.getName());
             Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
             Bukkit.getServer().broadcast(component);
         }
