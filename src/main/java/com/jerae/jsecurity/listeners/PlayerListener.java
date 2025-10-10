@@ -111,13 +111,14 @@ public class PlayerListener implements Listener {
         if (configManager.isAltAccountAlertEnabled()) {
             Set<String> altAccountNames = new HashSet<>();
 
-            altAccountNames.add(joiningPlayer.getName());
-
             for (PlayerData playerData : playerDataManager.getAllPlayerData()) {
                 if (playerData.getIps().contains(joiningPlayerIp)) {
                     altAccountNames.add(playerData.getName());
                 }
             }
+            // Add the current player to the list if they are not already in it
+            // This case can happen if the player data hasn't been saved yet.
+            altAccountNames.add(joiningPlayer.getName());
 
             if (altAccountNames.size() > 1) {
                 plugin.getLogger().info("IP Address for " + joiningPlayer.getName() + " is " + joiningPlayerIp);
@@ -127,6 +128,10 @@ public class PlayerListener implements Listener {
                     .filter(name -> !name.equalsIgnoreCase(joiningPlayer.getName()))
                     .collect(Collectors.joining(", "));
 
+                if (otherAccounts.isEmpty()) {
+                    return;
+                }
+
                 PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
                         .setPlayerName(joiningPlayer.getName())
                         .setAltPlayer(otherAccounts);
@@ -134,9 +139,11 @@ public class PlayerListener implements Listener {
                 String alertMessage = configManager.getMessage("alt-account-alert");
                 String formattedMessage = PlaceholderAPI.setPlaceholders(alertMessage, data);
 
+                Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(formattedMessage);
+
                 Bukkit.getOnlinePlayers().stream()
                         .filter(p -> p.hasPermission("jsecurity.alt.alert"))
-                        .forEach(p -> p.sendMessage(ChatColor.translateAlternateColorCodes('&', formattedMessage)));
+                        .forEach(p -> p.sendMessage(component));
             }
         }
     }
