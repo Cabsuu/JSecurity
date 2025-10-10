@@ -183,28 +183,27 @@ public class NewFeatureTest {
 
         when(playerDataManager.getAllPlayerData()).thenReturn(allPlayerData);
         when(configManager.isAltAccountAlertEnabled()).thenReturn(true);
-        when(configManager.getMessage("alt-account-alert")).thenReturn("Alt accounts on {player}'s IP: {alt_list}");
+        when(configManager.getMessage("alt-account-alert")).thenReturn("&c{player} may be an alt of {alt_player}.");
 
         // --- Action ---
         PlayerJoinEvent event = new PlayerJoinEvent(joiningPlayer, "");
         listener.onPlayerJoin(event);
 
         // --- Verification ---
-        ArgumentCaptor<String> consoleCaptor = ArgumentCaptor.forClass(String.class);
-        verify(console).sendMessage(consoleCaptor.capture());
+        ArgumentCaptor<String> loggerCaptor = ArgumentCaptor.forClass(String.class);
+        verify(plugin.getLogger(), times(2)).info(loggerCaptor.capture());
+
+        List<String> logMessages = loggerCaptor.getAllValues();
+        assertEquals("IP Address for NewAlt is " + sharedIp, logMessages.get(0));
+        assertTrue(logMessages.get(1).contains("Found 2 total accounts on this IP:"));
 
         ArgumentCaptor<String> staffCaptor = ArgumentCaptor.forClass(String.class);
         verify(staffPlayer).sendMessage(staffCaptor.capture());
 
-        String consoleMessage = consoleCaptor.getValue();
-        assertTrue(consoleMessage.startsWith("Alt accounts on NewAlt's IP:"));
-        assertTrue(consoleMessage.contains("NewAlt"));
-        assertTrue(consoleMessage.contains("OriginalPlayer"));
+        String expectedStaffMessage = ChatColor.translateAlternateColorCodes('&', "&cNewAlt may be an alt of OriginalPlayer.");
+        assertEquals(expectedStaffMessage, staffCaptor.getValue());
 
-        String staffMessage = staffCaptor.getValue();
-        assertTrue(staffMessage.contains("Alt accounts on NewAlt's IP:"));
-        assertTrue(staffMessage.contains("NewAlt"));
-        assertTrue(staffMessage.contains("OriginalPlayer"));
+        verify(console, never()).sendMessage(anyString());
     }
 
 

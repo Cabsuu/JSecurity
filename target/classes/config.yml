@@ -17,3 +17,7 @@ announce-new-player: true
 # Leave empty to announce every new player.
 # Example: [100, 200, 500, 1000]
 announce-milestones: []
+
+# Alt Account Detection
+# If true, staff will be alerted when a player joins with the same IP as another player.
+alt-account-alert: false

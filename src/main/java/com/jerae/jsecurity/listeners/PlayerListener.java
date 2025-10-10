@@ -103,38 +103,33 @@ public class PlayerListener implements Listener {
         Player joiningPlayer = event.getPlayer();
         InetSocketAddress joiningPlayerSocketAddress = joiningPlayer.getAddress();
 
-        plugin.getLogger().info("Player " + joiningPlayer.getName() + " is joining...");
-
         if (joiningPlayerSocketAddress == null) {
-            plugin.getLogger().warning("Could not get socket address for player " + joiningPlayer.getName() + ". Cannot perform alt check.");
             return;
         }
         String joiningPlayerIp = joiningPlayerSocketAddress.getAddress().getHostAddress();
-        plugin.getLogger().info("IP Address for " + joiningPlayer.getName() + " is " + joiningPlayerIp);
 
         if (configManager.isAltAccountAlertEnabled()) {
-            plugin.getLogger().info("Alt account detection is enabled. Checking for alts...");
             Set<String> altAccountNames = new HashSet<>();
 
             altAccountNames.add(joiningPlayer.getName());
 
-            plugin.getLogger().info("Checking " + playerDataManager.getAllPlayerData().size() + " player data entries.");
             for (PlayerData playerData : playerDataManager.getAllPlayerData()) {
                 if (playerData.getIps().contains(joiningPlayerIp)) {
-                    plugin.getLogger().info("Found match: " + playerData.getName() + " has used IP " + joiningPlayerIp);
                     altAccountNames.add(playerData.getName());
                 }
             }
 
-            plugin.getLogger().info("Found " + altAccountNames.size() + " total accounts on this IP: " + String.join(", ", altAccountNames));
-
             if (altAccountNames.size() > 1) {
-                plugin.getLogger().info("Alt accounts detected. Sending alert.");
-                String altList = String.join(", ", altAccountNames);
+                plugin.getLogger().info("IP Address for " + joiningPlayer.getName() + " is " + joiningPlayerIp);
+                plugin.getLogger().info("Found " + altAccountNames.size() + " total accounts on this IP: " + String.join(", ", altAccountNames));
+
+                String otherAccounts = altAccountNames.stream()
+                    .filter(name -> !name.equalsIgnoreCase(joiningPlayer.getName()))
+                    .collect(Collectors.joining(", "));
 
                 PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
                         .setPlayerName(joiningPlayer.getName())
-                        .setAltList(altList);
+                        .setAltPlayer(otherAccounts);
 
                 String alertMessage = configManager.getMessage("alt-account-alert");
                 String formattedMessage = PlaceholderAPI.setPlaceholders(alertMessage, data);
@@ -142,13 +137,7 @@ public class PlayerListener implements Listener {
                 Bukkit.getOnlinePlayers().stream()
                         .filter(p -> p.hasPermission("jsecurity.alt.alert"))
                         .forEach(p -> p.sendMessage(ChatColor.translateAlternateColorCodes('&', formattedMessage)));
-
-                Bukkit.getConsoleSender().sendMessage(ChatColor.stripColor(formattedMessage));
-            } else {
-                plugin.getLogger().info("No other accounts found on this IP. No alert sent.");
             }
-        } else {
-            plugin.getLogger().info("Alt account detection is disabled.");
         }
     }
 
