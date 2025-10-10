@@ -8,6 +8,7 @@ import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.FreezeManager;
 import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
+import com.jerae.jsecurity.models.PlayerData;
 import com.jerae.jsecurity.models.PunishmentLogEntry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -32,8 +33,11 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -85,12 +89,15 @@ public class NewFeatureTest {
     public void testWarnCommand() {
         PunishmentManager punishmentManager = mock(PunishmentManager.class);
         ConfigManager configManager = mock(ConfigManager.class);
+        Player senderPlayer = mock(Player.class);
+        when(senderPlayer.getName()).thenReturn("sender");
+
         when(configManager.getMessage(eq("warn-message"), anyBoolean())).thenReturn("You have been warned for {reason}.");
         when(configManager.getMessage(eq("warn-broadcast"), anyBoolean())).thenReturn("{player} has been warned by {staff} for {reason}.");
         when(configManager.getMessage(eq("warn-sender"), anyBoolean())).thenReturn("You have warned {player} for {reason}.");
 
         WarnCommand warnCommand = new WarnCommand(punishmentManager, configManager);
-        warnCommand.onCommand(sender, mock(Command.class), "warn", new String[]{"testPlayer", "test reason"});
+        warnCommand.onCommand(senderPlayer, mock(Command.class), "warn", new String[]{"testPlayer", "test reason"});
 
         verify(offlinePlayer).isOnline();
         verify(offlinePlayer).getPlayer();
@@ -103,7 +110,7 @@ public class NewFeatureTest {
         assertEquals("testPlayer has been warned by sender for test reason.", componentToString(broadcastMessageCaptor.getValue()));
 
         ArgumentCaptor<Component> senderMessageCaptor = ArgumentCaptor.forClass(Component.class);
-        verify(sender).sendMessage(senderMessageCaptor.capture());
+        verify(senderPlayer).sendMessage(senderMessageCaptor.capture());
         assertEquals("You have warned testPlayer for test reason.", componentToString(senderMessageCaptor.getValue()));
     }
 
@@ -149,33 +156,33 @@ public class NewFeatureTest {
         // --- Setup ---
         PunishmentManager punishmentManager = mock(PunishmentManager.class);
         ConfigManager configManager = mock(ConfigManager.class);
-        PlayerListener listener = new PlayerListener(punishmentManager, configManager);
+        PlayerDataManager playerDataManager = mock(PlayerDataManager.class);
+        PlayerListener listener = new PlayerListener(punishmentManager, configManager, playerDataManager);
 
-        InetSocketAddress sharedAddress = new InetSocketAddress(InetAddress.getByName("127.0.0.1"), 12345);
+        String sharedIp = "127.0.0.1";
+        InetSocketAddress sharedAddress = new InetSocketAddress(InetAddress.getByName(sharedIp), 12345);
 
         // Player who is joining
         Player joiningPlayer = mock(Player.class);
         when(joiningPlayer.getName()).thenReturn("JoiningPlayer");
-        when(joiningPlayer.getSocketAddress()).thenReturn(sharedAddress);
-
-        // Other players with the same IP
-        Player altPlayer1 = mock(Player.class);
-        when(altPlayer1.getName()).thenReturn("AltPlayer1");
-        when(altPlayer1.getSocketAddress()).thenReturn(sharedAddress);
-
-        Player altPlayer2 = mock(Player.class);
-        when(altPlayer2.getName()).thenReturn("AltPlayer2");
-        when(altPlayer2.getSocketAddress()).thenReturn(sharedAddress);
+        when(joiningPlayer.getAddress()).thenReturn(sharedAddress);
 
         // Staff player to receive alert
         Player staffPlayer = mock(Player.class);
         when(staffPlayer.getName()).thenReturn("StaffPlayer");
         when(staffPlayer.hasPermission("jsecurity.alt.alert")).thenReturn(true);
-        // Give staff a different address to avoid including them in the alt list
-        when(staffPlayer.getSocketAddress()).thenReturn(new InetSocketAddress(InetAddress.getByName("1.2.3.4"), 54321));
 
         // Mock online players
-        bukkit.when(Bukkit::getOnlinePlayers).thenReturn(List.of(joiningPlayer, altPlayer1, altPlayer2, staffPlayer));
+        bukkit.when(Bukkit::getOnlinePlayers).thenReturn(List.of(joiningPlayer, staffPlayer));
+
+        // Mock persisted player data
+        List<PlayerData> allPlayerData = new ArrayList<>();
+        allPlayerData.add(new PlayerData(1, UUID.randomUUID(), "JoiningPlayer", List.of(sharedIp), ""));
+        allPlayerData.add(new PlayerData(2, UUID.randomUUID(), "AltPlayer1", List.of(sharedIp, "1.1.1.1"), ""));
+        allPlayerData.add(new PlayerData(3, UUID.randomUUID(), "AltPlayer2", List.of("2.2.2.2", sharedIp), ""));
+        allPlayerData.add(new PlayerData(4, UUID.randomUUID(), "NonAltPlayer", List.of("3.3.3.3"), ""));
+
+        when(playerDataManager.getAllPlayerData()).thenReturn(allPlayerData);
         when(configManager.isAltAccountAlertEnabled()).thenReturn(true);
         when(configManager.getMessage("alt-account-alert")).thenReturn("Alt accounts on {player}'s IP: {alt_list}");
 
@@ -190,9 +197,17 @@ public class NewFeatureTest {
         ArgumentCaptor<String> staffCaptor = ArgumentCaptor.forClass(String.class);
         verify(staffPlayer).sendMessage(staffCaptor.capture());
 
-        String expectedMessage = "Alt accounts on JoiningPlayer's IP: JoiningPlayer, AltPlayer1, AltPlayer2";
-        assertEquals(expectedMessage, consoleCaptor.getValue());
-        assertEquals(ChatColor.translateAlternateColorCodes('&', expectedMessage), staffCaptor.getValue());
+        String consoleMessage = consoleCaptor.getValue();
+        assertTrue(consoleMessage.startsWith("Alt accounts on JoiningPlayer's IP:"));
+        assertTrue(consoleMessage.contains("JoiningPlayer"));
+        assertTrue(consoleMessage.contains("AltPlayer1"));
+        assertTrue(consoleMessage.contains("AltPlayer2"));
+
+        String staffMessage = staffCaptor.getValue();
+        assertTrue(staffMessage.contains("Alt accounts on JoiningPlayer's IP:"));
+        assertTrue(staffMessage.contains("JoiningPlayer"));
+        assertTrue(staffMessage.contains("AltPlayer1"));
+        assertTrue(staffMessage.contains("AltPlayer2"));
     }
 
 

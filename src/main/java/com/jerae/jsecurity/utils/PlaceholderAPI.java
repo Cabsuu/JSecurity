@@ -21,7 +21,7 @@ public class PlaceholderAPI {
             }
             return "";
         });
-        placeholders.put("{staff}", data -> data.getStaff() != null ? data.getStaff().getName() : "Console");
+        placeholders.put("{staff}", data -> (data.getStaff() instanceof Player) ? data.getStaff().getName() : "Console");
         placeholders.put("{reason}", data -> data.getReason() != null ? data.getReason() : "");
         placeholders.put("{duration}", data -> data.getDuration() != null ? data.getDuration() : "");
         placeholders.put("{banned_player}", data -> data.getBannedPlayer() != null ? data.getBannedPlayer() : "");

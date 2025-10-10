@@ -27,7 +27,7 @@ public final class JSecurity extends JavaPlugin {
         playerDataManager = new PlayerDataManager(this);
 
         // Register listeners
-        PlayerListener playerListener = new PlayerListener(punishmentManager, configManager);
+        PlayerListener playerListener = new PlayerListener(punishmentManager, configManager, playerDataManager);
         getServer().getPluginManager().registerEvents(playerListener, this);
         getServer().getPluginManager().registerEvents(new PlayerFreezeListener(freezeManager), this);
         getServer().getPluginManager().registerEvents(new PlayerDataListener(playerDataManager, configManager), this);

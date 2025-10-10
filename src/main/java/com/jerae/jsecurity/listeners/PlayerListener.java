@@ -22,18 +22,25 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import com.jerae.jsecurity.managers.PlayerDataManager;
+import com.jerae.jsecurity.models.PlayerData;
 
 public class PlayerListener implements Listener {
 
     private final PunishmentManager punishmentManager;
     private final ConfigManager configManager;
+    private final PlayerDataManager playerDataManager;
 
-    public PlayerListener(PunishmentManager punishmentManager, ConfigManager configManager) {
+    public PlayerListener(PunishmentManager punishmentManager, ConfigManager configManager, PlayerDataManager playerDataManager) {
         this.punishmentManager = punishmentManager;
         this.configManager = configManager;
+        this.playerDataManager = playerDataManager;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -91,23 +98,20 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player joiningPlayer = event.getPlayer();
-        InetSocketAddress joiningPlayerSocketAddress = joiningPlayer.getSocketAddress();
+        InetSocketAddress joiningPlayerSocketAddress = joiningPlayer.getAddress();
         if (joiningPlayerSocketAddress == null) return;
-        InetAddress joiningPlayerIp = joiningPlayerSocketAddress.getAddress();
+        String joiningPlayerIp = joiningPlayerSocketAddress.getAddress().getHostAddress();
 
         if (configManager.isAltAccountAlertEnabled()) {
-            List<Player> altAccounts = new ArrayList<>();
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                InetSocketAddress onlinePlayerSocketAddress = onlinePlayer.getSocketAddress();
-                if (onlinePlayerSocketAddress != null && onlinePlayerSocketAddress.getAddress().equals(joiningPlayerIp)) {
-                    altAccounts.add(onlinePlayer);
+            Set<String> altAccountNames = new HashSet<>();
+            for (PlayerData playerData : playerDataManager.getAllPlayerData()) {
+                if (playerData.getIps().contains(joiningPlayerIp)) {
+                    altAccountNames.add(playerData.getName());
                 }
             }
 
-            if (altAccounts.size() > 1) {
-                String altList = altAccounts.stream()
-                        .map(Player::getName)
-                        .collect(Collectors.joining(", "));
+            if (altAccountNames.size() > 1) {
+                String altList = String.join(", ", altAccountNames);
 
                 PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
                         .setPlayerName(joiningPlayer.getName())
