@@ -2,6 +2,7 @@ package com.jerae.jsecurity;
 
 import com.jerae.jsecurity.commands.*;
 import com.jerae.jsecurity.listeners.PlayerDataListener;
+import com.jerae.jsecurity.listeners.PlayerListener;
 import com.jerae.jsecurity.managers.*;
 import com.jerae.jsecurity.models.PlayerData;
 import net.kyori.adventure.text.Component;
@@ -202,5 +203,53 @@ public class FeatureTests {
 
         verify(playerDataManager).createPlayerData(playerUUID, "testPlayer", "1.2.3.4");
         verify(server).broadcast(any(Component.class));
+    }
+
+    @Test
+    public void testAltAccountAlert() throws Exception {
+        // Given
+        JSecurity plugin = mock(JSecurity.class);
+        PunishmentManager punishmentManager = mock(PunishmentManager.class);
+        ConfigManager configManager = mock(ConfigManager.class);
+        PlayerDataManager playerDataManager = mock(PlayerDataManager.class);
+        java.util.logging.Logger logger = mock(java.util.logging.Logger.class);
+
+        when(plugin.getLogger()).thenReturn(logger);
+
+        PlayerListener listener = new PlayerListener(plugin, punishmentManager, configManager, playerDataManager);
+
+        Player player1 = mock(Player.class);
+        when(player1.getName()).thenReturn("Player1");
+        when(player1.getUniqueId()).thenReturn(UUID.randomUUID());
+        when(player1.hasPermission("jsecurity.alt.alert")).thenReturn(true);
+
+        Player player2 = mock(Player.class);
+        when(player2.getName()).thenReturn("Player2");
+        when(player2.getUniqueId()).thenReturn(UUID.randomUUID());
+
+        InetAddress ipAddress = InetAddress.getByName("127.0.0.1");
+        InetSocketAddress socketAddress = new InetSocketAddress(ipAddress, 12345);
+        when(player2.getAddress()).thenReturn(socketAddress);
+
+        List<PlayerData> allPlayerData = new ArrayList<>();
+        allPlayerData.add(new PlayerData(1, player1.getUniqueId(), "Player1", Collections.singletonList("127.0.0.1"), ""));
+
+        when(playerDataManager.getAllPlayerData()).thenReturn(allPlayerData);
+        when(configManager.isAltAccountAlertEnabled()).thenReturn(true);
+        when(configManager.getMessage("alt-account-alert")).thenReturn("&c{player} may be an alt of {alt_player}.");
+        when(configManager.getConsoleMessage("alt-account-console-alert")).thenReturn("&c{player} may be an alt of {alt_player}.");
+        bukkit.when(Bukkit::getOnlinePlayers).thenReturn(Collections.singletonList(player1));
+
+        // When
+        PlayerJoinEvent joinEvent = new PlayerJoinEvent(player2, "Player2 joined");
+        listener.onPlayerJoin(joinEvent);
+
+        // Then
+        ArgumentCaptor<Component> captor = ArgumentCaptor.forClass(Component.class);
+        verify(player1).sendMessage(captor.capture());
+
+        Component sentMessage = captor.getValue();
+        String legacyText = net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacyAmpersand().serialize(sentMessage);
+        assertEquals(ChatColor.translateAlternateColorCodes('&', "&cPlayer2 may be an alt of Player1."), legacyText);
     }
 }

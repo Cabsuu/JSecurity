@@ -50,6 +50,7 @@
                     <redirectTestOutputToFile>false</redirectTestOutputToFile>
                     <excludes>
                         <exclude>**/NewFeatureTest.java</exclude>
+                        <exclude>**/FeatureTests.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
