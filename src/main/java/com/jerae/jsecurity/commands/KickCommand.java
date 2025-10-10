@@ -1,6 +1,7 @@
 package com.jerae.jsecurity.commands;
 
 import com.jerae.jsecurity.managers.ConfigManager;
+import com.jerae.jsecurity.utils.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -49,24 +50,25 @@ public class KickCommand implements CommandExecutor, TabCompleter {
             reason = configManager.getDefaultKickReason();
         }
 
+        PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
+                .setTarget(target)
+                .setStaff(sender)
+                .setReason(reason);
+
         String kickMessagePath = "kick-message";
-        String kickMessageStr = configManager.getMessage(kickMessagePath, hasReason)
-                .replace("{reason}", reason);
-        Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessageStr);
+        String kickMessageStr = configManager.getMessage(kickMessagePath, hasReason);
+        Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(kickMessageStr, data));
 
         target.kick(kickMessage);
 
         if (!silent) {
             String broadcastMessagePath = "kick-broadcast";
-            String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason)
-                    .replace("{player}", target.getName())
-                    .replace("{staff}", sender.getName())
-                    .replace("{reason}", reason);
-            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(broadcastMessageStr);
+            String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason);
+            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
             Bukkit.getServer().broadcast(broadcastMessage);
         }
 
-        Component successMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&aKicked " + target.getName() + ".");
+        Component successMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(configManager.getMessage("kick-success", true), data));
         sender.sendMessage(successMessage);
         return true;
     }

@@ -32,6 +32,11 @@ public class FreezeCommand implements CommandExecutor {
             return true;
         }
 
+        if (freezeManager.isFrozen(target)) {
+            sender.sendMessage(ChatColor.RED + target.getName() + " is already frozen.");
+            return true;
+        }
+
         freezeManager.freeze(target);
         target.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("freeze-message")));
         sender.sendMessage(ChatColor.GREEN + "You have frozen " + target.getName() + ".");

@@ -3,6 +3,7 @@ package com.jerae.jsecurity.listeners;
 import com.jerae.jsecurity.managers.BanEntry;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
+import com.jerae.jsecurity.utils.PlaceholderAPI;
 import com.jerae.jsecurity.utils.TimeUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -41,15 +42,18 @@ public class PlayerListener implements Listener {
         if (ban != null) {
             String kickMessage;
             boolean hasReason = ban.getReason() != null && !ban.getReason().isEmpty() && !ban.getReason().equals(configManager.getDefaultBanReason());
+
+            PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
+                    .setPlayerName(playerName)
+                    .setReason(ban.getReason());
+
             if (ban.isPermanent()) {
-                kickMessage = configManager.getMessage("ban-kick-message", hasReason)
-                        .replace("{reason}", ban.getReason());
+                kickMessage = configManager.getMessage("ban-kick-message", hasReason);
             } else {
-                kickMessage = configManager.getMessage("tempban-kick-message", hasReason)
-                        .replace("{reason}", ban.getReason())
-                        .replace("{duration}", TimeUtil.formatRemainingTime(ban.getExpiration()));
+                data.setDuration(TimeUtil.formatRemainingTime(ban.getExpiration()));
+                kickMessage = configManager.getMessage("tempban-kick-message", hasReason);
             }
-            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, ChatColor.translateAlternateColorCodes('&', kickMessage));
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(kickMessage, data)));
             return;
         }
 
@@ -59,18 +63,18 @@ public class PlayerListener implements Listener {
             if (ipBan != null) {
                 // The player's IP is banned, but their UUID is not. This is ban evasion.
                 String originalBannedPlayer = ipBan.getPlayerName();
-                String kickMessage = configManager.getMessage("ban-evasion-kick-message")
-                        .replace("{banned_player}", originalBannedPlayer);
-                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, ChatColor.translateAlternateColorCodes('&', kickMessage));
+                PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData().setBannedPlayer(originalBannedPlayer);
+
+                String kickMessage = configManager.getMessage("ban-evasion-kick-message");
+                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(kickMessage, data)));
 
                 // Create a new ban entry for the evading account
-                String evasionReason = configManager.getMessage("ban-evasion-reason")
-                        .replace("{banned_player}", originalBannedPlayer);
+                String evasionReason = configManager.getMessage("ban-evasion-reason");
                 BanEntry evasionBan = new BanEntry(
                         uuid,
                         playerName,
                         ipAddress,
-                        evasionReason,
+                        PlaceholderAPI.setPlaceholders(evasionReason, data),
                         "jSecurity",
                         ipBan.getExpiration() // Match the original ban's expiration
                 );
@@ -87,12 +91,19 @@ public class PlayerListener implements Listener {
         if (configManager.isAltAccountAlertEnabled()) {
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 if (onlinePlayer != player && onlinePlayer.getAddress().getAddress().getHostAddress().equals(ipAddress)) {
-                    String alertMessage = configManager.getMessage("alt-account-alert")
-                            .replace("{player}", player.getName())
-                            .replace("{alt_player}", onlinePlayer.getName());
+
+                    PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
+                            .setPlayerName(player.getName())
+                            .setAltPlayer(onlinePlayer.getName());
+
+                    String alertMessage = configManager.getMessage("alt-account-alert");
+                    String formattedMessage = PlaceholderAPI.setPlaceholders(alertMessage, data);
+
                     Bukkit.getOnlinePlayers().stream()
                             .filter(p -> p.hasPermission("jsecurity.alt.alert"))
-                            .forEach(p -> p.sendMessage(ChatColor.translateAlternateColorCodes('&', alertMessage)));
+                            .forEach(p -> p.sendMessage(ChatColor.translateAlternateColorCodes('&', formattedMessage)));
+
+                    Bukkit.getConsoleSender().sendMessage(ChatColor.stripColor(formattedMessage));
                 }
             }
         }
@@ -106,15 +117,17 @@ public class PlayerListener implements Listener {
 
             var mute = punishmentManager.getMute(player.getUniqueId());
             String muteMessage;
+            PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
+                    .setTarget(player)
+                    .setReason(mute.getReason());
+
             if (mute.isPermanent()) {
-                muteMessage = configManager.getMessage("mute-message")
-                        .replace("{reason}", mute.getReason());
+                muteMessage = configManager.getMessage("mute-message");
             } else {
-                muteMessage = configManager.getMessage("tempmute-message")
-                        .replace("{reason}", mute.getReason())
-                        .replace("{duration}", TimeUtil.formatRemainingTime(mute.getExpiration()));
+                data.setDuration(TimeUtil.formatRemainingTime(mute.getExpiration()));
+                muteMessage = configManager.getMessage("tempmute-message");
             }
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', muteMessage));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(muteMessage, data)));
         }
     }
 
@@ -122,9 +135,12 @@ public class PlayerListener implements Listener {
         if (configManager.isBanEvasionPreventionEnabled() && ipAddress != null) {
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 if (!onlinePlayer.getUniqueId().equals(bannedPlayer.getUniqueId()) && onlinePlayer.getAddress().getAddress().getHostAddress().equals(ipAddress)) {
-                    String kickMessage = configManager.getMessage("kick-messages.alt-account-banned")
-                            .replace("{banned_player}", bannedPlayer.getName());
-                    Component kickComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessage);
+
+                    PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
+                            .setBannedPlayer(bannedPlayer.getName());
+
+                    String kickMessage = configManager.getMessage("kick-messages.alt-account-banned");
+                    Component kickComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(kickMessage, data));
                     onlinePlayer.kick(kickComponent);
                 }
             }

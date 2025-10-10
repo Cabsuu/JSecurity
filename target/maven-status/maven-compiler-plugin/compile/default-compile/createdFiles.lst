@@ -1,4 +1,6 @@
 com/jerae/jsecurity/managers/PunishmentManager$3.class
+com/jerae/jsecurity/utils/PlaceholderAPI.class
 com/jerae/jsecurity/models/WarnEntry.class
 com/jerae/jsecurity/commands/WarnCommand.class
+com/jerae/jsecurity/utils/PlaceholderAPI$PlaceholderData.class
 com/jerae/jsecurity/models/PunishmentLogEntry.class

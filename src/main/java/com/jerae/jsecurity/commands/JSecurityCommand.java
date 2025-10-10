@@ -16,6 +16,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -183,9 +187,12 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         int startIndex = (page - 1) * 10;
         int endIndex = Math.min(startIndex + 10, logs.size());
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
         for (int i = startIndex; i < endIndex; i++) {
             PunishmentLogEntry log = logs.get(i);
-            sender.sendMessage(ChatColor.YELLOW + log.getPlayerName() + " - " + log.getPunishmentType() + " - " + log.getReason());
+            LocalDate date = Instant.ofEpochMilli(log.getTimestamp()).atZone(ZoneId.systemDefault()).toLocalDate();
+            sender.sendMessage(ChatColor.GRAY + "[" + date.format(formatter) + "] " + ChatColor.YELLOW + log.getPlayerName() + " - " + log.getPunishmentType() + " - " + log.getReason());
         }
     }
 
@@ -226,9 +233,12 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         int startIndex = (page - 1) * 10;
         int endIndex = Math.min(startIndex + 10, history.size());
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
         for (int i = startIndex; i < endIndex; i++) {
             PunishmentLogEntry log = history.get(i);
-            sender.sendMessage(ChatColor.YELLOW + log.getPunishmentType() + " - " + log.getReason());
+            LocalDate date = Instant.ofEpochMilli(log.getTimestamp()).atZone(ZoneId.systemDefault()).toLocalDate();
+            sender.sendMessage(ChatColor.GRAY + "[" + date.format(formatter) + "] " + ChatColor.YELLOW + log.getPunishmentType() + " - " + log.getReason());
         }
     }
 

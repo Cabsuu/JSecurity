@@ -6,6 +6,7 @@ import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
 import com.jerae.jsecurity.models.PlayerData;
+import com.jerae.jsecurity.utils.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -83,10 +84,14 @@ public class BanCommand implements CommandExecutor, TabCompleter {
         BanEntry ban = new BanEntry(targetUUID, target.getName(), ipAddress, reason, staffName, -1);
         punishmentManager.addBan(ban);
 
+        PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
+                .setTarget(target)
+                .setStaff(sender)
+                .setReason(reason);
+
         String kickMessagePath = "ban-kick-message";
-        String kickMessageStr = configManager.getMessage(kickMessagePath, hasReason)
-                .replace("{reason}", reason);
-        Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessageStr);
+        String kickMessageStr = configManager.getMessage(kickMessagePath, hasReason);
+        Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(kickMessageStr, data));
 
         if (target.isOnline()) {
             target.getPlayer().kick(kickMessage);
@@ -96,11 +101,8 @@ public class BanCommand implements CommandExecutor, TabCompleter {
 
         if (!silent) {
             String broadcastMessagePath = "ban-broadcast";
-            String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason)
-                    .replace("{player}", target.getName())
-                    .replace("{staff}", staffName)
-                    .replace("{reason}", reason);
-            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(broadcastMessageStr);
+            String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason);
+            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
             Bukkit.getServer().broadcast(broadcastMessage);
         }
 
