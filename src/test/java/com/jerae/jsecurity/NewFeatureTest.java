@@ -156,23 +156,23 @@ public class NewFeatureTest {
         // Player who is joining
         Player joiningPlayer = mock(Player.class);
         when(joiningPlayer.getName()).thenReturn("JoiningPlayer");
-        when(joiningPlayer.getAddress()).thenReturn(sharedAddress);
+        when(joiningPlayer.getSocketAddress()).thenReturn(sharedAddress);
 
         // Other players with the same IP
         Player altPlayer1 = mock(Player.class);
         when(altPlayer1.getName()).thenReturn("AltPlayer1");
-        when(altPlayer1.getAddress()).thenReturn(sharedAddress);
+        when(altPlayer1.getSocketAddress()).thenReturn(sharedAddress);
 
         Player altPlayer2 = mock(Player.class);
         when(altPlayer2.getName()).thenReturn("AltPlayer2");
-        when(altPlayer2.getAddress()).thenReturn(sharedAddress);
+        when(altPlayer2.getSocketAddress()).thenReturn(sharedAddress);
 
         // Staff player to receive alert
         Player staffPlayer = mock(Player.class);
         when(staffPlayer.getName()).thenReturn("StaffPlayer");
         when(staffPlayer.hasPermission("jsecurity.alt.alert")).thenReturn(true);
         // Give staff a different address to avoid including them in the alt list
-        when(staffPlayer.getAddress()).thenReturn(new InetSocketAddress(InetAddress.getByName("1.2.3.4"), 54321));
+        when(staffPlayer.getSocketAddress()).thenReturn(new InetSocketAddress(InetAddress.getByName("1.2.3.4"), 54321));
 
         // Mock online players
         bukkit.when(Bukkit::getOnlinePlayers).thenReturn(List.of(joiningPlayer, altPlayer1, altPlayer2, staffPlayer));

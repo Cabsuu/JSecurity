@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -90,13 +91,15 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player joiningPlayer = event.getPlayer();
-        if (joiningPlayer.getAddress() == null) return;
-        InetAddress joiningPlayerIp = joiningPlayer.getAddress().getAddress();
+        InetSocketAddress joiningPlayerSocketAddress = joiningPlayer.getSocketAddress();
+        if (joiningPlayerSocketAddress == null) return;
+        InetAddress joiningPlayerIp = joiningPlayerSocketAddress.getAddress();
 
         if (configManager.isAltAccountAlertEnabled()) {
             List<Player> altAccounts = new ArrayList<>();
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                if (onlinePlayer.getAddress() != null && onlinePlayer.getAddress().getAddress().equals(joiningPlayerIp)) {
+                InetSocketAddress onlinePlayerSocketAddress = onlinePlayer.getSocketAddress();
+                if (onlinePlayerSocketAddress != null && onlinePlayerSocketAddress.getAddress().equals(joiningPlayerIp)) {
                     altAccounts.add(onlinePlayer);
                 }
             }
