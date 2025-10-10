@@ -115,10 +115,6 @@ public class ConfigManager {
         return messagesConfig.getString("other." + path, "");
     }
 
-    public String getConsoleMessage(String key) {
-        return messagesConfig.getString("other." + key);
-    }
-
     public boolean isAnnounceNewPlayerEnabled() {
         return announceNewPlayer;
     }

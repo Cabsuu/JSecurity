@@ -144,12 +144,6 @@ public class PlayerListener implements Listener {
                 Bukkit.getOnlinePlayers().stream()
                         .filter(p -> p.hasPermission("jsecurity.alt.alert"))
                         .forEach(p -> p.sendMessage(component));
-
-                String consoleAlertMessage = configManager.getConsoleMessage("alt-account-console-alert");
-                String formattedConsoleMessage = PlaceholderAPI.setPlaceholders(consoleAlertMessage, data);
-                Component consoleComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(formattedConsoleMessage);
-
-                Bukkit.getConsoleSender().sendMessage(consoleComponent);
             }
         }
     }

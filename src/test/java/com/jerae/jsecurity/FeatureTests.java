@@ -12,6 +12,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.junit.jupiter.api.AfterEach;
@@ -62,6 +63,8 @@ public class FeatureTests {
         bukkit.when(Bukkit::getServer).thenReturn(server);
         bukkit.when(() -> Bukkit.getPlayer(eq("testPlayer"))).thenReturn(player);
         bukkit.when(() -> Bukkit.getOfflinePlayer(anyString())).thenReturn(offlinePlayer);
+        ConsoleCommandSender console = mock(ConsoleCommandSender.class);
+        bukkit.when(Bukkit::getConsoleSender).thenReturn(console);
     }
 
     @AfterEach
@@ -209,12 +212,12 @@ public class FeatureTests {
     public void testAltAccountAlert() throws Exception {
         // Given
         JSecurity plugin = mock(JSecurity.class);
+        java.util.logging.Logger logger = mock(java.util.logging.Logger.class);
+        when(plugin.getLogger()).thenReturn(logger);
+
         PunishmentManager punishmentManager = mock(PunishmentManager.class);
         ConfigManager configManager = mock(ConfigManager.class);
         PlayerDataManager playerDataManager = mock(PlayerDataManager.class);
-        java.util.logging.Logger logger = mock(java.util.logging.Logger.class);
-
-        when(plugin.getLogger()).thenReturn(logger);
 
         PlayerListener listener = new PlayerListener(plugin, punishmentManager, configManager, playerDataManager);
 
@@ -237,19 +240,25 @@ public class FeatureTests {
         when(playerDataManager.getAllPlayerData()).thenReturn(allPlayerData);
         when(configManager.isAltAccountAlertEnabled()).thenReturn(true);
         when(configManager.getMessage("alt-account-alert")).thenReturn("&c{player} may be an alt of {alt_player}.");
-        when(configManager.getConsoleMessage("alt-account-console-alert")).thenReturn("&c{player} may be an alt of {alt_player}.");
         bukkit.when(Bukkit::getOnlinePlayers).thenReturn(Collections.singletonList(player1));
 
         // When
-        PlayerJoinEvent joinEvent = new PlayerJoinEvent(player2, "Player2 joined");
+        PlayerJoinEvent joinEvent = mock(PlayerJoinEvent.class);
+        when(joinEvent.getPlayer()).thenReturn(player2);
         listener.onPlayerJoin(joinEvent);
 
         // Then
         ArgumentCaptor<Component> captor = ArgumentCaptor.forClass(Component.class);
         verify(player1).sendMessage(captor.capture());
 
-        Component sentMessage = captor.getValue();
-        String legacyText = net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacyAmpersand().serialize(sentMessage);
-        assertEquals(ChatColor.translateAlternateColorCodes('&', "&cPlayer2 may be an alt of Player1."), legacyText);
+        Component expectedMessage = net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacyAmpersand().deserialize("&cPlayer2 may be an alt of Player1.");
+        assertEquals(expectedMessage, captor.getValue());
+
+        // Verify console output
+        verify(logger).info("IP Address for Player2 is 127.0.0.1");
+        ArgumentCaptor<String> logCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger, times(2)).info(logCaptor.capture());
+        assertTrue(logCaptor.getAllValues().get(1).contains("Player1"));
+        assertTrue(logCaptor.getAllValues().get(1).contains("Player2"));
     }
 }

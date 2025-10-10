@@ -54,4 +54,3 @@ other:
   kick-messages.alt-account-banned: "&cYour other account {banned_player} was banned."
   reload-message: "&aConfiguration reloaded."
   new-player-broadcast: "&aWelcome {player} to the server! &bPlayer Count: &e{player_count}"
-  alt-account-console-alert: "&c{player} may be an alt of {alt_player}."

@@ -1,11 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.jerae.jsecurity.FeatureTests
 -------------------------------------------------------------------------------
-Tests run: 10, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 3.045 s <<< FAILURE! -- in com.jerae.jsecurity.FeatureTests
-com.jerae.jsecurity.FeatureTests.testAltAccountAlert -- Time elapsed: 0.139 s <<< ERROR!
-java.lang.NullPointerException: Cannot invoke "java.util.logging.Logger.info(String)" because the return value of "com.jerae.jsecurity.JSecurity.getLogger()" is null
-	at com.jerae.jsecurity.listeners.PlayerListener.onPlayerJoin(PlayerListener.java:124)
-	at com.jerae.jsecurity.FeatureTests.testAltAccountAlert(FeatureTests.java:242)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.223 s -- in com.jerae.jsecurity.FeatureTests
