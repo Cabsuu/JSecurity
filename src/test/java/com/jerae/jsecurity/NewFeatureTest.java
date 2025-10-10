@@ -145,31 +145,54 @@ public class NewFeatureTest {
     }
 
     @Test
-    public void testAltAccountConsoleAlert() throws Exception {
+    public void testAltAccountAlertConsolidated() throws Exception {
+        // --- Setup ---
         PunishmentManager punishmentManager = mock(PunishmentManager.class);
         ConfigManager configManager = mock(ConfigManager.class);
         PlayerListener listener = new PlayerListener(punishmentManager, configManager);
 
-        Player newPlayer = mock(Player.class);
-        when(newPlayer.getName()).thenReturn("newPlayer");
-        InetSocketAddress address = new InetSocketAddress(InetAddress.getByName("127.0.0.1"), 12345);
-        when(newPlayer.getAddress()).thenReturn(address);
+        InetSocketAddress sharedAddress = new InetSocketAddress(InetAddress.getByName("127.0.0.1"), 12345);
 
-        Player existingPlayer = mock(Player.class);
-        when(existingPlayer.getName()).thenReturn("existingPlayer");
-        when(existingPlayer.getAddress()).thenReturn(address);
+        // Player who is joining
+        Player joiningPlayer = mock(Player.class);
+        when(joiningPlayer.getName()).thenReturn("JoiningPlayer");
+        when(joiningPlayer.getAddress()).thenReturn(sharedAddress);
 
-        bukkit.when(Bukkit::getOnlinePlayers).thenReturn(List.of(newPlayer, existingPlayer));
+        // Other players with the same IP
+        Player altPlayer1 = mock(Player.class);
+        when(altPlayer1.getName()).thenReturn("AltPlayer1");
+        when(altPlayer1.getAddress()).thenReturn(sharedAddress);
+
+        Player altPlayer2 = mock(Player.class);
+        when(altPlayer2.getName()).thenReturn("AltPlayer2");
+        when(altPlayer2.getAddress()).thenReturn(sharedAddress);
+
+        // Staff player to receive alert
+        Player staffPlayer = mock(Player.class);
+        when(staffPlayer.getName()).thenReturn("StaffPlayer");
+        when(staffPlayer.hasPermission("jsecurity.alt.alert")).thenReturn(true);
+        // Give staff a different address to avoid including them in the alt list
+        when(staffPlayer.getAddress()).thenReturn(new InetSocketAddress(InetAddress.getByName("1.2.3.4"), 54321));
+
+        // Mock online players
+        bukkit.when(Bukkit::getOnlinePlayers).thenReturn(List.of(joiningPlayer, altPlayer1, altPlayer2, staffPlayer));
         when(configManager.isAltAccountAlertEnabled()).thenReturn(true);
-        when(configManager.getMessage("alt-account-alert")).thenReturn("Alt account detected: {player} and {alt_player}");
+        when(configManager.getMessage("alt-account-alert")).thenReturn("Alt accounts on {player}'s IP: {alt_list}");
 
-        PlayerJoinEvent event = new PlayerJoinEvent(newPlayer, "");
+        // --- Action ---
+        PlayerJoinEvent event = new PlayerJoinEvent(joiningPlayer, "");
         listener.onPlayerJoin(event);
 
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(console).sendMessage(captor.capture());
+        // --- Verification ---
+        ArgumentCaptor<String> consoleCaptor = ArgumentCaptor.forClass(String.class);
+        verify(console).sendMessage(consoleCaptor.capture());
 
-        assertEquals("Alt account detected: newPlayer and existingPlayer", captor.getValue());
+        ArgumentCaptor<String> staffCaptor = ArgumentCaptor.forClass(String.class);
+        verify(staffPlayer).sendMessage(staffCaptor.capture());
+
+        String expectedMessage = "Alt accounts on JoiningPlayer's IP: JoiningPlayer, AltPlayer1, AltPlayer2";
+        assertEquals(expectedMessage, consoleCaptor.getValue());
+        assertEquals(ChatColor.translateAlternateColorCodes('&', expectedMessage), staffCaptor.getValue());
     }
 
 

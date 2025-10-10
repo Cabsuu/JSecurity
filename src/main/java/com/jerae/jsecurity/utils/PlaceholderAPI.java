@@ -26,6 +26,7 @@ public class PlaceholderAPI {
         placeholders.put("{duration}", data -> data.getDuration() != null ? data.getDuration() : "");
         placeholders.put("{banned_player}", data -> data.getBannedPlayer() != null ? data.getBannedPlayer() : "");
         placeholders.put("{alt_player}", data -> data.getAltPlayer() != null ? data.getAltPlayer() : "");
+        placeholders.put("{alt_list}", data -> data.getAltList() != null ? data.getAltList() : "");
     }
 
     public static String setPlaceholders(String message, PlaceholderData data) {
@@ -45,6 +46,7 @@ public class PlaceholderAPI {
         private String duration;
         private String bannedPlayer;
         private String altPlayer;
+        private String altList;
 
         public PlaceholderData setTarget(OfflinePlayer target) {
             this.target = target;
@@ -107,6 +109,15 @@ public class PlaceholderAPI {
 
         public String getAltPlayer() {
             return altPlayer;
+        }
+
+        public PlaceholderData setAltList(String altList) {
+            this.altList = altList;
+            return this;
+        }
+
+        public String getAltList() {
+            return altList;
         }
     }
 }

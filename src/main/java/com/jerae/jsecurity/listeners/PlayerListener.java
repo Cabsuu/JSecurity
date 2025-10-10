@@ -19,7 +19,11 @@ import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class PlayerListener implements Listener {
 
@@ -85,26 +89,35 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        String ipAddress = player.getAddress().getAddress().getHostAddress();
+        Player joiningPlayer = event.getPlayer();
+        if (joiningPlayer.getAddress() == null) return;
+        InetAddress joiningPlayerIp = joiningPlayer.getAddress().getAddress();
 
         if (configManager.isAltAccountAlertEnabled()) {
+            List<Player> altAccounts = new ArrayList<>();
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                if (onlinePlayer != player && onlinePlayer.getAddress().getAddress().getHostAddress().equals(ipAddress)) {
-
-                    PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
-                            .setPlayerName(player.getName())
-                            .setAltPlayer(onlinePlayer.getName());
-
-                    String alertMessage = configManager.getMessage("alt-account-alert");
-                    String formattedMessage = PlaceholderAPI.setPlaceholders(alertMessage, data);
-
-                    Bukkit.getOnlinePlayers().stream()
-                            .filter(p -> p.hasPermission("jsecurity.alt.alert"))
-                            .forEach(p -> p.sendMessage(ChatColor.translateAlternateColorCodes('&', formattedMessage)));
-
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.stripColor(formattedMessage));
+                if (onlinePlayer.getAddress() != null && onlinePlayer.getAddress().getAddress().equals(joiningPlayerIp)) {
+                    altAccounts.add(onlinePlayer);
                 }
+            }
+
+            if (altAccounts.size() > 1) {
+                String altList = altAccounts.stream()
+                        .map(Player::getName)
+                        .collect(Collectors.joining(", "));
+
+                PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
+                        .setPlayerName(joiningPlayer.getName())
+                        .setAltList(altList);
+
+                String alertMessage = configManager.getMessage("alt-account-alert");
+                String formattedMessage = PlaceholderAPI.setPlaceholders(alertMessage, data);
+
+                Bukkit.getOnlinePlayers().stream()
+                        .filter(p -> p.hasPermission("jsecurity.alt.alert"))
+                        .forEach(p -> p.sendMessage(ChatColor.translateAlternateColorCodes('&', formattedMessage)));
+
+                Bukkit.getConsoleSender().sendMessage(ChatColor.stripColor(formattedMessage));
             }
         }
     }
