@@ -3,6 +3,7 @@ package com.jerae.jsecurity.commands;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.MuteEntry;
 import com.jerae.jsecurity.managers.PunishmentManager;
+import com.jerae.jsecurity.utils.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -67,10 +68,14 @@ public class MuteCommand implements CommandExecutor, TabCompleter {
         MuteEntry mute = new MuteEntry(targetUUID, target.getName(), reason, staffName, -1);
         punishmentManager.addMute(mute);
 
+        PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
+                .setTarget(target)
+                .setStaff(sender)
+                .setReason(reason);
+
         String muteMessagePath = "mute-message";
-        String muteMessageStr = configManager.getMessage(muteMessagePath, hasReason)
-                .replace("{reason}", reason);
-        Component muteMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(muteMessageStr);
+        String muteMessageStr = configManager.getMessage(muteMessagePath, hasReason);
+        Component muteMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(muteMessageStr, data));
 
         if (target.isOnline()) {
             target.getPlayer().sendMessage(muteMessage);
@@ -78,11 +83,8 @@ public class MuteCommand implements CommandExecutor, TabCompleter {
 
         if (!silent) {
             String broadcastMessagePath = "mute-broadcast";
-            String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason)
-                    .replace("{player}", target.getName())
-                    .replace("{staff}", staffName)
-                    .replace("{reason}", reason);
-            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(broadcastMessageStr);
+            String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason);
+            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
             Bukkit.getServer().broadcast(broadcastMessage);
         }
 

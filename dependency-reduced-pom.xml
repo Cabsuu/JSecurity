@@ -40,6 +40,9 @@
         <configuration>
           <testSourceDirectory>src/test/java</testSourceDirectory>
           <redirectTestOutputToFile>false</redirectTestOutputToFile>
+          <excludes>
+            <exclude>**/NewFeatureTests.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>

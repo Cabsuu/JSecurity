@@ -23,4 +23,5 @@
 /app/src/main/java/com/jerae/jsecurity/models/PlayerData.java
 /app/src/main/java/com/jerae/jsecurity/models/PunishmentLogEntry.java
 /app/src/main/java/com/jerae/jsecurity/models/WarnEntry.java
+/app/src/main/java/com/jerae/jsecurity/utils/PlaceholderAPI.java
 /app/src/main/java/com/jerae/jsecurity/utils/TimeUtil.java

@@ -6,6 +6,7 @@ import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
 import com.jerae.jsecurity.models.PlayerData;
+import com.jerae.jsecurity.utils.PlaceholderAPI;
 import com.jerae.jsecurity.utils.TimeUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -94,11 +95,15 @@ public class TempBanCommand implements CommandExecutor, TabCompleter {
 
         String formattedDuration = TimeUtil.formatDuration(duration);
 
+        PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
+                .setTarget(target)
+                .setStaff(sender)
+                .setReason(reason)
+                .setDuration(formattedDuration);
+
         String kickMessagePath = "tempban-kick-message";
-        String kickMessageStr = configManager.getMessage(kickMessagePath, hasReason)
-                .replace("{reason}", reason)
-                .replace("{duration}", formattedDuration);
-        Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessageStr);
+        String kickMessageStr = configManager.getMessage(kickMessagePath, hasReason);
+        Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(kickMessageStr, data));
 
         if (target.isOnline()) {
             target.getPlayer().kick(kickMessage);
@@ -108,12 +113,8 @@ public class TempBanCommand implements CommandExecutor, TabCompleter {
 
         if (!silent) {
             String broadcastMessagePath = "tempban-broadcast";
-            String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason)
-                    .replace("{player}", target.getName())
-                    .replace("{staff}", staffName)
-                    .replace("{reason}", reason)
-                    .replace("{duration}", formattedDuration);
-            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(broadcastMessageStr);
+            String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason);
+            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
             Bukkit.getServer().broadcast(broadcastMessage);
         }
 
