@@ -154,10 +154,12 @@ public class NewFeatureTest {
     @Test
     public void testAltAccountAlertConsolidated() throws Exception {
         // --- Setup ---
+        JSecurity plugin = mock(JSecurity.class);
+        when(plugin.getLogger()).thenReturn(mock(java.util.logging.Logger.class));
         PunishmentManager punishmentManager = mock(PunishmentManager.class);
         ConfigManager configManager = mock(ConfigManager.class);
         PlayerDataManager playerDataManager = mock(PlayerDataManager.class);
-        PlayerListener listener = new PlayerListener(punishmentManager, configManager, playerDataManager);
+        PlayerListener listener = new PlayerListener(plugin, punishmentManager, configManager, playerDataManager);
 
         String sharedIp = "127.0.0.1";
         InetSocketAddress sharedAddress = new InetSocketAddress(InetAddress.getByName(sharedIp), 12345);

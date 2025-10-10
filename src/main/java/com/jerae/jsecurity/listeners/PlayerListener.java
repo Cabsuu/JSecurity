@@ -28,16 +28,19 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.jerae.jsecurity.JSecurity;
 import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.models.PlayerData;
 
 public class PlayerListener implements Listener {
 
+    private final JSecurity plugin;
     private final PunishmentManager punishmentManager;
     private final ConfigManager configManager;
     private final PlayerDataManager playerDataManager;
 
-    public PlayerListener(PunishmentManager punishmentManager, ConfigManager configManager, PlayerDataManager playerDataManager) {
+    public PlayerListener(JSecurity plugin, PunishmentManager punishmentManager, ConfigManager configManager, PlayerDataManager playerDataManager) {
+        this.plugin = plugin;
         this.punishmentManager = punishmentManager;
         this.configManager = configManager;
         this.playerDataManager = playerDataManager;
@@ -99,23 +102,34 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player joiningPlayer = event.getPlayer();
         InetSocketAddress joiningPlayerSocketAddress = joiningPlayer.getAddress();
-        if (joiningPlayerSocketAddress == null) return;
+
+        plugin.getLogger().info("Player " + joiningPlayer.getName() + " is joining...");
+
+        if (joiningPlayerSocketAddress == null) {
+            plugin.getLogger().warning("Could not get socket address for player " + joiningPlayer.getName() + ". Cannot perform alt check.");
+            return;
+        }
         String joiningPlayerIp = joiningPlayerSocketAddress.getAddress().getHostAddress();
+        plugin.getLogger().info("IP Address for " + joiningPlayer.getName() + " is " + joiningPlayerIp);
 
         if (configManager.isAltAccountAlertEnabled()) {
+            plugin.getLogger().info("Alt account detection is enabled. Checking for alts...");
             Set<String> altAccountNames = new HashSet<>();
 
-            // Add the joining player's name to the set
             altAccountNames.add(joiningPlayer.getName());
 
-            // Check all historical data for accounts on the same IP
+            plugin.getLogger().info("Checking " + playerDataManager.getAllPlayerData().size() + " player data entries.");
             for (PlayerData playerData : playerDataManager.getAllPlayerData()) {
                 if (playerData.getIps().contains(joiningPlayerIp)) {
+                    plugin.getLogger().info("Found match: " + playerData.getName() + " has used IP " + joiningPlayerIp);
                     altAccountNames.add(playerData.getName());
                 }
             }
 
+            plugin.getLogger().info("Found " + altAccountNames.size() + " total accounts on this IP: " + String.join(", ", altAccountNames));
+
             if (altAccountNames.size() > 1) {
+                plugin.getLogger().info("Alt accounts detected. Sending alert.");
                 String altList = String.join(", ", altAccountNames);
 
                 PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
@@ -130,7 +144,11 @@ public class PlayerListener implements Listener {
                         .forEach(p -> p.sendMessage(ChatColor.translateAlternateColorCodes('&', formattedMessage)));
 
                 Bukkit.getConsoleSender().sendMessage(ChatColor.stripColor(formattedMessage));
+            } else {
+                plugin.getLogger().info("No other accounts found on this IP. No alert sent.");
             }
+        } else {
+            plugin.getLogger().info("Alt account detection is disabled.");
         }
     }
 
