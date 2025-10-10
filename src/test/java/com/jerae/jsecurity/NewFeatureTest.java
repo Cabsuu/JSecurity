@@ -162,9 +162,9 @@ public class NewFeatureTest {
         String sharedIp = "127.0.0.1";
         InetSocketAddress sharedAddress = new InetSocketAddress(InetAddress.getByName(sharedIp), 12345);
 
-        // Player who is joining
+        // Player who is joining, this is the "alt"
         Player joiningPlayer = mock(Player.class);
-        when(joiningPlayer.getName()).thenReturn("JoiningPlayer");
+        when(joiningPlayer.getName()).thenReturn("NewAlt");
         when(joiningPlayer.getAddress()).thenReturn(sharedAddress);
 
         // Staff player to receive alert
@@ -175,12 +175,9 @@ public class NewFeatureTest {
         // Mock online players
         bukkit.when(Bukkit::getOnlinePlayers).thenReturn(List.of(joiningPlayer, staffPlayer));
 
-        // Mock persisted player data
+        // Mock persisted player data for the original account
         List<PlayerData> allPlayerData = new ArrayList<>();
-        allPlayerData.add(new PlayerData(1, UUID.randomUUID(), "JoiningPlayer", List.of(sharedIp), ""));
-        allPlayerData.add(new PlayerData(2, UUID.randomUUID(), "AltPlayer1", List.of(sharedIp, "1.1.1.1"), ""));
-        allPlayerData.add(new PlayerData(3, UUID.randomUUID(), "AltPlayer2", List.of("2.2.2.2", sharedIp), ""));
-        allPlayerData.add(new PlayerData(4, UUID.randomUUID(), "NonAltPlayer", List.of("3.3.3.3"), ""));
+        allPlayerData.add(new PlayerData(1, UUID.randomUUID(), "OriginalPlayer", List.of(sharedIp), ""));
 
         when(playerDataManager.getAllPlayerData()).thenReturn(allPlayerData);
         when(configManager.isAltAccountAlertEnabled()).thenReturn(true);
@@ -198,16 +195,14 @@ public class NewFeatureTest {
         verify(staffPlayer).sendMessage(staffCaptor.capture());
 
         String consoleMessage = consoleCaptor.getValue();
-        assertTrue(consoleMessage.startsWith("Alt accounts on JoiningPlayer's IP:"));
-        assertTrue(consoleMessage.contains("JoiningPlayer"));
-        assertTrue(consoleMessage.contains("AltPlayer1"));
-        assertTrue(consoleMessage.contains("AltPlayer2"));
+        assertTrue(consoleMessage.startsWith("Alt accounts on NewAlt's IP:"));
+        assertTrue(consoleMessage.contains("NewAlt"));
+        assertTrue(consoleMessage.contains("OriginalPlayer"));
 
         String staffMessage = staffCaptor.getValue();
-        assertTrue(staffMessage.contains("Alt accounts on JoiningPlayer's IP:"));
-        assertTrue(staffMessage.contains("JoiningPlayer"));
-        assertTrue(staffMessage.contains("AltPlayer1"));
-        assertTrue(staffMessage.contains("AltPlayer2"));
+        assertTrue(staffMessage.contains("Alt accounts on NewAlt's IP:"));
+        assertTrue(staffMessage.contains("NewAlt"));
+        assertTrue(staffMessage.contains("OriginalPlayer"));
     }
 
 

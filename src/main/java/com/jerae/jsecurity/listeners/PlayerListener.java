@@ -104,6 +104,11 @@ public class PlayerListener implements Listener {
 
         if (configManager.isAltAccountAlertEnabled()) {
             Set<String> altAccountNames = new HashSet<>();
+
+            // Add the joining player's name to the set
+            altAccountNames.add(joiningPlayer.getName());
+
+            // Check all historical data for accounts on the same IP
             for (PlayerData playerData : playerDataManager.getAllPlayerData()) {
                 if (playerData.getIps().contains(joiningPlayerIp)) {
                     altAccountNames.add(playerData.getName());
