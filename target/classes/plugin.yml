@@ -90,6 +90,7 @@ permissions:
       jsecurity.alt.alert: true
       jsecurity.socialspy: true
       jsecurity.socialspy.view: true
+      jsecurity.socialspy.exempt: true
       jsecurity.chat.delay.bypass: true
       jsecurity.vanish: true
       jsecurity.vanish.see: true
@@ -139,6 +140,9 @@ permissions:
     default: op
   jsecurity.socialspy.view:
     description: Allows viewing private messages with social spy.
+    default: op
+  jsecurity.socialspy.exempt:
+    description: Exempts a player from being spied on.
     default: op
   jsecurity.chat.delay.bypass:
     description: Allows bypassing the chat delay.

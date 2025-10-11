@@ -56,4 +56,10 @@ public class PlayerData {
         }
         this.notes.add(note);
     }
+
+    public void clearNotes() {
+        if (this.notes != null) {
+            this.notes.clear();
+        }
+    }
 }

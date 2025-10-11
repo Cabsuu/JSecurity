@@ -135,8 +135,8 @@ public class ConfigManager {
         return config.getBoolean("chat-delay.enabled", false);
     }
 
-    public int getChatDelay() {
-        return config.getInt("chat-delay.period", 3);
+    public double getChatDelay() {
+        return config.getDouble("chat-delay.period", 3.0);
     }
 
     public boolean isKeywordReplacementEnabled() {
@@ -147,7 +147,9 @@ public class ConfigManager {
         java.util.Map<String, String> map = new java.util.HashMap<>();
         if (isKeywordReplacementEnabled()) {
             for (String key : config.getConfigurationSection("keyword-replacement.words").getKeys(false)) {
-                map.put(key, config.getString("keyword-replacement.words." + key));
+                for (String word : config.getStringList("keyword-replacement.words." + key)) {
+                    map.put(word.toLowerCase(), key);
+                }
             }
         }
         return map;

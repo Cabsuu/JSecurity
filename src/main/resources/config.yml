@@ -32,5 +32,5 @@ chat-delay:
 keyword-replacement:
   enabled: false
   words:
-    "fuck": "fudge"
-    "shit": "poop"
+    "fudge": ["fuck", "fck", "fk"]
+    "poop": ["shit"]

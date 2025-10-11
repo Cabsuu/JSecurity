@@ -284,8 +284,8 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
     }
 
     private void handleNote(CommandSender sender, String[] args) {
-        if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: /js note <player> <note>");
+        if (args.length < 1) {
+            sender.sendMessage(ChatColor.RED + "Usage: /js note <player> <note|-clear>");
             return;
         }
 
@@ -297,10 +297,16 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        String note = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-        playerData.addNote(note);
-        // The PlayerDataManager saves all data on disable, so we don't need to call it here.
-        sender.sendMessage(ChatColor.GREEN + "Note added to " + playerName + "'s profile.");
+        if (args.length == 2 && args[1].equalsIgnoreCase("-clear")) {
+            playerData.clearNotes();
+            sender.sendMessage(ChatColor.GREEN + "Notes cleared for " + playerName + ".");
+        } else if (args.length > 1) {
+            String note = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+            playerData.addNote(note);
+            sender.sendMessage(ChatColor.GREEN + "Note added to " + playerName + "'s profile.");
+        } else {
+            sender.sendMessage(ChatColor.RED + "Usage: /js note <player> <note|-clear>");
+        }
     }
 
     private void sendUsage(CommandSender sender) {

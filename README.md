@@ -20,7 +20,7 @@ JSecurity is a security plugin for Minecraft servers.
   - `/js profile <player>` - Shows a player's profile.
   - `/js log [page]` - Shows the punishment log.
   - `/js history <player> [page]` - Shows a player's punishment history.
-  - `/js note <player> <note>` - Adds a note to a player's profile.
+  - `/js note <player> <note|-clear>` - Adds a note to a player's profile, or clears all notes.
 - `/message <player> <message>` (alias: `/msg`) - Sends a private message to a player.
 - `/reply <message>` (alias: `/r`) - Replies to the last private message.
 - `/socialspy` - Toggles social spy.
@@ -53,3 +53,12 @@ JSecurity is a security plugin for Minecraft servers.
 - `jsecurity.vanish.see` - Allows seeing vanished players.
 - `jsecurity.vanish.interact` - Allows interacting with players while vanished.
 - `jsecurity.vanish.silentjoin` - Allows joining the server silently while vanished.
+
+## Configuration
+
+The `config.yml` file contains the following options:
+
+- `chat-delay.enabled`: (true/false) - Enables or disables the chat delay.
+- `chat-delay.period`: (number) - The delay in seconds between messages.
+- `keyword-replacement.enabled`: (true/false) - Enables or disables keyword replacement.
+- `keyword-replacement.words`: (map) - A map of replacement words to a list of keywords to be replaced.

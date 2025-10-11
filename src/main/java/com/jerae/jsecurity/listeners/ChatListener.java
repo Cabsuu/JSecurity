@@ -25,9 +25,9 @@ public class ChatListener implements Listener {
 
         if (configManager.isChatDelayEnabled() && !player.hasPermission("jsecurity.chat.delay.bypass")) {
             if (chatDelay.containsKey(player.getUniqueId())) {
-                long timeLeft = (chatDelay.get(player.getUniqueId()) + (configManager.getChatDelay() * 1000L)) - System.currentTimeMillis();
+                long timeLeft = (long) ((chatDelay.get(player.getUniqueId()) + (configManager.getChatDelay() * 1000L)) - System.currentTimeMillis());
                 if (timeLeft > 0) {
-                    player.sendMessage("You must wait " + (timeLeft / 1000) + " seconds before chatting again.");
+                    player.sendMessage("You must wait " + String.format("%.2f", timeLeft / 1000.0) + " seconds before chatting again.");
                     event.setCancelled(true);
                     return;
                 }
