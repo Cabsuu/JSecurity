@@ -44,6 +44,10 @@ punishments:
 
 # Other messages
 other:
+  no-permission: "&cYou do not have permission to use this command."
+  private-message:
+    to-sender: "&7[&bme &d-> &b{target}&7] &f{content}"
+    to-receiver: "&7[&b{sender} &d-> &bme&7] &f{content}"
   unban-broadcast: "&a{player} has been unbanned by {staff}."
   unmute-broadcast: "&a{player} has been unmuted by {staff}."
   freeze-message: "&cYou have been frozen by a staff member."

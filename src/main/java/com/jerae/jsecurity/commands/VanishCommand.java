@@ -1,5 +1,6 @@
 package com.jerae.jsecurity.commands;
 
+import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.VanishManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -10,15 +11,17 @@ import org.bukkit.entity.Player;
 public class VanishCommand implements CommandExecutor {
 
     private final VanishManager vanishManager;
+    private final ConfigManager configManager;
 
-    public VanishCommand(VanishManager vanishManager) {
+    public VanishCommand(VanishManager vanishManager, ConfigManager configManager) {
         this.vanishManager = vanishManager;
+        this.configManager = configManager;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("jsecurity.vanish")) {
-            sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+            sender.sendMessage(configManager.getNoPermissionMessage());
             return true;
         }
 

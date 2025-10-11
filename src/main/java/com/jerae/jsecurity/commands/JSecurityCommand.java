@@ -54,49 +54,49 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         switch (subCommand) {
             case "help":
                 if (!sender.hasPermission("jsecurity.help")) {
-                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    sender.sendMessage(configManager.getNoPermissionMessage());
                     return true;
                 }
                 HelpCommand.execute(sender);
                 break;
             case "reload":
                 if (!sender.hasPermission("jsecurity.admin")) {
-                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    sender.sendMessage(configManager.getNoPermissionMessage());
                     return true;
                 }
                 handleReload(sender);
                 break;
             case "record":
                 if (!sender.hasPermission("jsecurity.record")) {
-                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    sender.sendMessage(configManager.getNoPermissionMessage());
                     return true;
                 }
                 handleRecord(sender, Arrays.copyOfRange(args, 1, args.length));
                 break;
             case "profile":
                 if (!sender.hasPermission("jsecurity.profile")) {
-                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    sender.sendMessage(configManager.getNoPermissionMessage());
                     return true;
                 }
                 handleProfile(sender, Arrays.copyOfRange(args, 1, args.length));
                 break;
             case "note":
                 if (!sender.hasPermission("jsecurity.note")) {
-                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    sender.sendMessage(configManager.getNoPermissionMessage());
                     return true;
                 }
                 handleNote(sender, Arrays.copyOfRange(args, 1, args.length));
                 break;
             case "log":
                 if (!sender.hasPermission("jsecurity.log")) {
-                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    sender.sendMessage(configManager.getNoPermissionMessage());
                     return true;
                 }
                 handleLog(sender, Arrays.copyOfRange(args, 1, args.length));
                 break;
             case "history":
                 if (!sender.hasPermission("jsecurity.history")) {
-                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    sender.sendMessage(configManager.getNoPermissionMessage());
                     return true;
                 }
                 handleHistory(sender, Arrays.copyOfRange(args, 1, args.length));

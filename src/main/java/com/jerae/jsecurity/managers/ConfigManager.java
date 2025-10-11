@@ -154,4 +154,16 @@ public class ConfigManager {
         }
         return map;
     }
+
+    public String getNoPermissionMessage() {
+        return messagesConfig.getString("other.no-permission", "&cYou do not have permission to use this command.");
+    }
+
+    public String getPrivateMessageToSenderFormat() {
+        return messagesConfig.getString("other.private-message.to-sender", "&7[&bme &d-> &b{target}&7] &f{content}");
+    }
+
+    public String getPrivateMessageToReceiverFormat() {
+        return messagesConfig.getString("other.private-message.to-receiver", "&7[&b{sender} &d-> &bme&7] &f{content}");
+    }
 }

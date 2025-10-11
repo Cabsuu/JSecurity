@@ -12,12 +12,24 @@ import java.util.UUID;
 
 public class MessageManager {
 
+    private final ConfigManager configManager;
     private final Map<UUID, UUID> lastMessage = new HashMap<>();
     private final Set<UUID> socialSpy = new HashSet<>();
 
+    public MessageManager(ConfigManager configManager) {
+        this.configManager = configManager;
+    }
+
     public void sendMessage(Player sender, Player target, String message) {
-        sender.sendMessage(ChatColor.GOLD + "To " + target.getName() + ": " + ChatColor.WHITE + message);
-        target.sendMessage(ChatColor.GOLD + "From " + sender.getName() + ": " + ChatColor.WHITE + message);
+        String toSender = configManager.getPrivateMessageToSenderFormat()
+                .replace("{target}", target.getName())
+                .replace("{content}", message);
+        String toReceiver = configManager.getPrivateMessageToReceiverFormat()
+                .replace("{sender}", sender.getName())
+                .replace("{content}", message);
+
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', toSender));
+        target.sendMessage(ChatColor.translateAlternateColorCodes('&', toReceiver));
 
         lastMessage.put(sender.getUniqueId(), target.getUniqueId());
         lastMessage.put(target.getUniqueId(), sender.getUniqueId());

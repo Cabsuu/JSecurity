@@ -1,5 +1,6 @@
 package com.jerae.jsecurity.commands;
 
+import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,15 +12,17 @@ import org.bukkit.entity.Player;
 public class MessageCommand implements CommandExecutor {
 
     private final MessageManager messageManager;
+    private final ConfigManager configManager;
 
-    public MessageCommand(MessageManager messageManager) {
+    public MessageCommand(MessageManager messageManager, ConfigManager configManager) {
         this.messageManager = messageManager;
+        this.configManager = configManager;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("jsecurity.message")) {
-            sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+            sender.sendMessage(configManager.getNoPermissionMessage());
             return true;
         }
 

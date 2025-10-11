@@ -22,7 +22,7 @@ public final class JSecurity extends JavaPlugin {
         punishmentManager = new PunishmentManager(this);
         freezeManager = new FreezeManager();
         playerDataManager = new PlayerDataManager(this);
-        messageManager = new MessageManager();
+        messageManager = new MessageManager(configManager);
         vanishManager = new VanishManager(this);
 
         // Register listeners
@@ -47,10 +47,10 @@ public final class JSecurity extends JavaPlugin {
         getCommand("jsecurity").setExecutor(new JSecurityCommand(this, configManager, punishmentManager, playerDataManager));
         getCommand("freeze").setExecutor(new FreezeCommand(freezeManager, configManager));
         getCommand("unfreeze").setExecutor(new UnfreezeCommand(freezeManager, configManager));
-        getCommand("message").setExecutor(new MessageCommand(messageManager));
-        getCommand("reply").setExecutor(new ReplyCommand(messageManager));
-        getCommand("socialspy").setExecutor(new SocialSpyCommand(messageManager));
-        getCommand("vanish").setExecutor(new VanishCommand(vanishManager));
+        getCommand("message").setExecutor(new MessageCommand(messageManager, configManager));
+        getCommand("reply").setExecutor(new ReplyCommand(messageManager, configManager));
+        getCommand("socialspy").setExecutor(new SocialSpyCommand(messageManager, configManager));
+        getCommand("vanish").setExecutor(new VanishCommand(vanishManager, configManager));
 
 
         getLogger().info("jSecurity has been enabled.");
