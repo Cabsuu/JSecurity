@@ -30,6 +30,11 @@ public class UnbanCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("jsecurity.unban")) {
+            sender.sendMessage(configManager.getNoPermissionMessage());
+            return true;
+        }
+
         if (args.length < 1) {
             Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /unban <player> [-s]");
             sender.sendMessage(usageMessage);

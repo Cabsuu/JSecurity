@@ -62,6 +62,7 @@ public class FeatureTests {
         bukkit = mockStatic(Bukkit.class);
         bukkit.when(Bukkit::getServer).thenReturn(server);
         bukkit.when(() -> Bukkit.getPlayer(eq("testPlayer"))).thenReturn(player);
+        when(sender.hasPermission(anyString())).thenReturn(true);
         bukkit.when(() -> Bukkit.getOfflinePlayer(anyString())).thenReturn(offlinePlayer);
         ConsoleCommandSender console = mock(ConsoleCommandSender.class);
         bukkit.when(Bukkit::getConsoleSender).thenReturn(console);

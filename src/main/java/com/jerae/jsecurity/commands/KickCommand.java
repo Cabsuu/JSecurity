@@ -26,6 +26,11 @@ public class KickCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("jsecurity.kick")) {
+            sender.sendMessage(configManager.getNoPermissionMessage());
+            return true;
+        }
+
         if (args.length < 1) {
             Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /kick <player> [reason] [-s]");
             sender.sendMessage(usageMessage);

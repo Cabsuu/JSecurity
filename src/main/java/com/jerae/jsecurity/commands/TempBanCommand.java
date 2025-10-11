@@ -1,5 +1,6 @@
 package com.jerae.jsecurity.commands;
 
+import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.listeners.PlayerListener;
 import com.jerae.jsecurity.managers.BanEntry;
 import com.jerae.jsecurity.managers.ConfigManager;
@@ -40,6 +41,11 @@ public class TempBanCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("jsecurity.tempban")) {
+            sender.sendMessage(configManager.getNoPermissionMessage());
+            return true;
+        }
+
         if (args.length < 2) {
             Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /tempban <player> <duration> [reason] [-s]");
             sender.sendMessage(usageMessage);

@@ -102,6 +102,8 @@ permissions:
       jsecurity.log: true
       jsecurity.history: true
       jsecurity.note: true
+      jsecurity.message: true
+      jsecurity.reply: true
   jsecurity.ban:
     description: Allows banning players.
   jsecurity.tempban:
@@ -152,3 +154,7 @@ permissions:
     description: Allows using the /js history command.
   jsecurity.note:
     description: Allows using the /js note command.
+  jsecurity.message:
+    description: Allows sending private messages.
+  jsecurity.reply:
+    description: Allows replying to private messages.

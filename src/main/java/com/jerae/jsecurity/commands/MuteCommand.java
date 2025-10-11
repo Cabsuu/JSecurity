@@ -32,6 +32,11 @@ public class MuteCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("jsecurity.mute")) {
+            sender.sendMessage(configManager.getNoPermissionMessage());
+            return true;
+        }
+
         if (args.length < 1) {
             Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /mute <player> [reason] [-s]");
             sender.sendMessage(usageMessage);

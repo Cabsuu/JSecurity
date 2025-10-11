@@ -30,6 +30,11 @@ public class UnmuteCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("jsecurity.unmute")) {
+            sender.sendMessage(configManager.getNoPermissionMessage());
+            return true;
+        }
+
         if (args.length < 1) {
             Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /unmute <player> [-s]");
             sender.sendMessage(usageMessage);

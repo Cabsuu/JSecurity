@@ -1,5 +1,6 @@
 package com.jerae.jsecurity.commands;
 
+import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.listeners.PlayerListener;
 import com.jerae.jsecurity.managers.BanEntry;
 import com.jerae.jsecurity.managers.ConfigManager;
@@ -39,6 +40,11 @@ public class IpBanCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("jsecurity.ipban")) {
+            sender.sendMessage(configManager.getNoPermissionMessage());
+            return true;
+        }
+
         if (args.length < 1) {
             Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /ipban <player/ip> [reason] [-s]");
             sender.sendMessage(usageMessage);
