@@ -37,10 +37,28 @@ commands:
     description: Kicks a player from the server.
     usage: /kick <player> [reason] [-s]
     permission: jsecurity.kick
-  js:
+  jsecurity:
     description: jSecurity admin commands.
     usage: /js <reload>
     permission: jsecurity.admin
+    aliases: [js]
+  message:
+    description: Sends a private message to a player.
+    usage: /message <player> <message>
+    aliases: [msg]
+  reply:
+    description: Replies to the last private message.
+    usage: /reply <message>
+    aliases: [r]
+  socialspy:
+    description: Toggles social spy.
+    usage: /socialspy
+    permission: jsecurity.socialspy
+  vanish:
+    description: Toggles vanish mode.
+    usage: /vanish
+    permission: jsecurity.vanish
+    aliases: [v]
   freeze:
     description: Freezes a player.
     usage: /freeze <player>
@@ -70,6 +88,19 @@ permissions:
       jsecurity.unfreeze: true
       jsecurity.warn: true
       jsecurity.alt.alert: true
+      jsecurity.socialspy: true
+      jsecurity.socialspy.view: true
+      jsecurity.chat.delay.bypass: true
+      jsecurity.vanish: true
+      jsecurity.vanish.see: true
+      jsecurity.vanish.interact: true
+      jsecurity.vanish.silentjoin: true
+      jsecurity.help: true
+      jsecurity.record: true
+      jsecurity.profile: true
+      jsecurity.log: true
+      jsecurity.history: true
+      jsecurity.note: true
   jsecurity.ban:
     description: Allows banning players.
     default: op
@@ -102,4 +133,43 @@ permissions:
     default: op
   jsecurity.alt.alert:
     description: Notifies staff on possible alt account join.
+    default: op
+  jsecurity.socialspy:
+    description: Allows toggling social spy.
+    default: op
+  jsecurity.socialspy.view:
+    description: Allows viewing private messages with social spy.
+    default: op
+  jsecurity.chat.delay.bypass:
+    description: Allows bypassing the chat delay.
+    default: op
+  jsecurity.vanish:
+    description: Allows toggling vanish mode.
+    default: op
+  jsecurity.vanish.see:
+    description: Allows seeing vanished players.
+    default: op
+  jsecurity.vanish.interact:
+    description: Allows interacting with players while vanished.
+    default: op
+  jsecurity.vanish.silentjoin:
+    description: Allows joining the server silently while vanished.
+    default: op
+  jsecurity.help:
+    description: Allows using the /js help command.
+    default: op
+  jsecurity.record:
+    description: Allows using the /js record command.
+    default: op
+  jsecurity.profile:
+    description: Allows using the /js profile command.
+    default: op
+  jsecurity.log:
+    description: Allows using the /js log command.
+    default: op
+  jsecurity.history:
+    description: Allows using the /js history command.
+    default: op
+  jsecurity.note:
+    description: Allows using the /js note command.
     default: op

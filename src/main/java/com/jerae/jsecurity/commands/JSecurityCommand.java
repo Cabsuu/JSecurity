@@ -52,19 +52,53 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         String subCommand = args[0].toLowerCase();
 
         switch (subCommand) {
+            case "help":
+                if (!sender.hasPermission("jsecurity.help")) {
+                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    return true;
+                }
+                HelpCommand.execute(sender);
+                break;
             case "reload":
+                if (!sender.hasPermission("jsecurity.admin")) {
+                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    return true;
+                }
                 handleReload(sender);
                 break;
             case "record":
+                if (!sender.hasPermission("jsecurity.record")) {
+                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    return true;
+                }
                 handleRecord(sender, Arrays.copyOfRange(args, 1, args.length));
                 break;
-            case "player":
-                handlePlayer(sender, Arrays.copyOfRange(args, 1, args.length));
+            case "profile":
+                if (!sender.hasPermission("jsecurity.profile")) {
+                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    return true;
+                }
+                handleProfile(sender, Arrays.copyOfRange(args, 1, args.length));
+                break;
+            case "note":
+                if (!sender.hasPermission("jsecurity.note")) {
+                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    return true;
+                }
+                handleNote(sender, Arrays.copyOfRange(args, 1, args.length));
                 break;
             case "log":
+                if (!sender.hasPermission("jsecurity.log")) {
+                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    return true;
+                }
                 handleLog(sender, Arrays.copyOfRange(args, 1, args.length));
                 break;
             case "history":
+                if (!sender.hasPermission("jsecurity.history")) {
+                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    return true;
+                }
                 handleHistory(sender, Arrays.copyOfRange(args, 1, args.length));
                 break;
             default:
@@ -123,9 +157,9 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         }
     }
 
-    private void handlePlayer(CommandSender sender, String[] args) {
+    private void handleProfile(CommandSender sender, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Usage: /js player <player>");
+            sender.sendMessage(ChatColor.RED + "Usage: /js profile <player>");
             return;
         }
 
@@ -158,6 +192,13 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
 
         if (banEntry != null) {
             sender.sendMessage(ChatColor.YELLOW + "Reason: " + ChatColor.WHITE + banEntry.getReason());
+        }
+
+        if (playerData.getNotes() != null && !playerData.getNotes().isEmpty()) {
+            sender.sendMessage(ChatColor.YELLOW + "Notes:");
+            for (String note : playerData.getNotes()) {
+                sender.sendMessage(ChatColor.WHITE + "- " + note);
+            }
         }
     }
 
@@ -242,20 +283,40 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         }
     }
 
+    private void handleNote(CommandSender sender, String[] args) {
+        if (args.length < 2) {
+            sender.sendMessage(ChatColor.RED + "Usage: /js note <player> <note>");
+            return;
+        }
+
+        String playerName = args[0];
+        PlayerData playerData = playerDataManager.getPlayerData(playerName);
+
+        if (playerData == null) {
+            sender.sendMessage(ChatColor.RED + "Player not found.");
+            return;
+        }
+
+        String note = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+        playerData.addNote(note);
+        // The PlayerDataManager saves all data on disable, so we don't need to call it here.
+        sender.sendMessage(ChatColor.GREEN + "Note added to " + playerName + "'s profile.");
+    }
+
     private void sendUsage(CommandSender sender) {
-        sender.sendMessage(ChatColor.RED + "Usage: /js <reload|record|player|log|history>");
+        sender.sendMessage(ChatColor.RED + "Usage: /js help");
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            return Arrays.asList("reload", "record", "player", "log", "history").stream()
+            return Arrays.asList("help", "reload", "record", "profile", "note", "log", "history").stream()
                     .filter(s -> s.startsWith(args[0].toLowerCase()))
                     .collect(Collectors.toList());
         }
 
         if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("player") || args[0].equalsIgnoreCase("history")) {
+            if (args[0].equalsIgnoreCase("profile") || args[0].equalsIgnoreCase("history") || args[0].equalsIgnoreCase("note")) {
                 return Bukkit.getOnlinePlayers().stream()
                         .map(Player::getName)
                         .filter(name -> name.toLowerCase().startsWith(args[1].toLowerCase()))

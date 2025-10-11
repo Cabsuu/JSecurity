@@ -38,9 +38,22 @@ public class PlayerData {
         return joined;
     }
 
+    private List<String> notes;
+
     public void addIp(String ip) {
         if (!ips.contains(ip)) {
             ips.add(ip);
         }
+    }
+
+    public List<String> getNotes() {
+        return notes;
+    }
+
+    public void addNote(String note) {
+        if (this.notes == null) {
+            this.notes = new java.util.ArrayList<>();
+        }
+        this.notes.add(note);
     }
 }

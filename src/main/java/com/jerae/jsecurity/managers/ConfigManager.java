@@ -130,4 +130,26 @@ public class ConfigManager {
     public String getNewPlayerBroadcastMessage() {
         return newPlayerBroadcastMessage;
     }
+
+    public boolean isChatDelayEnabled() {
+        return config.getBoolean("chat-delay.enabled", false);
+    }
+
+    public int getChatDelay() {
+        return config.getInt("chat-delay.period", 3);
+    }
+
+    public boolean isKeywordReplacementEnabled() {
+        return config.getBoolean("keyword-replacement.enabled", false);
+    }
+
+    public java.util.Map<String, String> getKeywordReplacementMap() {
+        java.util.Map<String, String> map = new java.util.HashMap<>();
+        if (isKeywordReplacementEnabled()) {
+            for (String key : config.getConfigurationSection("keyword-replacement.words").getKeys(false)) {
+                map.put(key, config.getString("keyword-replacement.words." + key));
+            }
+        }
+        return map;
+    }
 }

@@ -2,13 +2,8 @@ package com.jerae.jsecurity;
 
 import com.jerae.jsecurity.commands.*;
 import com.jerae.jsecurity.commands.*;
-import com.jerae.jsecurity.listeners.PlayerFreezeListener;
-import com.jerae.jsecurity.listeners.PlayerDataListener;
-import com.jerae.jsecurity.listeners.PlayerListener;
-import com.jerae.jsecurity.managers.ConfigManager;
-import com.jerae.jsecurity.managers.FreezeManager;
-import com.jerae.jsecurity.managers.PlayerDataManager;
-import com.jerae.jsecurity.managers.PunishmentManager;
+import com.jerae.jsecurity.listeners.*;
+import com.jerae.jsecurity.managers.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class JSecurity extends JavaPlugin {
@@ -17,6 +12,8 @@ public final class JSecurity extends JavaPlugin {
     private PunishmentManager punishmentManager;
     private FreezeManager freezeManager;
     private PlayerDataManager playerDataManager;
+    private MessageManager messageManager;
+    private VanishManager vanishManager;
 
     @Override
     public void onEnable() {
@@ -25,12 +22,17 @@ public final class JSecurity extends JavaPlugin {
         punishmentManager = new PunishmentManager(this);
         freezeManager = new FreezeManager();
         playerDataManager = new PlayerDataManager(this);
+        messageManager = new MessageManager();
+        vanishManager = new VanishManager(this);
 
         // Register listeners
         PlayerListener playerListener = new PlayerListener(this, punishmentManager, configManager, playerDataManager);
         getServer().getPluginManager().registerEvents(playerListener, this);
         getServer().getPluginManager().registerEvents(new PlayerFreezeListener(freezeManager), this);
         getServer().getPluginManager().registerEvents(new PlayerDataListener(playerDataManager, configManager), this);
+        getServer().getPluginManager().registerEvents(new ChatListener(configManager), this);
+        getServer().getPluginManager().registerEvents(new VanishListener(this, vanishManager), this);
+
 
         // Register commands
         getCommand("ban").setExecutor(new BanCommand(punishmentManager, configManager, playerListener, playerDataManager));
@@ -42,9 +44,13 @@ public final class JSecurity extends JavaPlugin {
         getCommand("unmute").setExecutor(new UnmuteCommand(punishmentManager, configManager));
         getCommand("kick").setExecutor(new KickCommand(configManager));
         getCommand("warn").setExecutor(new WarnCommand(punishmentManager, configManager));
-        getCommand("js").setExecutor(new JSecurityCommand(this, configManager, punishmentManager, playerDataManager));
+        getCommand("jsecurity").setExecutor(new JSecurityCommand(this, configManager, punishmentManager, playerDataManager));
         getCommand("freeze").setExecutor(new FreezeCommand(freezeManager, configManager));
         getCommand("unfreeze").setExecutor(new UnfreezeCommand(freezeManager, configManager));
+        getCommand("message").setExecutor(new MessageCommand(messageManager));
+        getCommand("reply").setExecutor(new ReplyCommand(messageManager));
+        getCommand("socialspy").setExecutor(new SocialSpyCommand(messageManager));
+        getCommand("vanish").setExecutor(new VanishCommand(vanishManager));
 
 
         getLogger().info("jSecurity has been enabled.");
