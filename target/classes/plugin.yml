@@ -8,39 +8,30 @@ commands:
   ban:
     description: Bans a player permanently.
     usage: /ban <player> [reason] [-s]
-    permission: jsecurity.ban
   tempban:
     description: Temporarily bans a player.
     usage: /tempban <player> [duration] [reason] [-s]
-    permission: jsecurity.tempban
   ipban:
     description: Bans a player's IP address.
     usage: /ipban <player/ip> [-s]
-    permission: jsecurity.ipban
   unban:
     description: Unbans a player or IP address.
     usage: /unban <player/ip> [-s]
-    permission: jsecurity.unban
   mute:
     description: Mutes a player permanently.
     usage: /mute <player> [reason] [-s]
-    permission: jsecurity.mute
   tempmute:
     description: Temporarily mutes a player.
     usage: /tempmute <player> [duration] [reason] [-s]
-    permission: jsecurity.tempmute
   unmute:
     description: Unmutes a player.
     usage: /unmute <player> [-s]
-    permission: jsecurity.unmute
   kick:
     description: Kicks a player from the server.
     usage: /kick <player> [reason] [-s]
-    permission: jsecurity.kick
   jsecurity:
     description: jSecurity admin commands.
     usage: /js <reload>
-    permission: jsecurity.admin
     aliases: [js]
   message:
     description: Sends a private message to a player.
@@ -53,24 +44,19 @@ commands:
   socialspy:
     description: Toggles social spy.
     usage: /socialspy
-    permission: jsecurity.socialspy
   vanish:
     description: Toggles vanish mode.
     usage: /vanish
-    permission: jsecurity.vanish
     aliases: [v]
   freeze:
     description: Freezes a player.
     usage: /freeze <player>
-    permission: jsecurity.freeze
   unfreeze:
     description: Unfreezes a player.
     usage: /unfreeze <player>
-    permission: jsecurity.unfreeze
   warn:
     description: Warns a player.
     usage: /warn <player> <reason> [-s]
-    permission: jsecurity.warn
   register:
     description: Registers a player.
     usage: /register <password> <confirmPassword>

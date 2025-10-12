@@ -9,6 +9,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChatListener implements Listener {
 
@@ -37,10 +39,29 @@ public class ChatListener implements Listener {
 
         if (configManager.isKeywordReplacementEnabled()) {
             String message = event.getMessage();
-            for (Map.Entry<String, String> entry : configManager.getKeywordReplacementMap().entrySet()) {
-                message = message.replaceAll("(?i)\\b" + entry.getKey() + "\\b", entry.getValue());
+            Map<String, String> replacementMap = configManager.getKeywordReplacementMap();
+
+            String[] words = message.split(" ");
+            Pattern pattern = Pattern.compile("(\\p{Punct}*)(.*?)(\\p{Punct}*)");
+
+            for (int i = 0; i < words.length; i++) {
+                String originalWord = words[i];
+                Matcher matcher = pattern.matcher(originalWord);
+
+                if (matcher.matches()) {
+                    String leadingPunct = matcher.group(1);
+                    String coreWord = matcher.group(2);
+                    String trailingPunct = matcher.group(3);
+
+                    String wordToMatch = coreWord.toLowerCase();
+
+                    if (replacementMap.containsKey(wordToMatch)) {
+                        String replacement = replacementMap.get(wordToMatch);
+                        words[i] = leadingPunct + replacement + trailingPunct;
+                    }
+                }
             }
-            event.setMessage(message);
+            event.setMessage(String.join(" ", words));
         }
     }
 }

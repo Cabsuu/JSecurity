@@ -290,6 +290,22 @@ public class FeatureTests {
     }
 
     @Test
+    public void testLoginCommandIsCancelled() {
+        // Given
+        AuthManager authManager = mock(AuthManager.class);
+        PlayerListener playerListener = new PlayerListener(mock(JSecurity.class), punishmentManager, configManager, mock(PlayerDataManager.class), authManager);
+        when(configManager.getBoolean("authentication.enabled")).thenReturn(true);
+        when(authManager.isLoggedIn(player)).thenReturn(false);
+
+        // When
+        org.bukkit.event.player.PlayerCommandPreprocessEvent event = new org.bukkit.event.player.PlayerCommandPreprocessEvent(player, "/login password");
+        playerListener.onPlayerCommandPreprocess(event);
+
+        // Then
+        assertTrue(event.isCancelled());
+    }
+
+    @Test
     public void testPlayerLogin() {
         // Given
         AuthManager authManager = mock(AuthManager.class);

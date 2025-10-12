@@ -35,6 +35,8 @@ import com.jerae.jsecurity.JSecurity;
 import com.jerae.jsecurity.managers.AuthManager;
 import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.models.PlayerData;
+import com.jerae.jsecurity.commands.LoginCommand;
+import com.jerae.jsecurity.commands.RegisterCommand;
 import com.jerae.jsecurity.utils.PermissionUtils;
 
 public class PlayerListener implements Listener {
@@ -44,6 +46,8 @@ public class PlayerListener implements Listener {
     private final ConfigManager configManager;
     private final PlayerDataManager playerDataManager;
     private final AuthManager authManager;
+    private final LoginCommand loginCommand;
+    private final RegisterCommand registerCommand;
 
     public PlayerListener(JSecurity plugin, PunishmentManager punishmentManager, ConfigManager configManager, PlayerDataManager playerDataManager, AuthManager authManager) {
         this.plugin = plugin;
@@ -51,6 +55,8 @@ public class PlayerListener implements Listener {
         this.configManager = configManager;
         this.playerDataManager = playerDataManager;
         this.authManager = authManager;
+        this.loginCommand = new LoginCommand(authManager, configManager);
+        this.registerCommand = new RegisterCommand(authManager, configManager);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -185,8 +191,18 @@ public class PlayerListener implements Listener {
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if (configManager.getBoolean("authentication.enabled") && !authManager.isLoggedIn(player)) {
-            String command = event.getMessage().split(" ")[0].substring(1);
-            if (!command.equalsIgnoreCase("login") && !command.equalsIgnoreCase("register")) {
+            String[] parts = event.getMessage().substring(1).split(" ");
+            String command = parts[0];
+            String[] args = new String[parts.length - 1];
+            System.arraycopy(parts, 1, args, 0, parts.length - 1);
+
+            if (command.equalsIgnoreCase("login")) {
+                event.setCancelled(true);
+                loginCommand.onCommand(player, null, command, args);
+            } else if (command.equalsIgnoreCase("register")) {
+                event.setCancelled(true);
+                registerCommand.onCommand(player, null, command, args);
+            } else {
                 event.setCancelled(true);
                 player.sendMessage("You must be logged in to use commands.");
             }
