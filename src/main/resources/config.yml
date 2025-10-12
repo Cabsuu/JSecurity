@@ -34,3 +34,19 @@ keyword-replacement:
   words:
     "fudge": ["fuck", "fck", "fk"]
     "poop": ["shit"]
+
+# Muted Command Restriction
+# A list of commands that are blocked for muted players.
+# Commands should be listed without the initial slash (e.g., "msg" not "/msg").
+muted-command-restriction:
+  - "msg"
+  - "tell"
+  - "r"
+  - "reply"
+  - "me"
+
+# Authentication System
+# If true, players will be required to register and log in to play.
+# This is intended for offline-mode (cracked) servers.
+authentication:
+  enabled: false
