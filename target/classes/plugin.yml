@@ -37,10 +37,28 @@ commands:
     description: Kicks a player from the server.
     usage: /kick <player> [reason] [-s]
     permission: jsecurity.kick
-  js:
+  jsecurity:
     description: jSecurity admin commands.
     usage: /js <reload>
     permission: jsecurity.admin
+    aliases: [js]
+  message:
+    description: Sends a private message to a player.
+    usage: /message <player> <message>
+    aliases: [msg]
+  reply:
+    description: Replies to the last private message.
+    usage: /reply <message>
+    aliases: [r]
+  socialspy:
+    description: Toggles social spy.
+    usage: /socialspy
+    permission: jsecurity.socialspy
+  vanish:
+    description: Toggles vanish mode.
+    usage: /vanish
+    permission: jsecurity.vanish
+    aliases: [v]
   freeze:
     description: Freezes a player.
     usage: /freeze <player>
@@ -70,36 +88,77 @@ permissions:
       jsecurity.unfreeze: true
       jsecurity.warn: true
       jsecurity.alt.alert: true
+      jsecurity.socialspy: true
+      jsecurity.socialspy.view: true
+      jsecurity.socialspy.exempt: true
+      jsecurity.chat.delay.bypass: true
+      jsecurity.vanish: true
+      jsecurity.vanish.see: true
+      jsecurity.vanish.interact: true
+      jsecurity.vanish.silentjoin: true
+      jsecurity.help: true
+      jsecurity.record: true
+      jsecurity.profile: true
+      jsecurity.log: true
+      jsecurity.history: true
+      jsecurity.note: true
+      jsecurity.message: true
+      jsecurity.reply: true
   jsecurity.ban:
     description: Allows banning players.
-    default: op
   jsecurity.tempban:
     description: Allows temporarily banning players.
-    default: op
   jsecurity.ipban:
     description: Allows IP banning players.
-    default: op
   jsecurity.unban:
     description: Allows unbanning players.
-    default: op
   jsecurity.mute:
     description: Allows muting players.
-    default: op
   jsecurity.tempmute:
     description: Allows temporarily muting players.
-    default: op
   jsecurity.unmute:
     description: Allows unmuting players.
-    default: op
   jsecurity.kick:
     description: Allows kicking players.
-    default: op
   jsecurity.admin:
     description: Allows access to jSecurity admin commands.
-    default: op
   jsecurity.warn:
     description: Allows warning players.
-    default: op
   jsecurity.alt.alert:
     description: Notifies staff on possible alt account join.
-    default: op
+  jsecurity.socialspy:
+    description: Allows toggling social spy.
+  jsecurity.socialspy.view:
+    description: Allows viewing private messages with social spy.
+  jsecurity.socialspy.exempt:
+    description: Exempts a player from being spied on.
+  jsecurity.chat.delay.bypass:
+    description: Allows bypassing the chat delay.
+  jsecurity.vanish:
+    description: Allows toggling vanish mode.
+  jsecurity.vanish.see:
+    description: Allows seeing vanished players.
+  jsecurity.vanish.interact:
+    description: Allows interacting with players while vanished.
+  jsecurity.vanish.silentjoin:
+    description: Allows joining the server silently while vanished.
+  jsecurity.help:
+    description: Allows using the /js help command.
+  jsecurity.record:
+    description: Allows using the /js record command.
+  jsecurity.profile:
+    description: Allows using the /js profile command.
+  jsecurity.log:
+    description: Allows using the /js log command.
+  jsecurity.history:
+    description: Allows using the /js history command.
+  jsecurity.note:
+    description: Allows using the /js note command.
+  jsecurity.message:
+    description: Allows sending private messages.
+  jsecurity.reply:
+    description: Allows replying to private messages.
+  jsecurity.freeze:
+    description: Allows freezing players.
+  jsecurity.unfreeze:
+    description: Allows unfreezing players.

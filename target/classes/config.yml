@@ -21,3 +21,16 @@ announce-milestones: []
 # Alt Account Detection
 # If true, staff will be alerted when a player joins with the same IP as another player.
 alt-account-alert: false
+
+# Chat Delay
+chat-delay:
+  enabled: false
+  # Delay in seconds
+  period: 3
+
+# Keyword Replacement
+keyword-replacement:
+  enabled: false
+  words:
+    "fudge": ["fuck", "fck", "fk"]
+    "poop": ["shit"]

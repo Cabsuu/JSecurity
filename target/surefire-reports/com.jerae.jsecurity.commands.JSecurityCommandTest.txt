@@ -1,0 +1,13 @@
+-------------------------------------------------------------------------------
+Test set: com.jerae.jsecurity.commands.JSecurityCommandTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.026 s <<< FAILURE! -- in com.jerae.jsecurity.commands.JSecurityCommandTest
+com.jerae.jsecurity.commands.JSecurityCommandTest.onCommand_profile -- Time elapsed: 0.007 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "org.bukkit.Server.getOfflinePlayer(java.util.UUID)" because "org.bukkit.Bukkit.server" is null
+	at org.bukkit.Bukkit.getOfflinePlayer(Bukkit.java:1553)
+	at com.jerae.jsecurity.commands.JSecurityCommand.handleProfile(JSecurityCommand.java:146)
+	at com.jerae.jsecurity.commands.JSecurityCommand.onCommand(JSecurityCommand.java:65)
+	at com.jerae.jsecurity.commands.JSecurityCommandTest.onCommand_profile(JSecurityCommandTest.java:59)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)

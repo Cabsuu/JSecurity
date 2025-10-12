@@ -130,4 +130,40 @@ public class ConfigManager {
     public String getNewPlayerBroadcastMessage() {
         return newPlayerBroadcastMessage;
     }
+
+    public boolean isChatDelayEnabled() {
+        return config.getBoolean("chat-delay.enabled", false);
+    }
+
+    public double getChatDelay() {
+        return config.getDouble("chat-delay.period", 3.0);
+    }
+
+    public boolean isKeywordReplacementEnabled() {
+        return config.getBoolean("keyword-replacement.enabled", false);
+    }
+
+    public java.util.Map<String, String> getKeywordReplacementMap() {
+        java.util.Map<String, String> map = new java.util.HashMap<>();
+        if (isKeywordReplacementEnabled()) {
+            for (String key : config.getConfigurationSection("keyword-replacement.words").getKeys(false)) {
+                for (String word : config.getStringList("keyword-replacement.words." + key)) {
+                    map.put(word.toLowerCase(), key);
+                }
+            }
+        }
+        return map;
+    }
+
+    public String getNoPermissionMessage() {
+        return messagesConfig.getString("other.no-permission", "&cYou do not have permission to use this command.");
+    }
+
+    public String getPrivateMessageToSenderFormat() {
+        return messagesConfig.getString("other.private-message.to-sender", "&7[&bme &d-> &b{target}&7] &f{content}");
+    }
+
+    public String getPrivateMessageToReceiverFormat() {
+        return messagesConfig.getString("other.private-message.to-receiver", "&7[&b{sender} &d-> &bme&7] &f{content}");
+    }
 }

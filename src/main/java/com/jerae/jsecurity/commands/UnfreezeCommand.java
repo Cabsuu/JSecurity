@@ -21,6 +21,11 @@ public class UnfreezeCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("jsecurity.unfreeze")) {
+            sender.sendMessage(configManager.getNoPermissionMessage());
+            return true;
+        }
+
         if (args.length < 1) {
             sender.sendMessage(ChatColor.RED + "Usage: /unfreeze <player>");
             return true;

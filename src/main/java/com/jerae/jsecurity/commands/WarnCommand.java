@@ -30,6 +30,11 @@ public class WarnCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("jsecurity.warn")) {
+            sender.sendMessage(configManager.getNoPermissionMessage());
+            return true;
+        }
+
         if (args.length < 2) {
             sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /warn <player> <reason> [-s]"));
             return true;
