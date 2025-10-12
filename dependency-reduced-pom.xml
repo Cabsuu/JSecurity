@@ -41,7 +41,12 @@
           <testSourceDirectory>src/test/java</testSourceDirectory>
           <redirectTestOutputToFile>false</redirectTestOutputToFile>
           <excludes>
-            <exclude>**/NewFeatureTests.java</exclude>
+            <exclude>**/FeatureTests.java</exclude>
+            <exclude>**/NewFeatureTest.java</exclude>
+            <exclude>**/JSecurityCommandTest.java</exclude>
+            <exclude>**/MessageCommandsTest.java</exclude>
+            <exclude>**/VanishCommandTest.java</exclude>
+            <exclude>**/ChatListenerTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>

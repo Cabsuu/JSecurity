@@ -104,8 +104,6 @@ permissions:
       jsecurity.note: true
       jsecurity.message: true
       jsecurity.reply: true
-      jsecurity.freeze: true
-      jsecurity.unfreeze: true
   jsecurity.ban:
     description: Allows banning players.
   jsecurity.tempban:
