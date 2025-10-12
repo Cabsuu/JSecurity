@@ -71,6 +71,12 @@ commands:
     description: Warns a player.
     usage: /warn <player> <reason> [-s]
     permission: jsecurity.warn
+  register:
+    description: Registers a player.
+    usage: /register <password> <confirmPassword>
+  login:
+    description: Logs a player in.
+    usage: /login <password>
 permissions:
   jsecurity.*:
     description: Gives access to all jSecurity commands.
