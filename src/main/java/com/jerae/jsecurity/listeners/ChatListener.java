@@ -38,7 +38,7 @@ public class ChatListener implements Listener {
         if (configManager.isKeywordReplacementEnabled()) {
             String message = event.getMessage();
             for (Map.Entry<String, String> entry : configManager.getKeywordReplacementMap().entrySet()) {
-                message = message.replaceAll("(?i)" + entry.getKey(), entry.getValue());
+                message = message.replaceAll("(?i)\\b" + entry.getKey() + "\\b", entry.getValue());
             }
             event.setMessage(message);
         }
