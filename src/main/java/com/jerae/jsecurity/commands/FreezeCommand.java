@@ -2,6 +2,7 @@ package com.jerae.jsecurity.commands;
 
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.FreezeManager;
+import com.jerae.jsecurity.utils.PermissionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -22,7 +23,7 @@ public class FreezeCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("jsecurity.freeze")) {
-            sender.sendMessage(configManager.getNoPermissionMessage());
+            PermissionUtils.sendNoPermissionMessage(sender, configManager);
             return true;
         }
 

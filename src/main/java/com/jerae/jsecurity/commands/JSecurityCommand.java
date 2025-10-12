@@ -7,6 +7,7 @@ import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
 import com.jerae.jsecurity.models.PlayerData;
 import com.jerae.jsecurity.models.PunishmentLogEntry;
+import com.jerae.jsecurity.utils.PermissionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -54,49 +55,49 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         switch (subCommand) {
             case "help":
                 if (!sender.hasPermission("jsecurity.help")) {
-                    sender.sendMessage(configManager.getNoPermissionMessage());
+                    PermissionUtils.sendNoPermissionMessage(sender, configManager);
                     return true;
                 }
                 HelpCommand.execute(sender);
                 break;
             case "reload":
                 if (!sender.hasPermission("jsecurity.admin")) {
-                    sender.sendMessage(configManager.getNoPermissionMessage());
+                    PermissionUtils.sendNoPermissionMessage(sender, configManager);
                     return true;
                 }
                 handleReload(sender);
                 break;
             case "record":
                 if (!sender.hasPermission("jsecurity.record")) {
-                    sender.sendMessage(configManager.getNoPermissionMessage());
+                    PermissionUtils.sendNoPermissionMessage(sender, configManager);
                     return true;
                 }
                 handleRecord(sender, Arrays.copyOfRange(args, 1, args.length));
                 break;
             case "profile":
                 if (!sender.hasPermission("jsecurity.profile")) {
-                    sender.sendMessage(configManager.getNoPermissionMessage());
+                    PermissionUtils.sendNoPermissionMessage(sender, configManager);
                     return true;
                 }
                 handleProfile(sender, Arrays.copyOfRange(args, 1, args.length));
                 break;
             case "note":
                 if (!sender.hasPermission("jsecurity.note")) {
-                    sender.sendMessage(configManager.getNoPermissionMessage());
+                    PermissionUtils.sendNoPermissionMessage(sender, configManager);
                     return true;
                 }
                 handleNote(sender, Arrays.copyOfRange(args, 1, args.length));
                 break;
             case "log":
                 if (!sender.hasPermission("jsecurity.log")) {
-                    sender.sendMessage(configManager.getNoPermissionMessage());
+                    PermissionUtils.sendNoPermissionMessage(sender, configManager);
                     return true;
                 }
                 handleLog(sender, Arrays.copyOfRange(args, 1, args.length));
                 break;
             case "history":
                 if (!sender.hasPermission("jsecurity.history")) {
-                    sender.sendMessage(configManager.getNoPermissionMessage());
+                    PermissionUtils.sendNoPermissionMessage(sender, configManager);
                     return true;
                 }
                 handleHistory(sender, Arrays.copyOfRange(args, 1, args.length));

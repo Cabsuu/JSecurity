@@ -60,5 +60,26 @@ public class ChatListenerTest {
 
         // Then
         assertEquals("what the fudge!", event.getMessage());
+
+        // When
+        event = new AsyncPlayerChatEvent(false, player, "this is a test, not a fckn test", null);
+        chatListener.onPlayerChat(event);
+
+        // Then
+        assertEquals("this is a test, not a fckn test", event.getMessage());
+
+        // When
+        event = new AsyncPlayerChatEvent(false, player, "fk", null);
+        chatListener.onPlayerChat(event);
+
+        // Then
+        assertEquals("fudge", event.getMessage());
+
+        // When
+        event = new AsyncPlayerChatEvent(false, player, "that's some real shit", null);
+        chatListener.onPlayerChat(event);
+
+        // Then
+        assertEquals("that's some real poop", event.getMessage());
     }
 }

@@ -3,6 +3,7 @@ package com.jerae.jsecurity.commands;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.MuteEntry;
 import com.jerae.jsecurity.managers.PunishmentManager;
+import com.jerae.jsecurity.utils.PermissionUtils;
 import com.jerae.jsecurity.utils.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -33,7 +34,7 @@ public class MuteCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("jsecurity.mute")) {
-            sender.sendMessage(configManager.getNoPermissionMessage());
+            PermissionUtils.sendNoPermissionMessage(sender, configManager);
             return true;
         }
 

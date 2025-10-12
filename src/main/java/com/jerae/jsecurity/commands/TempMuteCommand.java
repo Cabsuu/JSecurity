@@ -3,6 +3,7 @@ package com.jerae.jsecurity.commands;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.MuteEntry;
 import com.jerae.jsecurity.managers.PunishmentManager;
+import com.jerae.jsecurity.utils.PermissionUtils;
 import com.jerae.jsecurity.utils.PlaceholderAPI;
 import com.jerae.jsecurity.utils.TimeUtil;
 import net.kyori.adventure.text.Component;
@@ -34,7 +35,7 @@ public class TempMuteCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("jsecurity.tempmute")) {
-            sender.sendMessage(configManager.getNoPermissionMessage());
+            PermissionUtils.sendNoPermissionMessage(sender, configManager);
             return true;
         }
 

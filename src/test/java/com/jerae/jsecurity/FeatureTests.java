@@ -351,4 +351,21 @@ public class FeatureTests {
         // Then
         assertTrue(event.isCancelled());
     }
+
+    @Test
+    public void testNoPermissionMessageColor() {
+        // Given
+        when(sender.hasPermission("jsecurity.ban")).thenReturn(false);
+        String noPermissionMessage = "&cYou do not have permission to use this command.";
+        when(configManager.getNoPermissionMessage()).thenReturn(noPermissionMessage);
+        BanCommand banCommand = new BanCommand(punishmentManager, configManager, mock(PlayerListener.class), mock(PlayerDataManager.class));
+
+        // When
+        banCommand.onCommand(sender, mock(Command.class), "ban", new String[]{"testPlayer"});
+
+        // Then
+        ArgumentCaptor<Component> captor = ArgumentCaptor.forClass(Component.class);
+        verify(sender).sendMessage(captor.capture());
+        assertEquals(net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacyAmpersand().deserialize(noPermissionMessage), captor.getValue());
+    }
 }

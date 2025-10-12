@@ -190,26 +190,28 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        if (configManager.getBoolean("authentication.enabled") && !authManager.isLoggedIn(player)) {
-            String[] parts = event.getMessage().substring(1).split(" ");
-            String command = parts[0];
-            String[] args = new String[parts.length - 1];
-            System.arraycopy(parts, 1, args, 0, parts.length - 1);
+        String[] parts = event.getMessage().substring(1).split(" ");
+        String command = parts[0];
+        String[] args = new String[parts.length - 1];
+        System.arraycopy(parts, 1, args, 0, parts.length - 1);
 
+        if (configManager.getBoolean("authentication.enabled")) {
             if (command.equalsIgnoreCase("login")) {
                 event.setCancelled(true);
                 loginCommand.onCommand(player, null, command, args);
+                return;
             } else if (command.equalsIgnoreCase("register")) {
                 event.setCancelled(true);
                 registerCommand.onCommand(player, null, command, args);
-            } else {
+                return;
+            } else if (!authManager.isLoggedIn(player)) {
                 event.setCancelled(true);
                 player.sendMessage("You must be logged in to use commands.");
+                return;
             }
         }
 
         if (punishmentManager.isMuted(player.getUniqueId())) {
-            String command = event.getMessage().split(" ")[0].substring(1);
             if (configManager.getMutedCommandRestriction().contains(command.toLowerCase())) {
                 event.setCancelled(true);
                 PermissionUtils.sendNoPermissionMessage(player, configManager);

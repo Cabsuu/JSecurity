@@ -1,6 +1,7 @@
 package com.jerae.jsecurity.commands;
 
 import com.jerae.jsecurity.managers.ConfigManager;
+import com.jerae.jsecurity.utils.PermissionUtils;
 import com.jerae.jsecurity.utils.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -27,7 +28,7 @@ public class KickCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("jsecurity.kick")) {
-            sender.sendMessage(configManager.getNoPermissionMessage());
+            PermissionUtils.sendNoPermissionMessage(sender, configManager);
             return true;
         }
 
