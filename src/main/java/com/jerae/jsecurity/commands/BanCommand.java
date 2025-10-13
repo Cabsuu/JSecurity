@@ -6,6 +6,7 @@ import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
 import com.jerae.jsecurity.models.PlayerData;
+import com.jerae.jsecurity.utils.PermissionUtils;
 import com.jerae.jsecurity.utils.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -40,7 +41,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("jsecurity.ban")) {
-            sender.sendMessage(configManager.getNoPermissionMessage());
+            PermissionUtils.sendNoPermissionMessage(sender, configManager);
             return true;
         }
 

@@ -2,6 +2,7 @@ package com.jerae.jsecurity.commands;
 
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.MessageManager;
+import com.jerae.jsecurity.utils.PermissionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -22,7 +23,7 @@ public class MessageCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("jsecurity.message")) {
-            sender.sendMessage(configManager.getNoPermissionMessage());
+            PermissionUtils.sendNoPermissionMessage(sender, configManager);
             return true;
         }
 

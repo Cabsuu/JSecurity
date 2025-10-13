@@ -33,6 +33,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+import com.jerae.jsecurity.managers.AuthManager;
 
 public class FeatureTests {
 
@@ -42,6 +43,8 @@ public class FeatureTests {
     private CommandSender sender;
     private final UUID playerUUID = UUID.randomUUID();
     private OfflinePlayer offlinePlayer;
+    private PunishmentManager punishmentManager;
+    private ConfigManager configManager;
 
 
     @BeforeEach
@@ -50,6 +53,8 @@ public class FeatureTests {
         player = mock(Player.class);
         sender = mock(CommandSender.class);
         offlinePlayer = mock(OfflinePlayer.class);
+        punishmentManager = mock(PunishmentManager.class);
+        configManager = mock(ConfigManager.class);
 
         when(player.getName()).thenReturn("testPlayer");
         when(player.getUniqueId()).thenReturn(playerUUID);
@@ -219,8 +224,9 @@ public class FeatureTests {
         PunishmentManager punishmentManager = mock(PunishmentManager.class);
         ConfigManager configManager = mock(ConfigManager.class);
         PlayerDataManager playerDataManager = mock(PlayerDataManager.class);
+        AuthManager authManager = mock(AuthManager.class);
 
-        PlayerListener listener = new PlayerListener(plugin, punishmentManager, configManager, playerDataManager);
+        PlayerListener listener = new PlayerListener(plugin, punishmentManager, configManager, playerDataManager, authManager);
 
         Player player1 = mock(Player.class);
         when(player1.getName()).thenReturn("Player1");
@@ -261,5 +267,105 @@ public class FeatureTests {
         verify(logger, times(2)).info(logCaptor.capture());
         assertTrue(logCaptor.getAllValues().get(1).contains("Player1"));
         assertTrue(logCaptor.getAllValues().get(1).contains("Player2"));
+    }
+
+    @Test
+    public void testMutedPlayerCommandRestriction() {
+        // Given
+        PlayerListener playerListener = new PlayerListener(mock(JSecurity.class), punishmentManager, configManager, mock(PlayerDataManager.class), mock(AuthManager.class));
+        MuteEntry muteEntry = new MuteEntry(playerUUID, player.getName(), "test reason", "test staff", -1);
+
+        when(punishmentManager.isMuted(playerUUID)).thenReturn(true);
+        when(punishmentManager.getMute(playerUUID)).thenReturn(muteEntry);
+        when(configManager.getMutedCommandRestriction()).thenReturn(List.of("msg", "tell"));
+        String noPermissionMessage = "&cYou do not have permission to use this command.";
+        when(configManager.getNoPermissionMessage()).thenReturn(noPermissionMessage);
+
+        // When
+        org.bukkit.event.player.PlayerCommandPreprocessEvent event = new org.bukkit.event.player.PlayerCommandPreprocessEvent(player, "/msg hello");
+        playerListener.onPlayerCommandPreprocess(event);
+
+        // Then
+        assertTrue(event.isCancelled());
+    }
+
+    @Test
+    public void testLoginCommandIsCancelled() {
+        // Given
+        AuthManager authManager = mock(AuthManager.class);
+        PlayerListener playerListener = new PlayerListener(mock(JSecurity.class), punishmentManager, configManager, mock(PlayerDataManager.class), authManager);
+        when(configManager.getBoolean("authentication.enabled")).thenReturn(true);
+        when(authManager.isLoggedIn(player)).thenReturn(false);
+
+        // When
+        org.bukkit.event.player.PlayerCommandPreprocessEvent event = new org.bukkit.event.player.PlayerCommandPreprocessEvent(player, "/login password");
+        playerListener.onPlayerCommandPreprocess(event);
+
+        // Then
+        assertTrue(event.isCancelled());
+    }
+
+    @Test
+    public void testPlayerLogin() {
+        // Given
+        AuthManager authManager = mock(AuthManager.class);
+        LoginCommand loginCommand = new LoginCommand(authManager, configManager);
+        when(configManager.getBoolean("authentication.enabled")).thenReturn(true);
+        when(authManager.isRegistered(playerUUID)).thenReturn(true);
+        when(authManager.checkPassword(playerUUID, "password")).thenReturn(true);
+
+        // When
+        loginCommand.onCommand(player, mock(Command.class), "login", new String[]{"password"});
+
+        // Then
+        verify(authManager).loginPlayer(player);
+    }
+
+    @Test
+    public void testPlayerRegister() {
+        // Given
+        AuthManager authManager = mock(AuthManager.class);
+        RegisterCommand registerCommand = new RegisterCommand(authManager, configManager);
+        when(configManager.getBoolean("authentication.enabled")).thenReturn(true);
+        when(authManager.isRegistered(playerUUID)).thenReturn(false);
+
+        // When
+        registerCommand.onCommand(player, mock(Command.class), "register", new String[]{"password", "password"});
+
+        // Then
+        verify(authManager).registerPlayer(playerUUID, "password");
+    }
+
+    @Test
+    public void testUnauthenticatedPlayerCannotMove() {
+        // Given
+        AuthManager authManager = mock(AuthManager.class);
+        PlayerListener playerListener = new PlayerListener(mock(JSecurity.class), punishmentManager, configManager, mock(PlayerDataManager.class), authManager);
+        when(configManager.getBoolean("authentication.enabled")).thenReturn(true);
+        when(authManager.isLoggedIn(player)).thenReturn(false);
+
+        // When
+        org.bukkit.event.player.PlayerMoveEvent event = new org.bukkit.event.player.PlayerMoveEvent(player, player.getLocation(), player.getLocation().add(1, 0, 0));
+        playerListener.onPlayerMove(event);
+
+        // Then
+        assertTrue(event.isCancelled());
+    }
+
+    @Test
+    public void testNoPermissionMessageColor() {
+        // Given
+        when(sender.hasPermission("jsecurity.ban")).thenReturn(false);
+        String noPermissionMessage = "&cYou do not have permission to use this command.";
+        when(configManager.getNoPermissionMessage()).thenReturn(noPermissionMessage);
+        BanCommand banCommand = new BanCommand(punishmentManager, configManager, mock(PlayerListener.class), mock(PlayerDataManager.class));
+
+        // When
+        banCommand.onCommand(sender, mock(Command.class), "ban", new String[]{"testPlayer"});
+
+        // Then
+        ArgumentCaptor<Component> captor = ArgumentCaptor.forClass(Component.class);
+        verify(sender).sendMessage(captor.capture());
+        assertEquals(net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacyAmpersand().deserialize(noPermissionMessage), captor.getValue());
     }
 }

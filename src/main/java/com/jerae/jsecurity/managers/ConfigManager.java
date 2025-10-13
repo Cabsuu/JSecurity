@@ -1,5 +1,7 @@
 package com.jerae.jsecurity.managers;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -165,5 +167,9 @@ public class ConfigManager {
 
     public String getPrivateMessageToReceiverFormat() {
         return messagesConfig.getString("other.private-message.to-receiver", "&7[&b{sender} &d-> &bme&7] &f{content}");
+    }
+
+    public List<String> getMutedCommandRestriction() {
+        return config.getStringList("muted-command-restriction");
     }
 }

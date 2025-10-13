@@ -16,8 +16,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -29,8 +32,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.jerae.jsecurity.JSecurity;
+import com.jerae.jsecurity.managers.AuthManager;
 import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.models.PlayerData;
+import com.jerae.jsecurity.commands.LoginCommand;
+import com.jerae.jsecurity.commands.RegisterCommand;
+import com.jerae.jsecurity.utils.PermissionUtils;
 
 public class PlayerListener implements Listener {
 
@@ -38,12 +45,18 @@ public class PlayerListener implements Listener {
     private final PunishmentManager punishmentManager;
     private final ConfigManager configManager;
     private final PlayerDataManager playerDataManager;
+    private final AuthManager authManager;
+    private final LoginCommand loginCommand;
+    private final RegisterCommand registerCommand;
 
-    public PlayerListener(JSecurity plugin, PunishmentManager punishmentManager, ConfigManager configManager, PlayerDataManager playerDataManager) {
+    public PlayerListener(JSecurity plugin, PunishmentManager punishmentManager, ConfigManager configManager, PlayerDataManager playerDataManager, AuthManager authManager) {
         this.plugin = plugin;
         this.punishmentManager = punishmentManager;
         this.configManager = configManager;
         this.playerDataManager = playerDataManager;
+        this.authManager = authManager;
+        this.loginCommand = new LoginCommand(authManager, configManager);
+        this.registerCommand = new RegisterCommand(authManager, configManager);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -101,6 +114,15 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player joiningPlayer = event.getPlayer();
+
+        if (configManager.getBoolean("authentication.enabled")) {
+            if (authManager.isRegistered(joiningPlayer.getUniqueId())) {
+                joiningPlayer.sendMessage("Please log in using /login <password>");
+            } else {
+                joiningPlayer.sendMessage("Please register using /register <password> <confirmPassword>");
+            }
+        }
+
         InetSocketAddress joiningPlayerSocketAddress = joiningPlayer.getAddress();
 
         if (joiningPlayerSocketAddress == null) {
@@ -148,9 +170,78 @@ public class PlayerListener implements Listener {
         }
     }
 
+
+    public void onPlayerBan(OfflinePlayer bannedPlayer, String ipAddress) {
+        if (configManager.isBanEvasionPreventionEnabled() && ipAddress != null) {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                if (!onlinePlayer.getUniqueId().equals(bannedPlayer.getUniqueId()) && onlinePlayer.getAddress().getAddress().getHostAddress().equals(ipAddress)) {
+
+                    PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
+                            .setBannedPlayer(bannedPlayer.getName());
+
+                    String kickMessage = configManager.getMessage("kick-messages.alt-account-banned");
+                    Component kickComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(kickMessage, data));
+                    onlinePlayer.kick(kickComponent);
+                }
+            }
+        }
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        Player player = event.getPlayer();
+        String[] parts = event.getMessage().substring(1).split(" ");
+        String command = parts[0];
+        String[] args = new String[parts.length - 1];
+        System.arraycopy(parts, 1, args, 0, parts.length - 1);
+
+        if (configManager.getBoolean("authentication.enabled")) {
+            if (command.equalsIgnoreCase("login")) {
+                event.setCancelled(true);
+                loginCommand.onCommand(player, null, command, args);
+                return;
+            } else if (command.equalsIgnoreCase("register")) {
+                event.setCancelled(true);
+                registerCommand.onCommand(player, null, command, args);
+                return;
+            } else if (!authManager.isLoggedIn(player)) {
+                event.setCancelled(true);
+                player.sendMessage("You must be logged in to use commands.");
+                return;
+            }
+        }
+
+        if (punishmentManager.isMuted(player.getUniqueId())) {
+            if (configManager.getMutedCommandRestriction().contains(command.toLowerCase())) {
+                event.setCancelled(true);
+                PermissionUtils.sendNoPermissionMessage(player, configManager);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        if (configManager.getBoolean("authentication.enabled")) {
+            authManager.logoutPlayer(event.getPlayer());
+        }
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        if (configManager.getBoolean("authentication.enabled") && !authManager.isLoggedIn(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
     public void onPlayerChat(PlayerChatEvent event) {
         Player player = event.getPlayer();
+        if (configManager.getBoolean("authentication.enabled") && !authManager.isLoggedIn(player)) {
+            event.setCancelled(true);
+            player.sendMessage("You must be logged in to chat.");
+            return;
+        }
+
         if (punishmentManager.isMuted(player.getUniqueId())) {
             event.setCancelled(true);
 
@@ -167,22 +258,6 @@ public class PlayerListener implements Listener {
                 muteMessage = configManager.getMessage("tempmute-message");
             }
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(muteMessage, data)));
-        }
-    }
-
-    public void onPlayerBan(OfflinePlayer bannedPlayer, String ipAddress) {
-        if (configManager.isBanEvasionPreventionEnabled() && ipAddress != null) {
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                if (!onlinePlayer.getUniqueId().equals(bannedPlayer.getUniqueId()) && onlinePlayer.getAddress().getAddress().getHostAddress().equals(ipAddress)) {
-
-                    PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
-                            .setBannedPlayer(bannedPlayer.getName());
-
-                    String kickMessage = configManager.getMessage("kick-messages.alt-account-banned");
-                    Component kickComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(kickMessage, data));
-                    onlinePlayer.kick(kickComponent);
-                }
-            }
         }
     }
 }

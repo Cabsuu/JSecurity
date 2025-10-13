@@ -9,6 +9,7 @@ import com.jerae.jsecurity.managers.FreezeManager;
 import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
 import com.jerae.jsecurity.models.PlayerData;
+import com.jerae.jsecurity.managers.AuthManager;
 import com.jerae.jsecurity.models.PunishmentLogEntry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -159,7 +160,8 @@ public class NewFeatureTest {
         PunishmentManager punishmentManager = mock(PunishmentManager.class);
         ConfigManager configManager = mock(ConfigManager.class);
         PlayerDataManager playerDataManager = mock(PlayerDataManager.class);
-        PlayerListener listener = new PlayerListener(plugin, punishmentManager, configManager, playerDataManager);
+        AuthManager authManager = mock(AuthManager.class);
+        PlayerListener listener = new PlayerListener(plugin, punishmentManager, configManager, playerDataManager, authManager);
 
         String sharedIp = "127.0.0.1";
         InetSocketAddress sharedAddress = new InetSocketAddress(InetAddress.getByName(sharedIp), 12345);

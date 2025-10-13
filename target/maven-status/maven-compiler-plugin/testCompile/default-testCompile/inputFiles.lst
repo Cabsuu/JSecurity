@@ -1,4 +1,5 @@
-H:\Documents\Server Management\Self-Plugins\JSecurity\src\test\java\com\jerae\jsecurity\FeatureTests.java
-H:\Documents\Server Management\Self-Plugins\JSecurity\src\test\java\com\jerae\jsecurity\managers\PlayerDataManagerTest.java
-H:\Documents\Server Management\Self-Plugins\JSecurity\src\test\java\com\jerae\jsecurity\NewFeatureTest.java
-H:\Documents\Server Management\Self-Plugins\JSecurity\src\test\java\com\jerae\jsecurity\utils\TimeUtilTest.java
+/app/src/test/java/com/jerae/jsecurity/FeatureTests.java
+/app/src/test/java/com/jerae/jsecurity/NewFeatureTest.java
+/app/src/test/java/com/jerae/jsecurity/listeners/ChatListenerTest.java
+/app/src/test/java/com/jerae/jsecurity/managers/PlayerDataManagerTest.java
+/app/src/test/java/com/jerae/jsecurity/utils/TimeUtilTest.java

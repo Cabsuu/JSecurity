@@ -14,6 +14,7 @@ public final class JSecurity extends JavaPlugin {
     private PlayerDataManager playerDataManager;
     private MessageManager messageManager;
     private VanishManager vanishManager;
+    private AuthManager authManager;
 
     @Override
     public void onEnable() {
@@ -24,9 +25,10 @@ public final class JSecurity extends JavaPlugin {
         playerDataManager = new PlayerDataManager(this);
         messageManager = new MessageManager(configManager);
         vanishManager = new VanishManager(this);
+        authManager = new AuthManager(this);
 
         // Register listeners
-        PlayerListener playerListener = new PlayerListener(this, punishmentManager, configManager, playerDataManager);
+        PlayerListener playerListener = new PlayerListener(this, punishmentManager, configManager, playerDataManager, authManager);
         getServer().getPluginManager().registerEvents(playerListener, this);
         getServer().getPluginManager().registerEvents(new PlayerFreezeListener(freezeManager), this);
         getServer().getPluginManager().registerEvents(new PlayerDataListener(playerDataManager, configManager), this);
@@ -51,6 +53,8 @@ public final class JSecurity extends JavaPlugin {
         getCommand("reply").setExecutor(new ReplyCommand(messageManager, configManager));
         getCommand("socialspy").setExecutor(new SocialSpyCommand(messageManager, configManager));
         getCommand("vanish").setExecutor(new VanishCommand(vanishManager, configManager));
+        getCommand("register").setExecutor(new RegisterCommand(authManager, configManager));
+        getCommand("login").setExecutor(new LoginCommand(authManager, configManager));
 
 
         getLogger().info("jSecurity has been enabled.");
