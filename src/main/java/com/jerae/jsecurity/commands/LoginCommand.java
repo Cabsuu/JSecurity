@@ -49,6 +49,7 @@ public class LoginCommand implements CommandExecutor {
         if (authManager.checkPassword(player.getUniqueId(), password)) {
             authManager.loginPlayer(player);
             player.sendMessage("You have logged in successfully.");
+            System.out.println(player.getName() + " has logged in.");
         } else {
             player.sendMessage("Incorrect password.");
         }

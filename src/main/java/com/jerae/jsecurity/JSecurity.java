@@ -1,9 +1,11 @@
 package com.jerae.jsecurity;
 
 import com.jerae.jsecurity.commands.*;
-import com.jerae.jsecurity.commands.*;
 import com.jerae.jsecurity.listeners.*;
 import com.jerae.jsecurity.managers.*;
+import com.jerae.jsecurity.utils.LoginCommandFilter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class JSecurity extends JavaPlugin {
@@ -15,6 +17,7 @@ public final class JSecurity extends JavaPlugin {
     private MessageManager messageManager;
     private VanishManager vanishManager;
     private AuthManager authManager;
+    private LoginCommandFilter filter;
 
     @Override
     public void onEnable() {
@@ -57,11 +60,19 @@ public final class JSecurity extends JavaPlugin {
         getCommand("login").setExecutor(new LoginCommand(authManager, configManager));
 
 
+        Logger rootLogger = (Logger) LogManager.getRootLogger();
+        this.filter = new LoginCommandFilter();
+        rootLogger.addFilter(this.filter);
+
         getLogger().info("jSecurity has been enabled.");
     }
 
     @Override
     public void onDisable() {
+        if (this.filter != null) {
+            Logger rootLogger = (Logger) LogManager.getRootLogger();
+            rootLogger.getContext().removeFilter(this.filter);
+        }
         // Save all punishments to file
         if (punishmentManager != null) {
             punishmentManager.savePunishments();

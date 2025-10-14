@@ -5,24 +5,36 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a9e312d3-0c11-433c-84b6-2ce2e161793a" name="Changes" comment="Made changes">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/jerae/jsecurity/utils/LoginCommandFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/jerae/jsecurity/utils/LoginCommandFilterTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dependency-reduced-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/dependency-reduced-pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jerae/jsecurity/JSecurity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jerae/jsecurity/JSecurity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/JSecurity-0.1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/JSecurity-0.1.0.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/jerae/jsecurity/JSecurity.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/jerae/jsecurity/JSecurity.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/jerae/jsecurity/listeners/ChatListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/jerae/jsecurity/listeners/ChatListener.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/original-JSecurity-0.1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-JSecurity-0.1.0.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-com.jerae.jsecurity.managers.PlayerDataManagerTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-com.jerae.jsecurity.managers.PlayerDataManagerTest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-com.jerae.jsecurity.utils.TimeUtilTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-com.jerae.jsecurity.utils.TimeUtilTest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/surefire-reports/com.jerae.jsecurity.managers.PlayerDataManagerTest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/com.jerae.jsecurity.managers.PlayerDataManagerTest.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/surefire-reports/com.jerae.jsecurity.utils.TimeUtilTest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/com.jerae.jsecurity.utils.TimeUtilTest.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/com/jerae/jsecurity/listeners/ChatListenerTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/com/jerae/jsecurity/listeners/ChatListenerTest.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -52,15 +64,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Maven.JSecurity [package].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/new-commands-and-features-1&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.JSecurity [clean].executor": "Run",
+    "Maven.JSecurity [package].executor": "Run",
+    "Maven.JSecurity [verify].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master"
   }
-}</component>
+}]]></component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="a9e312d3-0c11-433c-84b6-2ce2e161793a" name="Changes" comment="" />
@@ -93,5 +107,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Merge pull request #8 from Cabsuu/feature/new-features&#10;&#10;Feature/new features" />
+    <MESSAGE value="Made changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Made changes" />
   </component>
 </project>

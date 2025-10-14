@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.jerae.jsecurity.managers.PlayerDataManagerTest" time="1.899" tests="3" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.jerae.jsecurity.utils.LoginCommandFilterTest" time="0.173" tests="3" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -59,13 +59,7 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testCreateAndGetPlayerData" classname="com.jerae.jsecurity.managers.PlayerDataManagerTest" time="1.783">
-    <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (C:\Users\TRG\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.11\byte-buddy-agent-1.14.11.jar)
-WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
-WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
-WARNING: Dynamic loading of agents will be disallowed by default in a future release
-]]></system-err>
-  </testcase>
-  <testcase name="testAddIpToExistingPlayer" classname="com.jerae.jsecurity.managers.PlayerDataManagerTest" time="0.041"/>
-  <testcase name="testSaveAndLoadPlayerData" classname="com.jerae.jsecurity.managers.PlayerDataManagerTest" time="0.031"/>
+  <testcase name="testFilterOtherCommand" classname="com.jerae.jsecurity.utils.LoginCommandFilterTest" time="0.163"/>
+  <testcase name="testFilterRegisterCommand" classname="com.jerae.jsecurity.utils.LoginCommandFilterTest" time="0.003"/>
+  <testcase name="testFilterLoginCommand" classname="com.jerae.jsecurity.utils.LoginCommandFilterTest" time="0.002"/>
 </testsuite>
