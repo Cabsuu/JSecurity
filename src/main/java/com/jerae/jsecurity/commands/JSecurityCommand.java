@@ -4,6 +4,7 @@ import com.jerae.jsecurity.JSecurity;
 import com.jerae.jsecurity.managers.BanEntry;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PlayerDataManager;
+import com.jerae.jsecurity.managers.AuthManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
 import com.jerae.jsecurity.models.PlayerData;
 import com.jerae.jsecurity.models.PunishmentLogEntry;
@@ -25,7 +26,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -35,12 +38,15 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
     private final ConfigManager configManager;
     private final PunishmentManager punishmentManager;
     private final PlayerDataManager playerDataManager;
+    private final AuthManager authManager;
+    private final Map<UUID, String> unregisterConfirmation = new HashMap<>();
 
-    public JSecurityCommand(JSecurity plugin, ConfigManager configManager, PunishmentManager punishmentManager, PlayerDataManager playerDataManager) {
+    public JSecurityCommand(JSecurity plugin, ConfigManager configManager, PunishmentManager punishmentManager, PlayerDataManager playerDataManager, AuthManager authManager) {
         this.plugin = plugin;
         this.configManager = configManager;
         this.punishmentManager = punishmentManager;
         this.playerDataManager = playerDataManager;
+        this.authManager = authManager;
     }
 
     @Override
@@ -101,6 +107,13 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 handleHistory(sender, Arrays.copyOfRange(args, 1, args.length));
+                break;
+            case "unregister":
+                if (!sender.hasPermission("jsecurity.unregister")) {
+                    PermissionUtils.sendNoPermissionMessage(sender, configManager);
+                    return true;
+                }
+                handleUnregister(sender, Arrays.copyOfRange(args, 1, args.length));
                 break;
             default:
                 sendUsage(sender);
@@ -314,10 +327,40 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ChatColor.RED + "Usage: /js help");
     }
 
+    private void handleUnregister(CommandSender sender, String[] args) {
+        if (args.length < 1) {
+            sender.sendMessage(ChatColor.RED + "Usage: /js unregister <player>");
+            return;
+        }
+
+        String playerName = args[0];
+        OfflinePlayer target = Bukkit.getOfflinePlayer(playerName);
+
+        if (!target.hasPlayedBefore() && !target.isOnline()) {
+            sender.sendMessage(ChatColor.RED + "Player not found.");
+            return;
+        }
+
+        UUID targetUUID = target.getUniqueId();
+        if (!authManager.isRegistered(targetUUID)) {
+            sender.sendMessage(ChatColor.RED + "That player is not registered.");
+            return;
+        }
+
+        if (unregisterConfirmation.containsKey(sender instanceof Player ? ((Player) sender).getUniqueId() : null) && unregisterConfirmation.get(sender instanceof Player ? ((Player) sender).getUniqueId() : null).equalsIgnoreCase(playerName)) {
+            authManager.unregisterPlayer(targetUUID);
+            sender.sendMessage(ChatColor.GREEN + playerName + " has been unregistered.");
+            unregisterConfirmation.remove(sender instanceof Player ? ((Player) sender).getUniqueId() : null);
+        } else {
+            sender.sendMessage(ChatColor.YELLOW + "Are you sure you want to unregister " + playerName + "? This action cannot be undone. Re-enter the command to confirm.");
+            unregisterConfirmation.put(sender instanceof Player ? ((Player) sender).getUniqueId() : null, playerName);
+        }
+    }
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            return Arrays.asList("help", "reload", "record", "profile", "note", "log", "history").stream()
+            return Arrays.asList("help", "reload", "record", "profile", "note", "log", "history", "unregister").stream()
                     .filter(s -> s.startsWith(args[0].toLowerCase()))
                     .collect(Collectors.toList());
         }

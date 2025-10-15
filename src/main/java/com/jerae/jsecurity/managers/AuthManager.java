@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class AuthManager {
 
@@ -26,9 +27,11 @@ public class AuthManager {
     private final Gson gson;
     private Map<UUID, String> authData = new HashMap<>();
     private final Set<UUID> loggedInPlayers = new HashSet<>();
+    private final ConfigManager configManager;
 
-    public AuthManager(JSecurity plugin) {
+    public AuthManager(JSecurity plugin, ConfigManager configManager) {
         this.plugin = plugin;
+        this.configManager = configManager;
         this.authFile = new File(plugin.getDataFolder(), "auth.json");
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         loadAuthData();
@@ -86,5 +89,50 @@ public class AuthManager {
 
     public boolean isLoggedIn(Player player) {
         return loggedInPlayers.contains(player.getUniqueId());
+    }
+
+    public void unregisterPlayer(UUID uuid) {
+        authData.remove(uuid);
+        saveAuthData();
+    }
+
+    public void changePassword(UUID uuid, String newPassword) {
+        registerPlayer(uuid, newPassword);
+    }
+
+    public String validatePassword(String password) {
+        int minLength = configManager.getMinPasswordLength();
+        int maxLength = configManager.getMaxPasswordLength();
+        boolean uppercaseRequired = configManager.isUppercaseRequired();
+        boolean numberRequired = configManager.isNumberRequired();
+        boolean symbolRequired = configManager.isSymbolRequired();
+
+        if (password.length() < minLength) {
+            return "Password must be at least " + minLength + " characters long.";
+        }
+
+        if (password.length() > maxLength) {
+            return "Password cannot be more than " + maxLength + " characters long.";
+        }
+
+        StringBuilder requirements = new StringBuilder();
+        if (uppercaseRequired && !password.matches(".*[A-Z].*")) {
+            requirements.append("an uppercase letter, ");
+        }
+
+        if (numberRequired && !password.matches(".*\\d.*")) {
+            requirements.append("a number, ");
+        }
+
+        if (symbolRequired && !password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*")) {
+            requirements.append("a symbol, ");
+        }
+
+        if (!requirements.isEmpty()) {
+            requirements.setLength(requirements.length() - 2);
+            return "Password must contain " + requirements.toString() + ".";
+        }
+
+        return null;
     }
 }

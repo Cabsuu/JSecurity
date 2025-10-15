@@ -7,12 +7,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RegisterCommand implements CommandExecutor {
+public class ChangePassCommand implements CommandExecutor {
 
     private final AuthManager authManager;
     private final ConfigManager configManager;
 
-    public RegisterCommand(AuthManager authManager, ConfigManager configManager) {
+    public ChangePassCommand(AuthManager authManager, ConfigManager configManager) {
         this.authManager = authManager;
         this.configManager = configManager;
     }
@@ -30,32 +30,32 @@ public class RegisterCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        if (authManager.isRegistered(player.getUniqueId())) {
-            player.sendMessage("You are already registered.");
+        if (!authManager.isRegistered(player.getUniqueId())) {
+            player.sendMessage("You are not registered.");
             return true;
         }
 
         if (args.length < 2) {
-            player.sendMessage("Usage: /register <password> <confirmPassword>");
+            player.sendMessage("Usage: /changepass <oldPassword> <newPassword>");
             return true;
         }
 
-        String password = args[0];
-        String confirmPassword = args[1];
+        String oldPassword = args[0];
+        String newPassword = args[1];
 
-        if (!password.equals(confirmPassword)) {
-            player.sendMessage("Passwords do not match.");
+        if (!authManager.checkPassword(player.getUniqueId(), oldPassword)) {
+            player.sendMessage("Incorrect old password.");
             return true;
         }
 
-        String passwordError = authManager.validatePassword(password);
+        String passwordError = authManager.validatePassword(newPassword);
         if (passwordError != null) {
             player.sendMessage(passwordError);
             return true;
         }
 
-        authManager.registerPlayer(player.getUniqueId(), password);
-        player.sendMessage("You have been registered successfully. Please log in using /login <password>");
+        authManager.changePassword(player.getUniqueId(), newPassword);
+        player.sendMessage("Your password has been changed successfully.");
         return true;
     }
 }
