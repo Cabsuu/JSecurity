@@ -18,17 +18,19 @@ public final class JSecurity extends JavaPlugin {
     private VanishManager vanishManager;
     private AuthManager authManager;
     private LoginCommandFilter filter;
+    private DatabaseManager databaseManager;
 
     @Override
     public void onEnable() {
         // Initialize managers
         configManager = new ConfigManager(this);
-        punishmentManager = new PunishmentManager(this);
+        databaseManager = new DatabaseManager(this);
+        punishmentManager = new PunishmentManager(this, databaseManager);
         freezeManager = new FreezeManager();
-        playerDataManager = new PlayerDataManager(this);
+        playerDataManager = new PlayerDataManager(this, databaseManager);
         messageManager = new MessageManager(configManager);
         vanishManager = new VanishManager(this);
-        authManager = new AuthManager(this, configManager);
+        authManager = new AuthManager(this, configManager, databaseManager);
 
         // Register listeners
         PlayerListener playerListener = new PlayerListener(this, punishmentManager, configManager, playerDataManager, authManager);
@@ -75,12 +77,8 @@ public final class JSecurity extends JavaPlugin {
             Logger rootLogger = (Logger) LogManager.getRootLogger();
             rootLogger.getContext().removeFilter(this.filter);
         }
-        // Save all punishments to file
-        if (punishmentManager != null) {
-            punishmentManager.savePunishments();
-        }
-        if (playerDataManager != null) {
-            playerDataManager.savePlayerData();
+        if (databaseManager != null) {
+            databaseManager.close();
         }
         getLogger().info("jSecurity has been disabled.");
     }

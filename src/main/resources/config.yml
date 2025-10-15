@@ -56,3 +56,12 @@ authentication:
     uppercase-letter: false
     number: false
     symbol: false
+
+# Database Configuration
+database:
+  type: "sqlite" # Can be "sqlite" or "mysql"
+  host: "localhost"
+  port: 3306
+  name: "jsecurity"
+  user: "username"
+  password: "password"

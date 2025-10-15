@@ -37,7 +37,7 @@ public class PlayerDataListener implements Listener {
         } else {
             // Existing player
             playerData.addIp(ipAddress);
-            playerDataManager.savePlayerData();
+            playerDataManager.updatePlayerData(playerData);
         }
     }
 
