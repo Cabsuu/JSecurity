@@ -41,21 +41,15 @@ public class ChatListener implements Listener {
             String message = event.getMessage();
             Map<String, String> replacementMap = configManager.getKeywordReplacementMap();
 
-            StringBuilder newMessage = new StringBuilder();
-            String[] words = message.split(" ");
+            for (Map.Entry<String, String> entry : replacementMap.entrySet()) {
+                String keyword = entry.getKey();
+                String replacement = entry.getValue();
 
-            for (String word : words) {
-                String coreWord = word.replaceAll("^\\p{Punct}+|\\p{Punct}+$", "");
-                String lowerCaseCoreWord = coreWord.toLowerCase();
-
-                String replacement = replacementMap.get(lowerCaseCoreWord);
-                if (replacement != null) {
-                    newMessage.append(word.replace(coreWord, replacement)).append(" ");
-                } else {
-                    newMessage.append(word).append(" ");
-                }
+                Pattern pattern = Pattern.compile("\\b" + Pattern.quote(keyword) + "\\b", Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(message);
+                message = matcher.replaceAll(replacement);
             }
-            event.setMessage(newMessage.toString().trim());
+            event.setMessage(message);
         }
     }
 }
