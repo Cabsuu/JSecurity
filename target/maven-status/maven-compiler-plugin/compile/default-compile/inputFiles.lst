@@ -1,4 +1,5 @@
 H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\BanCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\ChangePassCommand.java
 H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\FreezeCommand.java
 H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\HelpCommand.java
 H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\IpBanCommand.java
@@ -15,6 +16,7 @@ H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\js
 H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\UnbanCommand.java
 H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\UnfreezeCommand.java
 H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\UnmuteCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\UnregisterCommand.java
 H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\VanishCommand.java
 H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\WarnCommand.java
 H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\JSecurity.java

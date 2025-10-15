@@ -142,7 +142,7 @@ public class NewFeatureTest {
                 new PunishmentLogEntry("testPlayer", playerUUID, "warn", "test reason", "sender", timestamp)
         ));
 
-        JSecurityCommand jSecurityCommand = new JSecurityCommand(plugin, configManager, punishmentManager, playerDataManager);
+        JSecurityCommand jSecurityCommand = new JSecurityCommand(plugin, configManager, punishmentManager, playerDataManager, mock(AuthManager.class));
         jSecurityCommand.onCommand(sender, mock(Command.class), "js", new String[]{"log"});
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);

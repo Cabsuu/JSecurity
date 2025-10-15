@@ -172,4 +172,24 @@ public class ConfigManager {
     public List<String> getMutedCommandRestriction() {
         return config.getStringList("muted-command-restriction");
     }
+
+    public int getMinPasswordLength() {
+        return config.getInt("authentication.min-password-length", 8);
+    }
+
+    public int getMaxPasswordLength() {
+        return config.getInt("authentication.max-password-length", 16);
+    }
+
+    public boolean isUppercaseRequired() {
+        return config.getBoolean("authentication.password-must-contain.uppercase-letter", false);
+    }
+
+    public boolean isNumberRequired() {
+        return config.getBoolean("authentication.password-must-contain.number", false);
+    }
+
+    public boolean isSymbolRequired() {
+        return config.getBoolean("authentication.password-must-contain.symbol", false);
+    }
 }

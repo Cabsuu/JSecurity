@@ -132,7 +132,8 @@ public class FeatureTests {
         when(configManager.getReloadMessage()).thenReturn("Configuration reloaded.");
         PunishmentManager punishmentManager = mock(PunishmentManager.class);
         PlayerDataManager playerDataManager = mock(PlayerDataManager.class);
-        JSecurityCommand jSecurityCommand = new JSecurityCommand(plugin, configManager, punishmentManager, playerDataManager);
+        AuthManager authManager = mock(AuthManager.class);
+        JSecurityCommand jSecurityCommand = new JSecurityCommand(plugin, configManager, punishmentManager, playerDataManager, authManager);
         jSecurityCommand.onCommand(sender, mock(Command.class), "js", new String[]{"reload"});
         verify(configManager).reloadConfig();
         verify(sender).sendMessage(anyString());
@@ -176,7 +177,7 @@ public class FeatureTests {
 
         when(playerDataManager.getAllPlayerData()).thenReturn(players);
 
-        JSecurityCommand jSecurityCommand = new JSecurityCommand(plugin, configManager, punishmentManager, playerDataManager);
+        JSecurityCommand jSecurityCommand = new JSecurityCommand(plugin, configManager, punishmentManager, playerDataManager, mock(AuthManager.class));
         jSecurityCommand.onCommand(sender, mock(Command.class), "js", new String[]{"record"});
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);

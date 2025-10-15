@@ -28,7 +28,7 @@ public final class JSecurity extends JavaPlugin {
         playerDataManager = new PlayerDataManager(this);
         messageManager = new MessageManager(configManager);
         vanishManager = new VanishManager(this);
-        authManager = new AuthManager(this);
+        authManager = new AuthManager(this, configManager);
 
         // Register listeners
         PlayerListener playerListener = new PlayerListener(this, punishmentManager, configManager, playerDataManager, authManager);
@@ -49,7 +49,7 @@ public final class JSecurity extends JavaPlugin {
         getCommand("unmute").setExecutor(new UnmuteCommand(punishmentManager, configManager));
         getCommand("kick").setExecutor(new KickCommand(configManager));
         getCommand("warn").setExecutor(new WarnCommand(punishmentManager, configManager));
-        getCommand("jsecurity").setExecutor(new JSecurityCommand(this, configManager, punishmentManager, playerDataManager));
+        getCommand("jsecurity").setExecutor(new JSecurityCommand(this, configManager, punishmentManager, playerDataManager, authManager));
         getCommand("freeze").setExecutor(new FreezeCommand(freezeManager, configManager));
         getCommand("unfreeze").setExecutor(new UnfreezeCommand(freezeManager, configManager));
         getCommand("message").setExecutor(new MessageCommand(messageManager, configManager));
@@ -58,6 +58,8 @@ public final class JSecurity extends JavaPlugin {
         getCommand("vanish").setExecutor(new VanishCommand(vanishManager, configManager));
         getCommand("register").setExecutor(new RegisterCommand(authManager, configManager));
         getCommand("login").setExecutor(new LoginCommand(authManager, configManager));
+        getCommand("unregister").setExecutor(new UnregisterCommand(authManager, configManager));
+        getCommand("changepass").setExecutor(new ChangePassCommand(authManager, configManager));
 
 
         Logger rootLogger = (Logger) LogManager.getRootLogger();

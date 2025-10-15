@@ -50,3 +50,9 @@ muted-command-restriction:
 # This is intended for offline-mode (cracked) servers.
 authentication:
   enabled: false
+  min-password-length: 8
+  max-password-length: 16
+  password-must-contain:
+    uppercase-letter: false
+    number: false
+    symbol: false

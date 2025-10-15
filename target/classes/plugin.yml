@@ -63,6 +63,12 @@ commands:
   login:
     description: Logs a player in.
     usage: /login <password>
+  unregister:
+    description: Unregisters a player.
+    usage: /unregister <password>
+  changepass:
+    description: Changes a player's password.
+    usage: /changepass <oldPassword> <newPassword>
 permissions:
   jsecurity.*:
     description: Gives access to all jSecurity commands.
@@ -96,6 +102,7 @@ permissions:
       jsecurity.note: true
       jsecurity.message: true
       jsecurity.reply: true
+      jsecurity.unregister: true
   jsecurity.ban:
     description: Allows banning players.
   jsecurity.tempban:
