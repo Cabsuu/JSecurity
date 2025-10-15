@@ -60,6 +60,13 @@ public class DatabaseManager {
                     "staff_name VARCHAR(16)," +
                     "end_time BIGINT" +
                     ");");
+
+            // IP Bans Table
+            statement.execute("CREATE TABLE IF NOT EXISTS ip_bans (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "ip_address VARCHAR(255) NOT NULL UNIQUE," +
+                    "uuid VARCHAR(36) NOT NULL" +
+                    ");");
         } catch (SQLException e) {
             plugin.getLogger().severe("Could not initialize database: " + e.getMessage());
         }

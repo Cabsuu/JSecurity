@@ -1,7 +1,1 @@
-com/jerae/jsecurity/commands/JSecurityCommandTest.class
-com/jerae/jsecurity/utils/TimeUtilTest.class
-com/jerae/jsecurity/FeatureTests.class
-com/jerae/jsecurity/commands/AuthCommandsTest.class
-com/jerae/jsecurity/listeners/ChatListenerTest.class
-com/jerae/jsecurity/utils/LoginCommandFilterTest.class
-com/jerae/jsecurity/NewFeatureTest.class
+com/jerae/jsecurity/managers/PunishmentManagerTest.class

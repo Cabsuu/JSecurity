@@ -25,24 +25,37 @@ public class PunishmentManager {
     }
 
     public void addBan(BanEntry ban) {
-        try (Connection connection = databaseManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement("INSERT INTO punishments (uuid, type, reason, staff_name, end_time) VALUES (?, ?, ?, ?, ?)")) {
-            statement.setString(1, ban.getUuid().toString());
-            statement.setString(2, "ban");
-            statement.setString(3, ban.getReason());
-            statement.setString(4, ban.getStaffName());
-            statement.setLong(5, ban.getExpiration());
-            statement.executeUpdate();
+        try (Connection connection = databaseManager.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO punishments (uuid, type, reason, staff_name, end_time) VALUES (?, ?, ?, ?, ?)")) {
+                statement.setString(1, ban.getUuid().toString());
+                statement.setString(2, "ban");
+                statement.setString(3, ban.getReason());
+                statement.setString(4, ban.getStaffName());
+                statement.setLong(5, ban.getExpiration());
+                statement.executeUpdate();
+            }
+            if (ban.getIpAddress() != null) {
+                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO ip_bans (ip_address, uuid) VALUES (?, ?)")) {
+                    statement.setString(1, ban.getIpAddress());
+                    statement.setString(2, ban.getUuid().toString());
+                    statement.executeUpdate();
+                }
+            }
         } catch (SQLException e) {
             plugin.getLogger().severe("Could not add ban: " + e.getMessage());
         }
     }
 
     public void removeBan(UUID uuid) {
-        try (Connection connection = databaseManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement("DELETE FROM punishments WHERE uuid = ? AND type = 'ban'")) {
-            statement.setString(1, uuid.toString());
-            statement.executeUpdate();
+        try (Connection connection = databaseManager.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM punishments WHERE uuid = ? AND type = 'ban'")) {
+                statement.setString(1, uuid.toString());
+                statement.executeUpdate();
+            }
+            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM ip_bans WHERE uuid = ?")) {
+                statement.setString(1, uuid.toString());
+                statement.executeUpdate();
+            }
         } catch (SQLException e) {
             plugin.getLogger().severe("Could not remove ban: " + e.getMessage());
         }
@@ -50,14 +63,14 @@ public class PunishmentManager {
 
     public BanEntry getBan(UUID uuid) {
         try (Connection connection = databaseManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM punishments WHERE uuid = ? AND type = 'ban'")) {
+             PreparedStatement statement = connection.prepareStatement("SELECT p.*, pd.name, pd.ips FROM punishments p JOIN player_data pd ON p.uuid = pd.uuid WHERE p.uuid = ? AND p.type = 'ban'")) {
             statement.setString(1, uuid.toString());
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 BanEntry ban = new BanEntry(
                         uuid,
-                        null,
-                        null,
+                        rs.getString("name"),
+                        rs.getString("ips"),
                         rs.getString("reason"),
                         rs.getString("staff_name"),
                         rs.getLong("end_time")
@@ -100,13 +113,13 @@ public class PunishmentManager {
 
     public MuteEntry getMute(UUID uuid) {
         try (Connection connection = databaseManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM punishments WHERE uuid = ? AND type = 'mute'")) {
+             PreparedStatement statement = connection.prepareStatement("SELECT p.*, pd.name FROM punishments p JOIN player_data pd ON p.uuid = pd.uuid WHERE p.uuid = ? AND p.type = 'mute'")) {
             statement.setString(1, uuid.toString());
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 MuteEntry mute = new MuteEntry(
                         uuid,
-                        null,
+                        rs.getString("name"),
                         rs.getString("reason"),
                         rs.getString("staff_name"),
                         rs.getLong("end_time")
@@ -132,36 +145,124 @@ public class PunishmentManager {
     }
 
     public BanEntry getBanByIp(String ipAddress) {
-        // This method requires changes to the database schema and is not implemented in this refactor.
+        try (Connection connection = databaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT uuid FROM ip_bans WHERE ip_address = ?")) {
+            statement.setString(1, ipAddress);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return getBan(UUID.fromString(rs.getString("uuid")));
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Could not retrieve ban by IP: " + e.getMessage());
+        }
         return null;
     }
 
     public boolean isIpBanned(String ipAddress) {
-        // This method requires changes to the database schema and is not implemented in this refactor.
-        return false;
+        return getBanByIp(ipAddress) != null;
     }
 
     public List<PunishmentLogEntry> getPunishmentLogs() {
-        // This method requires changes to the database schema and is not implemented in this refactor.
-        return new ArrayList<>();
+        List<PunishmentLogEntry> logs = new ArrayList<>();
+        try (Connection connection = databaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT p.*, pd.name FROM punishments p JOIN player_data pd ON p.uuid = pd.uuid ORDER BY p.id DESC")) {
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                logs.add(new PunishmentLogEntry(
+                        rs.getString("name"),
+                        UUID.fromString(rs.getString("uuid")),
+                        rs.getString("type"),
+                        rs.getString("reason"),
+                        rs.getString("staff_name"),
+                        rs.getLong("end_time")
+                ));
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Could not retrieve punishment logs: " + e.getMessage());
+        }
+        return logs;
     }
 
     public List<PunishmentLogEntry> getPlayerHistory(UUID playerUUID) {
-        // This method requires changes to the database schema and is not implemented in this refactor.
-        return new ArrayList<>();
+        List<PunishmentLogEntry> logs = new ArrayList<>();
+        try (Connection connection = databaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT p.*, pd.name FROM punishments p JOIN player_data pd ON p.uuid = pd.uuid WHERE p.uuid = ? ORDER BY p.id DESC")) {
+            statement.setString(1, playerUUID.toString());
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                logs.add(new PunishmentLogEntry(
+                        rs.getString("name"),
+                        UUID.fromString(rs.getString("uuid")),
+                        rs.getString("type"),
+                        rs.getString("reason"),
+                        rs.getString("staff_name"),
+                        rs.getLong("end_time")
+                ));
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Could not retrieve player history: " + e.getMessage());
+        }
+        return logs;
     }
 
     public java.util.Collection<BanEntry> getBannedPlayers() {
-        // This method requires changes to the database schema and is not implemented in this refactor.
-        return new ArrayList<>();
+        List<BanEntry> bans = new ArrayList<>();
+        try (Connection connection = databaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT p.*, pd.name, pd.ips FROM punishments p JOIN player_data pd ON p.uuid = pd.uuid WHERE p.type = 'ban'")) {
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                BanEntry ban = new BanEntry(
+                        UUID.fromString(rs.getString("uuid")),
+                        rs.getString("name"),
+                        rs.getString("ips"),
+                        rs.getString("reason"),
+                        rs.getString("staff_name"),
+                        rs.getLong("end_time")
+                );
+                if (!ban.hasExpired()) {
+                    bans.add(ban);
+                }
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Could not retrieve banned players: " + e.getMessage());
+        }
+        return bans;
     }
 
     public java.util.Collection<MuteEntry> getMutedPlayers() {
-        // This method requires changes to the database schema and is not implemented in this refactor.
-        return new ArrayList<>();
+        List<MuteEntry> mutes = new ArrayList<>();
+        try (Connection connection = databaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT p.*, pd.name FROM punishments p JOIN player_data pd ON p.uuid = pd.uuid WHERE p.type = 'mute'")) {
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                MuteEntry mute = new MuteEntry(
+                        UUID.fromString(rs.getString("uuid")),
+                        rs.getString("name"),
+                        rs.getString("reason"),
+                        rs.getString("staff_name"),
+                        rs.getLong("end_time")
+                );
+                if (!mute.hasExpired()) {
+                    mutes.add(mute);
+                }
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Could not retrieve muted players: " + e.getMessage());
+        }
+        return mutes;
     }
 
     public void addWarn(WarnEntry warn) {
-        // This method requires changes to the database schema and is not implemented in this refactor.
+        try (Connection connection = databaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement("INSERT INTO punishments (uuid, type, reason, staff_name, end_time) VALUES (?, ?, ?, ?, ?)")) {
+            statement.setString(1, warn.getUuid().toString());
+            statement.setString(2, "warn");
+            statement.setString(3, warn.getReason());
+            statement.setString(4, warn.getStaffName());
+            statement.setLong(5, -1);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Could not add warn: " + e.getMessage());
+        }
     }
 }

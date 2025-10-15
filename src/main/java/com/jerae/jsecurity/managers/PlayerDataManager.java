@@ -74,6 +74,17 @@ public class PlayerDataManager {
         }
     }
 
+    public void updatePlayerData(PlayerData playerData) {
+        try (Connection connection = databaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement("UPDATE player_data SET ips = ? WHERE uuid = ?")) {
+            statement.setString(1, String.join(",", playerData.getIps()));
+            statement.setString(2, playerData.getUuid().toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Could not update player data: " + e.getMessage());
+        }
+    }
+
     public List<PlayerData> getAllPlayerData() {
         List<PlayerData> playerDataList = new ArrayList<>();
         try (Connection connection = databaseManager.getConnection();

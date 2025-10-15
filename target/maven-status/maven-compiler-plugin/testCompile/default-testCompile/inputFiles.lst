@@ -3,5 +3,7 @@
 /app/src/test/java/com/jerae/jsecurity/commands/AuthCommandsTest.java
 /app/src/test/java/com/jerae/jsecurity/commands/JSecurityCommandTest.java
 /app/src/test/java/com/jerae/jsecurity/listeners/ChatListenerTest.java
+/app/src/test/java/com/jerae/jsecurity/managers/PlayerDataManagerTest.java
+/app/src/test/java/com/jerae/jsecurity/managers/PunishmentManagerTest.java
 /app/src/test/java/com/jerae/jsecurity/utils/LoginCommandFilterTest.java
 /app/src/test/java/com/jerae/jsecurity/utils/TimeUtilTest.java

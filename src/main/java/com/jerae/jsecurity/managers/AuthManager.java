@@ -1,82 +1,67 @@
 package com.jerae.jsecurity.managers;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.jerae.jsecurity.JSecurity;
 import org.bukkit.entity.Player;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.HashMap;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 public class AuthManager {
 
     private final JSecurity plugin;
-    private final File authFile;
-    private final Gson gson;
-    private Map<UUID, String> authData = new HashMap<>();
     private final Set<UUID> loggedInPlayers = new HashSet<>();
     private final ConfigManager configManager;
+    private final DatabaseManager databaseManager;
 
-    public AuthManager(JSecurity plugin, ConfigManager configManager) {
+    public AuthManager(JSecurity plugin, ConfigManager configManager, DatabaseManager databaseManager) {
         this.plugin = plugin;
         this.configManager = configManager;
-        this.authFile = new File(plugin.getDataFolder(), "auth.json");
-        this.gson = new GsonBuilder().setPrettyPrinting().create();
-        loadAuthData();
-    }
-
-    public void loadAuthData() {
-        if (authFile.exists()) {
-            try (FileReader reader = new FileReader(authFile)) {
-                Type type = new TypeToken<Map<UUID, String>>() {}.getType();
-                authData = gson.fromJson(reader, type);
-                if (authData == null) {
-                    authData = new HashMap<>();
-                }
-            } catch (IOException e) {
-                plugin.getLogger().severe("Could not load auth.json");
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void saveAuthData() {
-        try (FileWriter writer = new FileWriter(authFile)) {
-            gson.toJson(authData, writer);
-        } catch (IOException e) {
-            plugin.getLogger().severe("Could not save auth.json");
-            e.printStackTrace();
-        }
+        this.databaseManager = databaseManager;
     }
 
     public boolean isRegistered(UUID uuid) {
-        return authData.containsKey(uuid);
+        try (Connection connection = databaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT password FROM player_data WHERE uuid = ?")) {
+            statement.setString(1, uuid.toString());
+            ResultSet rs = statement.executeQuery();
+            return rs.next() && rs.getString("password") != null;
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Could not check if player is registered: " + e.getMessage());
+        }
+        return false;
     }
 
     public void registerPlayer(UUID uuid, String password) {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-        authData.put(uuid, hashedPassword);
-        saveAuthData();
+        try (Connection connection = databaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement("UPDATE player_data SET password = ? WHERE uuid = ?")) {
+            statement.setString(1, hashedPassword);
+            statement.setString(2, uuid.toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Could not register player: " + e.getMessage());
+        }
     }
 
     public boolean checkPassword(UUID uuid, String password) {
-        String hashedPassword = authData.get(uuid);
-        if (hashedPassword == null) {
-            return false;
+        try (Connection connection = databaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT password FROM player_data WHERE uuid = ?")) {
+            statement.setString(1, uuid.toString());
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                String hashedPassword = rs.getString("password");
+                return hashedPassword != null && BCrypt.checkpw(password, hashedPassword);
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Could not check password: " + e.getMessage());
         }
-        return BCrypt.checkpw(password, hashedPassword);
+        return false;
     }
 
     public void loginPlayer(Player player) {
@@ -92,8 +77,13 @@ public class AuthManager {
     }
 
     public void unregisterPlayer(UUID uuid) {
-        authData.remove(uuid);
-        saveAuthData();
+        try (Connection connection = databaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement("UPDATE player_data SET password = NULL WHERE uuid = ?")) {
+            statement.setString(1, uuid.toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Could not unregister player: " + e.getMessage());
+        }
     }
 
     public void changePassword(UUID uuid, String newPassword) {

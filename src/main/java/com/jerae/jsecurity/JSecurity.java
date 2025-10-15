@@ -30,7 +30,7 @@ public final class JSecurity extends JavaPlugin {
         playerDataManager = new PlayerDataManager(this, databaseManager);
         messageManager = new MessageManager(configManager);
         vanishManager = new VanishManager(this);
-        authManager = new AuthManager(this, configManager);
+        authManager = new AuthManager(this, configManager, databaseManager);
 
         // Register listeners
         PlayerListener playerListener = new PlayerListener(this, punishmentManager, configManager, playerDataManager, authManager);
