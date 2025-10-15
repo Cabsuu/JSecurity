@@ -1,4 +1,15 @@
 -------------------------------------------------------------------------------
 Test set: com.jerae.jsecurity.managers.PlayerDataManagerTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.159 s -- in com.jerae.jsecurity.managers.PlayerDataManagerTest
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 1.348 s <<< FAILURE! -- in com.jerae.jsecurity.managers.PlayerDataManagerTest
+com.jerae.jsecurity.managers.PlayerDataManagerTest.testCreateAndGetPlayerData -- Time elapsed: 1.336 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "org.bukkit.configuration.file.FileConfiguration.getString(String, String)" because "config" is null
+	at com.jerae.jsecurity.managers.DatabaseManager.setupDataSource(DatabaseManager.java:25)
+	at com.jerae.jsecurity.managers.DatabaseManager.<init>(DatabaseManager.java:19)
+	at com.jerae.jsecurity.managers.PlayerDataManagerTest.setUp(PlayerDataManagerTest.java:38)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	Suppressed: java.lang.NullPointerException: Cannot invoke "com.jerae.jsecurity.managers.DatabaseManager.close()" because "this.databaseManager" is null
+		at com.jerae.jsecurity.managers.PlayerDataManagerTest.tearDown(PlayerDataManagerTest.java:44)
+		... 3 more
