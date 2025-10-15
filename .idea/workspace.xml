@@ -6,10 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="a9e312d3-0c11-433c-84b6-2ce2e161793a" name="Changes" comment="Update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jerae/jsecurity/listeners/ChatListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jerae/jsecurity/listeners/ChatListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dependency-reduced-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/dependency-reduced-pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/JSecurity-0.1.0-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/JSecurity-0.1.0-shaded.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/JSecurity-0.1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/JSecurity-0.1.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/jerae/jsecurity/listeners/ChatListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/jerae/jsecurity/listeners/ChatListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/jerae/jsecurity/commands/JSecurityCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/jerae/jsecurity/commands/JSecurityCommand.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/jerae/jsecurity/commands/UnregisterCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/jerae/jsecurity/commands/UnregisterCommand.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/original-JSecurity-0.1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-JSecurity-0.1.0.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-com.jerae.jsecurity.managers.PlayerDataManagerTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-com.jerae.jsecurity.managers.PlayerDataManagerTest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-com.jerae.jsecurity.utils.LoginCommandFilterTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-com.jerae.jsecurity.utils.LoginCommandFilterTest.xml" afterDir="false" />
@@ -58,17 +63,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Maven.JSecurity [clean].executor": "Run",
-    "Maven.JSecurity [package].executor": "Run",
-    "Maven.JSecurity [verify].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Maven.JSecurity [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.JSecurity [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.JSecurity [verify].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/auth-system-update&quot;
   }
-}]]></component>
+}</component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="a9e312d3-0c11-433c-84b6-2ce2e161793a" name="Changes" comment="" />
@@ -85,7 +90,31 @@
       <option name="project" value="LOCAL" />
       <updated>1760420867144</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Update">
+      <option name="closed" value="true" />
+      <created>1760499861493</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1760499861493</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Update">
+      <option name="closed" value="true" />
+      <created>1760499872439</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1760499872439</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Update">
+      <option name="closed" value="true" />
+      <created>1760499882427</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1760499882427</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -99,7 +128,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="feature/player-data-and-commands" />
+                        <option value="feature/auth-system-update" />
                       </list>
                     </value>
                   </entry>

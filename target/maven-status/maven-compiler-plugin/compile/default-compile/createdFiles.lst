@@ -1,2 +1,2 @@
-com/jerae/jsecurity/commands/UnregisterCommand.class
-com/jerae/jsecurity/commands/ChangePassCommand.class
+com\jerae\jsecurity\commands\UnregisterCommand.class
+com\jerae\jsecurity\commands\ChangePassCommand.class
