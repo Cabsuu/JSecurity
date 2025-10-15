@@ -350,6 +350,10 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         if (unregisterConfirmation.containsKey(sender instanceof Player ? ((Player) sender).getUniqueId() : null) && unregisterConfirmation.get(sender instanceof Player ? ((Player) sender).getUniqueId() : null).equalsIgnoreCase(playerName)) {
             authManager.unregisterPlayer(targetUUID);
             sender.sendMessage(ChatColor.GREEN + playerName + " has been unregistered.");
+            System.out.println(playerName + " has been unregistered by " + sender.getName() + ".");
+            if (target.isOnline()) {
+                authManager.logoutPlayer(target.getPlayer());
+            }
             unregisterConfirmation.remove(sender instanceof Player ? ((Player) sender).getUniqueId() : null);
         } else {
             sender.sendMessage(ChatColor.YELLOW + "Are you sure you want to unregister " + playerName + "? This action cannot be undone. Re-enter the command to confirm.");
