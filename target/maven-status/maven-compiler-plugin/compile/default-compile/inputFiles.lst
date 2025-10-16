@@ -1,45 +1,45 @@
-/app/src/main/java/com/jerae/jsecurity/JSecurity.java
-/app/src/main/java/com/jerae/jsecurity/commands/BanCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/ChangePassCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/FreezeCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/HelpCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/IpBanCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/JSecurityCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/KickCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/LoginCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/MessageCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/MuteCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/RegisterCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/ReplyCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/SocialSpyCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/TempBanCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/TempMuteCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/UnbanCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/UnfreezeCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/UnmuteCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/UnregisterCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/VanishCommand.java
-/app/src/main/java/com/jerae/jsecurity/commands/WarnCommand.java
-/app/src/main/java/com/jerae/jsecurity/listeners/ChatListener.java
-/app/src/main/java/com/jerae/jsecurity/listeners/PlayerDataListener.java
-/app/src/main/java/com/jerae/jsecurity/listeners/PlayerFreezeListener.java
-/app/src/main/java/com/jerae/jsecurity/listeners/PlayerListener.java
-/app/src/main/java/com/jerae/jsecurity/listeners/VanishListener.java
-/app/src/main/java/com/jerae/jsecurity/managers/AuthManager.java
-/app/src/main/java/com/jerae/jsecurity/managers/BanEntry.java
-/app/src/main/java/com/jerae/jsecurity/managers/ConfigManager.java
-/app/src/main/java/com/jerae/jsecurity/managers/DatabaseManager.java
-/app/src/main/java/com/jerae/jsecurity/managers/FreezeManager.java
-/app/src/main/java/com/jerae/jsecurity/managers/InventoryManager.java
-/app/src/main/java/com/jerae/jsecurity/managers/MessageManager.java
-/app/src/main/java/com/jerae/jsecurity/managers/MuteEntry.java
-/app/src/main/java/com/jerae/jsecurity/managers/PlayerDataManager.java
-/app/src/main/java/com/jerae/jsecurity/managers/PunishmentManager.java
-/app/src/main/java/com/jerae/jsecurity/managers/VanishManager.java
-/app/src/main/java/com/jerae/jsecurity/models/PlayerData.java
-/app/src/main/java/com/jerae/jsecurity/models/PunishmentLogEntry.java
-/app/src/main/java/com/jerae/jsecurity/models/WarnEntry.java
-/app/src/main/java/com/jerae/jsecurity/utils/LoginCommandFilter.java
-/app/src/main/java/com/jerae/jsecurity/utils/PermissionUtils.java
-/app/src/main/java/com/jerae/jsecurity/utils/PlaceholderAPI.java
-/app/src/main/java/com/jerae/jsecurity/utils/TimeUtil.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\BanCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\ChangePassCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\FreezeCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\HelpCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\IpBanCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\JSecurityCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\KickCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\LoginCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\MessageCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\MuteCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\RegisterCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\ReplyCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\SocialSpyCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\TempBanCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\TempMuteCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\UnbanCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\UnfreezeCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\UnmuteCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\UnregisterCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\VanishCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\commands\WarnCommand.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\JSecurity.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\listeners\ChatListener.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\listeners\PlayerDataListener.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\listeners\PlayerFreezeListener.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\listeners\PlayerListener.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\listeners\VanishListener.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\managers\AuthManager.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\managers\BanEntry.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\managers\ConfigManager.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\managers\DatabaseManager.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\managers\FreezeManager.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\managers\InventoryManager.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\managers\MessageManager.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\managers\MuteEntry.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\managers\PlayerDataManager.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\managers\PunishmentManager.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\managers\VanishManager.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\models\PlayerData.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\models\PunishmentLogEntry.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\models\WarnEntry.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\utils\LoginCommandFilter.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\utils\PermissionUtils.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\utils\PlaceholderAPI.java
+H:\Documents\Server Management\Self-Plugins\JSecurity\src\main\java\com\jerae\jsecurity\utils\TimeUtil.java
