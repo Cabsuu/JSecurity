@@ -30,6 +30,7 @@
 /app/src/main/java/com/jerae/jsecurity/managers/ConfigManager.java
 /app/src/main/java/com/jerae/jsecurity/managers/DatabaseManager.java
 /app/src/main/java/com/jerae/jsecurity/managers/FreezeManager.java
+/app/src/main/java/com/jerae/jsecurity/managers/InventoryManager.java
 /app/src/main/java/com/jerae/jsecurity/managers/MessageManager.java
 /app/src/main/java/com/jerae/jsecurity/managers/MuteEntry.java
 /app/src/main/java/com/jerae/jsecurity/managers/PlayerDataManager.java

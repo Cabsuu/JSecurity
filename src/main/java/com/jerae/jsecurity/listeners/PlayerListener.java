@@ -33,11 +33,19 @@ import java.util.stream.Collectors;
 
 import com.jerae.jsecurity.JSecurity;
 import com.jerae.jsecurity.managers.AuthManager;
+import com.jerae.jsecurity.managers.InventoryManager;
 import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.models.PlayerData;
 import com.jerae.jsecurity.commands.LoginCommand;
 import com.jerae.jsecurity.commands.RegisterCommand;
 import com.jerae.jsecurity.utils.PermissionUtils;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 public class PlayerListener implements Listener {
 
@@ -48,8 +56,9 @@ public class PlayerListener implements Listener {
     private final AuthManager authManager;
     private final LoginCommand loginCommand;
     private final RegisterCommand registerCommand;
+    private final InventoryManager inventoryManager;
 
-    public PlayerListener(JSecurity plugin, PunishmentManager punishmentManager, ConfigManager configManager, PlayerDataManager playerDataManager, AuthManager authManager) {
+    public PlayerListener(JSecurity plugin, PunishmentManager punishmentManager, ConfigManager configManager, PlayerDataManager playerDataManager, AuthManager authManager, InventoryManager inventoryManager) {
         this.plugin = plugin;
         this.punishmentManager = punishmentManager;
         this.configManager = configManager;
@@ -57,6 +66,7 @@ public class PlayerListener implements Listener {
         this.authManager = authManager;
         this.loginCommand = new LoginCommand(authManager, configManager);
         this.registerCommand = new RegisterCommand(authManager, configManager);
+        this.inventoryManager = inventoryManager;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -115,7 +125,8 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player joiningPlayer = event.getPlayer();
 
-        if (configManager.getBoolean("authentication.enabled")) {
+        if (configManager.isAuthEnabled()) {
+            authManager.handlePlayerJoin(joiningPlayer);
             if (authManager.isRegistered(joiningPlayer.getUniqueId())) {
                 joiningPlayer.sendMessage("Please log in using /login <password>");
             } else {
@@ -221,14 +232,14 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        if (configManager.getBoolean("authentication.enabled")) {
-            authManager.logoutPlayer(event.getPlayer());
+        if (configManager.isAuthEnabled()) {
+            authManager.handlePlayerQuit(event.getPlayer());
         }
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        if (configManager.getBoolean("authentication.enabled") && !authManager.isLoggedIn(event.getPlayer())) {
+        if (configManager.isAuthEnabled() && !authManager.isLoggedIn(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
@@ -236,7 +247,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerChat(PlayerChatEvent event) {
         Player player = event.getPlayer();
-        if (configManager.getBoolean("authentication.enabled") && !authManager.isLoggedIn(player)) {
+        if (configManager.isAuthEnabled() && !authManager.isLoggedIn(player)) {
             event.setCancelled(true);
             player.sendMessage("You must be logged in to chat.");
             return;
@@ -258,6 +269,61 @@ public class PlayerListener implements Listener {
                 muteMessage = configManager.getMessage("tempmute-message");
             }
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(muteMessage, data)));
+        }
+    }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (configManager.isAuthEnabled() && !authManager.isLoggedIn(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+        if (configManager.isAuthEnabled() && !authManager.isLoggedIn(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+        if (configManager.isAuthEnabled() && !authManager.isLoggedIn(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerPickupItem(PlayerPickupItemEvent event) {
+        if (configManager.isAuthEnabled() && !authManager.isLoggedIn(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (configManager.isAuthEnabled() && !authManager.isLoggedIn(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player) {
+            Player player = (Player) event.getDamager();
+            if (configManager.isAuthEnabled() && !authManager.isLoggedIn(player)) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
+            if (configManager.isAuthEnabled() && !authManager.isLoggedIn(player)) {
+                event.setCancelled(true);
+            }
         }
     }
 }
