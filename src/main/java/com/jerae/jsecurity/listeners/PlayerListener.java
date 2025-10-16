@@ -127,10 +127,12 @@ public class PlayerListener implements Listener {
 
         if (configManager.isAuthEnabled()) {
             authManager.handlePlayerJoin(joiningPlayer);
-            if (authManager.isRegistered(joiningPlayer.getUniqueId())) {
-                joiningPlayer.sendMessage("Please log in using /login <password>");
-            } else {
-                joiningPlayer.sendMessage("Please register using /register <password> <confirmPassword>");
+            if (!authManager.isLoggedIn(joiningPlayer)) {
+                if (authManager.isRegistered(joiningPlayer.getUniqueId())) {
+                    joiningPlayer.sendMessage("Please log in using /login <password>");
+                } else {
+                    joiningPlayer.sendMessage("Please register using /register <password> <confirmPassword>");
+                }
             }
         }
 
