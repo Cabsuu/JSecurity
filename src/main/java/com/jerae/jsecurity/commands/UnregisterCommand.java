@@ -54,7 +54,7 @@ public class UnregisterCommand implements CommandExecutor {
         UUID playerUUID = player.getUniqueId();
         if (confirmationMap.containsKey(playerUUID) && (System.currentTimeMillis() - confirmationMap.get(playerUUID)) < 60000) {
             authManager.unregisterPlayer(playerUUID);
-            authManager.logoutPlayer(player);
+            authManager.setUnauthenticated(player);
             player.sendMessage("You have been unregistered successfully.");
             System.out.println(player.getName() + " has unregistered.");
             confirmationMap.remove(playerUUID);

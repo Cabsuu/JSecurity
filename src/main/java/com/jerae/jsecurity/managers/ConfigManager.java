@@ -192,4 +192,32 @@ public class ConfigManager {
     public boolean isSymbolRequired() {
         return config.getBoolean("authentication.password-must-contain.symbol", false);
     }
+
+    public boolean isAuthEnabled() {
+        return config.getBoolean("authentication.enabled", false);
+    }
+
+    public boolean isJoinAtSpawn() {
+        return config.getBoolean("authentication.join-at-spawn", true);
+    }
+
+    public boolean isReturnAtLocation() {
+        return config.getBoolean("authentication.return-at-location", false);
+    }
+
+    public boolean isJoinOnBlind() {
+        return config.getBoolean("authentication.join-on-blind", false);
+    }
+
+    public boolean isJoinOnSpectator() {
+        return config.getBoolean("authentication.join-on-spectator", false);
+    }
+
+    public boolean isSessionReconnection() {
+        return config.getBoolean("authentication.session-reconnection", false);
+    }
+
+    public String getSessionLimitTimer() {
+        return config.getString("authentication.session-limit-timer", "6h");
+    }
 }

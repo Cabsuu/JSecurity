@@ -56,6 +56,12 @@ authentication:
     uppercase-letter: false
     number: false
     symbol: false
+  join-at-spawn: true
+  return-at-location: false
+  join-on-blind: false
+  join-on-spectator: false
+  session-reconnection: false
+  session-limit-timer: "6h"
 
 # Database Configuration
 database:

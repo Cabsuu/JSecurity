@@ -56,6 +56,7 @@ public class RegisterCommand implements CommandExecutor {
 
         authManager.registerPlayer(player.getUniqueId(), password);
         player.sendMessage("You have been registered successfully. Please log in using /login <password>");
+        System.out.println(player.getName() + " has registered.");
         return true;
     }
 }

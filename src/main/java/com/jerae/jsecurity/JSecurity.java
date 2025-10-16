@@ -19,6 +19,7 @@ public final class JSecurity extends JavaPlugin {
     private AuthManager authManager;
     private LoginCommandFilter filter;
     private DatabaseManager databaseManager;
+    private InventoryManager inventoryManager;
 
     @Override
     public void onEnable() {
@@ -30,10 +31,11 @@ public final class JSecurity extends JavaPlugin {
         playerDataManager = new PlayerDataManager(this, databaseManager);
         messageManager = new MessageManager(configManager);
         vanishManager = new VanishManager(this);
-        authManager = new AuthManager(this, configManager, databaseManager);
+        inventoryManager = new InventoryManager();
+        authManager = new AuthManager(this, configManager, databaseManager, inventoryManager);
 
         // Register listeners
-        PlayerListener playerListener = new PlayerListener(this, punishmentManager, configManager, playerDataManager, authManager);
+        PlayerListener playerListener = new PlayerListener(this, punishmentManager, configManager, playerDataManager, authManager, inventoryManager);
         getServer().getPluginManager().registerEvents(playerListener, this);
         getServer().getPluginManager().registerEvents(new PlayerFreezeListener(freezeManager), this);
         getServer().getPluginManager().registerEvents(new PlayerDataListener(playerDataManager, configManager), this);

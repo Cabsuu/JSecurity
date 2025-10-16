@@ -352,7 +352,7 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.GREEN + playerName + " has been unregistered.");
             System.out.println(playerName + " has been unregistered by " + sender.getName() + ".");
             if (target.isOnline()) {
-                authManager.logoutPlayer(target.getPlayer());
+                authManager.setUnauthenticated(target.getPlayer());
             }
             unregisterConfirmation.remove(sender instanceof Player ? ((Player) sender).getUniqueId() : null);
         } else {

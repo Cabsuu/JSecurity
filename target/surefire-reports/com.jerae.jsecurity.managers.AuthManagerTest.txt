@@ -1,0 +1,136 @@
+-------------------------------------------------------------------------------
+Test set: com.jerae.jsecurity.managers.AuthManagerTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 5, Skipped: 0, Time elapsed: 3.229 s <<< FAILURE! -- in com.jerae.jsecurity.managers.AuthManagerTest
+com.jerae.jsecurity.managers.AuthManagerTest.testHandlePlayerJoin_SessionReconnectMessage -- Time elapsed: 3.109 s <<< ERROR!
+java.util.ServiceConfigurationError: io.papermc.paper.registry.RegistryAccess: Provider org.mockbukkit.mockbukkit.registry.RegistryAccessMock could not be instantiated
+	at java.base/java.util.ServiceLoader.fail(ServiceLoader.java:586)
+	at java.base/java.util.ServiceLoader$ProviderImpl.newInstance(ServiceLoader.java:813)
+	at java.base/java.util.ServiceLoader$ProviderImpl.get(ServiceLoader.java:729)
+	at java.base/java.util.ServiceLoader$3.next(ServiceLoader.java:1403)
+	at java.base/java.util.ServiceLoader.findFirst(ServiceLoader.java:1813)
+	at io.papermc.paper.registry.RegistryAccessHolder.<clinit>(RegistryAccessHolder.java:8)
+	at io.papermc.paper.registry.RegistryAccess.registryAccess(RegistryAccess.java:24)
+	at org.bukkit.Registry.legacyRegistryFor(Registry.java:67)
+	at org.bukkit.Registry.<clinit>(Registry.java:97)
+	at org.bukkit.Material.lambda$new$0(Material.java:2777)
+	at com.google.common.base.Suppliers$NonSerializableMemoizingSupplier.get(Suppliers.java:200)
+	at org.bukkit.Material.asItemType(Material.java:3641)
+	at org.bukkit.inventory.ItemStack.of(ItemStack.java:63)
+	at org.bukkit.inventory.ItemStack.<init>(ItemStack.java:159)
+	at org.bukkit.inventory.ItemStack.<init>(ItemStack.java:138)
+	at org.bukkit.inventory.ItemStack.<init>(ItemStack.java:125)
+	at org.bukkit.inventory.ItemStack.<init>(ItemStack.java:108)
+	at com.jerae.jsecurity.managers.AuthManagerTest.setUp(AuthManagerTest.java:45)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: java.lang.ExceptionInInitializerError
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized0(Native Method)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized(Unsafe.java:1160)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.ensureClassInitialized(MethodHandleAccessorFactory.java:300)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.newConstructorAccessor(MethodHandleAccessorFactory.java:103)
+	at java.base/jdk.internal.reflect.ReflectionFactory.newConstructorAccessor(ReflectionFactory.java:200)
+	at java.base/java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:549)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486)
+	at java.base/java.util.ServiceLoader$ProviderImpl.newInstance(ServiceLoader.java:789)
+	... 19 more
+Caused by: java.lang.NullPointerException: Cannot invoke "com.google.gson.JsonElement.getAsString()" because the return value of "com.google.gson.JsonObject.get(String)" is null
+	at org.mockbukkit.mockbukkit.registry.RegistryAccessMock.createClassToKeyConversions(RegistryAccessMock.java:135)
+	at org.mockbukkit.mockbukkit.registry.RegistryAccessMock.<clinit>(RegistryAccessMock.java:35)
+	... 28 more
+
+com.jerae.jsecurity.managers.AuthManagerTest.testUnregister -- Time elapsed: 0.011 s <<< ERROR!
+org.mockito.exceptions.misusing.UnfinishedStubbingException:
+
+Unfinished stubbing detected here:
+-> at com.jerae.jsecurity.managers.AuthManagerTest.setUp(AuthManagerTest.java:45)
+
+E.g. thenReturn() may be missing.
+Examples of correct stubbing:
+    when(mock.isOk()).thenReturn(true);
+    when(mock.isOk()).thenThrow(exception);
+    doThrow(exception).when(mock).someVoidMethod();
+Hints:
+ 1. missing thenReturn()
+ 2. you are trying to stub a final method, which is not supported
+ 3. you are stubbing the behaviour of another mock inside before 'thenReturn' instruction is completed
+
+	at com.jerae.jsecurity.managers.AuthManagerTest.setUp(AuthManagerTest.java:42)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.managers.AuthManagerTest.testLoginPlayer -- Time elapsed: 0.006 s <<< ERROR!
+java.lang.NoClassDefFoundError: Could not initialize class org.bukkit.Registry
+	at org.bukkit.Material.lambda$new$0(Material.java:2777)
+	at com.google.common.base.Suppliers$NonSerializableMemoizingSupplier.get(Suppliers.java:200)
+	at org.bukkit.Material.asItemType(Material.java:3641)
+	at org.bukkit.inventory.ItemStack.of(ItemStack.java:63)
+	at org.bukkit.inventory.ItemStack.<init>(ItemStack.java:159)
+	at org.bukkit.inventory.ItemStack.<init>(ItemStack.java:138)
+	at org.bukkit.inventory.ItemStack.<init>(ItemStack.java:125)
+	at org.bukkit.inventory.ItemStack.<init>(ItemStack.java:108)
+	at com.jerae.jsecurity.managers.AuthManagerTest.setUp(AuthManagerTest.java:45)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: java.lang.ExceptionInInitializerError: Exception java.util.ServiceConfigurationError: io.papermc.paper.registry.RegistryAccess: Provider org.mockbukkit.mockbukkit.registry.RegistryAccessMock could not be instantiated [in thread "main"]
+	at java.base/java.util.ServiceLoader.fail(ServiceLoader.java:586)
+	at java.base/java.util.ServiceLoader$ProviderImpl.newInstance(ServiceLoader.java:813)
+	at java.base/java.util.ServiceLoader$ProviderImpl.get(ServiceLoader.java:729)
+	at java.base/java.util.ServiceLoader$3.next(ServiceLoader.java:1403)
+	at java.base/java.util.ServiceLoader.findFirst(ServiceLoader.java:1813)
+	at io.papermc.paper.registry.RegistryAccessHolder.<clinit>(RegistryAccessHolder.java:8)
+	at io.papermc.paper.registry.RegistryAccess.registryAccess(RegistryAccess.java:24)
+	at org.bukkit.Registry.legacyRegistryFor(Registry.java:67)
+	at org.bukkit.Registry.<clinit>(Registry.java:97)
+	... 12 more
+
+com.jerae.jsecurity.managers.AuthManagerTest.testHandlePlayerJoin_AuthEnabled -- Time elapsed: 0.003 s <<< ERROR!
+org.mockito.exceptions.misusing.UnfinishedStubbingException:
+
+Unfinished stubbing detected here:
+-> at com.jerae.jsecurity.managers.AuthManagerTest.setUp(AuthManagerTest.java:45)
+
+E.g. thenReturn() may be missing.
+Examples of correct stubbing:
+    when(mock.isOk()).thenReturn(true);
+    when(mock.isOk()).thenThrow(exception);
+    doThrow(exception).when(mock).someVoidMethod();
+Hints:
+ 1. missing thenReturn()
+ 2. you are trying to stub a final method, which is not supported
+ 3. you are stubbing the behaviour of another mock inside before 'thenReturn' instruction is completed
+
+	at com.jerae.jsecurity.managers.AuthManagerTest.setUp(AuthManagerTest.java:42)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.managers.AuthManagerTest.testSessionReconnection -- Time elapsed: 0.033 s <<< ERROR!
+java.lang.NoClassDefFoundError: Could not initialize class org.bukkit.Registry
+	at org.bukkit.Material.lambda$new$0(Material.java:2777)
+	at com.google.common.base.Suppliers$NonSerializableMemoizingSupplier.get(Suppliers.java:200)
+	at org.bukkit.Material.asItemType(Material.java:3641)
+	at org.bukkit.inventory.ItemStack.of(ItemStack.java:63)
+	at org.bukkit.inventory.ItemStack.<init>(ItemStack.java:159)
+	at org.bukkit.inventory.ItemStack.<init>(ItemStack.java:138)
+	at org.bukkit.inventory.ItemStack.<init>(ItemStack.java:125)
+	at org.bukkit.inventory.ItemStack.<init>(ItemStack.java:108)
+	at com.jerae.jsecurity.managers.AuthManagerTest.setUp(AuthManagerTest.java:45)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: java.lang.ExceptionInInitializerError: Exception java.util.ServiceConfigurationError: io.papermc.paper.registry.RegistryAccess: Provider org.mockbukkit.mockbukkit.registry.RegistryAccessMock could not be instantiated [in thread "main"]
+	at java.base/java.util.ServiceLoader.fail(ServiceLoader.java:586)
+	at java.base/java.util.ServiceLoader$ProviderImpl.newInstance(ServiceLoader.java:813)
+	at java.base/java.util.ServiceLoader$ProviderImpl.get(ServiceLoader.java:729)
+	at java.base/java.util.ServiceLoader$3.next(ServiceLoader.java:1403)
+	at java.base/java.util.ServiceLoader.findFirst(ServiceLoader.java:1813)
+	at io.papermc.paper.registry.RegistryAccessHolder.<clinit>(RegistryAccessHolder.java:8)
+	at io.papermc.paper.registry.RegistryAccess.registryAccess(RegistryAccess.java:24)
+	at org.bukkit.Registry.legacyRegistryFor(Registry.java:67)
+	at org.bukkit.Registry.<clinit>(Registry.java:97)
+	... 12 more

@@ -227,7 +227,7 @@ public class FeatureTests {
         PlayerDataManager playerDataManager = mock(PlayerDataManager.class);
         AuthManager authManager = mock(AuthManager.class);
 
-        PlayerListener listener = new PlayerListener(plugin, punishmentManager, configManager, playerDataManager, authManager);
+        PlayerListener listener = new PlayerListener(plugin, punishmentManager, configManager, playerDataManager, authManager, new InventoryManager());
 
         Player player1 = mock(Player.class);
         when(player1.getName()).thenReturn("Player1");
@@ -273,7 +273,7 @@ public class FeatureTests {
     @Test
     public void testMutedPlayerCommandRestriction() {
         // Given
-        PlayerListener playerListener = new PlayerListener(mock(JSecurity.class), punishmentManager, configManager, mock(PlayerDataManager.class), mock(AuthManager.class));
+        PlayerListener playerListener = new PlayerListener(mock(JSecurity.class), punishmentManager, configManager, mock(PlayerDataManager.class), mock(AuthManager.class), new InventoryManager());
         MuteEntry muteEntry = new MuteEntry(playerUUID, player.getName(), "test reason", "test staff", -1);
 
         when(punishmentManager.isMuted(playerUUID)).thenReturn(true);
@@ -294,7 +294,7 @@ public class FeatureTests {
     public void testLoginCommandIsCancelled() {
         // Given
         AuthManager authManager = mock(AuthManager.class);
-        PlayerListener playerListener = new PlayerListener(mock(JSecurity.class), punishmentManager, configManager, mock(PlayerDataManager.class), authManager);
+        PlayerListener playerListener = new PlayerListener(mock(JSecurity.class), punishmentManager, configManager, mock(PlayerDataManager.class), authManager, new InventoryManager());
         when(configManager.getBoolean("authentication.enabled")).thenReturn(true);
         when(authManager.isLoggedIn(player)).thenReturn(false);
 
@@ -341,7 +341,7 @@ public class FeatureTests {
     public void testUnauthenticatedPlayerCannotMove() {
         // Given
         AuthManager authManager = mock(AuthManager.class);
-        PlayerListener playerListener = new PlayerListener(mock(JSecurity.class), punishmentManager, configManager, mock(PlayerDataManager.class), authManager);
+        PlayerListener playerListener = new PlayerListener(mock(JSecurity.class), punishmentManager, configManager, mock(PlayerDataManager.class), authManager, new InventoryManager());
         when(configManager.getBoolean("authentication.enabled")).thenReturn(true);
         when(authManager.isLoggedIn(player)).thenReturn(false);
 
