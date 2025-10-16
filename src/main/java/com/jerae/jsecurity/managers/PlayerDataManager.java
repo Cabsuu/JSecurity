@@ -85,6 +85,7 @@ public class PlayerDataManager {
         }
     }
 
+
     public List<PlayerData> getAllPlayerData() {
         List<PlayerData> playerDataList = new ArrayList<>();
         try (Connection connection = databaseManager.getConnection();

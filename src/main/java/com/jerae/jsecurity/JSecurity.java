@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class JSecurity extends JavaPlugin {
+public class JSecurity extends JavaPlugin {
 
     private ConfigManager configManager;
     private PunishmentManager punishmentManager;
@@ -20,6 +20,7 @@ public final class JSecurity extends JavaPlugin {
     private LoginCommandFilter filter;
     private DatabaseManager databaseManager;
     private InventoryManager inventoryManager;
+    private IpManager ipManager;
 
     @Override
     public void onEnable() {
@@ -32,7 +33,8 @@ public final class JSecurity extends JavaPlugin {
         messageManager = new MessageManager(configManager);
         vanishManager = new VanishManager(this);
         inventoryManager = new InventoryManager();
-        authManager = new AuthManager(this, configManager, databaseManager, inventoryManager);
+        ipManager = new IpManager(this, playerDataManager, punishmentManager, configManager);
+        authManager = new AuthManager(this, configManager, databaseManager, inventoryManager, ipManager);
 
         // Register listeners
         PlayerListener playerListener = new PlayerListener(this, punishmentManager, configManager, playerDataManager, authManager, inventoryManager);
