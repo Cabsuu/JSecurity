@@ -36,7 +36,7 @@ public class PunishmentManager {
                     statement.executeUpdate();
                 }
                 if (ban.getIpAddress() != null) {
-                    try (PreparedStatement statement = connection.prepareStatement("INSERT INTO ip_bans (ip_address, uuid) VALUES (?, ?)")) {
+                    try (PreparedStatement statement = connection.prepareStatement("INSERT OR IGNORE INTO ip_bans (ip_address, uuid) VALUES (?, ?)")) {
                         statement.setString(1, ban.getIpAddress());
                         statement.setString(2, ban.getUuid().toString());
                         statement.executeUpdate();

@@ -46,7 +46,7 @@ public class PlayerDataListener implements Listener {
             return;
         }
 
-        int playerCount = playerDataManager.getAllPlayerData().size();
+        int playerCount = playerDataManager.getAllPlayerData().size() + 1;
         List<Integer> milestones = configManager.getAnnounceMilestones();
 
         if (milestones.isEmpty() || milestones.contains(playerCount)) {
