@@ -95,8 +95,8 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        // Check for ban evasion
-        if (configManager.isBanEvasionPreventionEnabled()) {
+        // If authentication is disabled, check for ban evasion
+        if (!configManager.isAuthEnabled() && configManager.isBanEvasionPreventionEnabled()) {
             BanEntry ipBan = punishmentManager.getBanByIp(ipAddress);
             if (ipBan != null) {
                 // The player's IP is banned, but their UUID is not. This is ban evasion.
@@ -133,52 +133,6 @@ public class PlayerListener implements Listener {
                 } else {
                     joiningPlayer.sendMessage("Please register using /register <password> <confirmPassword>");
                 }
-            }
-        }
-
-        InetSocketAddress joiningPlayerSocketAddress = joiningPlayer.getAddress();
-
-        if (joiningPlayerSocketAddress == null) {
-            return;
-        }
-        String joiningPlayerIp = joiningPlayerSocketAddress.getAddress().getHostAddress();
-
-        if (configManager.isAltAccountAlertEnabled()) {
-            Set<String> altAccountNames = new HashSet<>();
-
-            for (PlayerData playerData : playerDataManager.getAllPlayerData()) {
-                if (playerData.getIps().contains(joiningPlayerIp)) {
-                    altAccountNames.add(playerData.getName());
-                }
-            }
-            // Add the current player to the list if they are not already in it
-            // This case can happen if the player data hasn't been saved yet.
-            altAccountNames.add(joiningPlayer.getName());
-
-            if (altAccountNames.size() > 1) {
-                plugin.getLogger().info("IP Address for " + joiningPlayer.getName() + " is " + joiningPlayerIp);
-                plugin.getLogger().info("Found " + altAccountNames.size() + " total accounts on this IP: " + String.join(", ", altAccountNames));
-
-                String otherAccounts = altAccountNames.stream()
-                    .filter(name -> !name.equalsIgnoreCase(joiningPlayer.getName()))
-                    .collect(Collectors.joining(", "));
-
-                if (otherAccounts.isEmpty()) {
-                    return;
-                }
-
-                PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData()
-                        .setPlayerName(joiningPlayer.getName())
-                        .setAltPlayer(otherAccounts);
-
-                String alertMessage = configManager.getMessage("alt-account-alert");
-                String formattedMessage = PlaceholderAPI.setPlaceholders(alertMessage, data);
-
-                Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(formattedMessage);
-
-                Bukkit.getOnlinePlayers().stream()
-                        .filter(p -> p.hasPermission("jsecurity.alt.alert"))
-                        .forEach(p -> p.sendMessage(component));
             }
         }
     }

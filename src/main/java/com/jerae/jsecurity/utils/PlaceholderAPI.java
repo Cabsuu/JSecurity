@@ -29,6 +29,9 @@ public class PlaceholderAPI {
     }
 
     public static String setPlaceholders(String message, PlaceholderData data) {
+        if (message == null) {
+            return "";
+        }
         for (Map.Entry<String, Function<PlaceholderData, String>> entry : placeholders.entrySet()) {
             if (message.contains(entry.getKey())) {
                 message = message.replace(entry.getKey(), entry.getValue().apply(data));

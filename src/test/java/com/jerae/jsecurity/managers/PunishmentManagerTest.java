@@ -19,6 +19,11 @@ import java.util.logging.Logger;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 class PunishmentManagerTest {
 
     @TempDir
@@ -54,42 +59,86 @@ class PunishmentManagerTest {
     }
 
     @Test
-    void testBanAndUnban() {
+    void testBanAndUnban() throws InterruptedException {
         UUID playerUUID = UUID.randomUUID();
         playerDataManager.createPlayerData(playerUUID, "testPlayer", "127.0.0.1");
+        Thread.sleep(100); // Wait for async create to finish
         BanEntry ban = new BanEntry(playerUUID, "testPlayer", "127.0.0.1", "test reason", "staff", -1);
 
         punishmentManager.addBan(ban);
+        Thread.sleep(100); // Wait for async addBan to finish
         assertTrue(punishmentManager.isBanned(playerUUID));
 
         punishmentManager.removeBan(playerUUID);
+        Thread.sleep(100); // Wait for async removeBan to finish
         assertFalse(punishmentManager.isBanned(playerUUID));
     }
 
     @Test
-    void testMuteAndUnmute() {
+    void testMuteAndUnmute() throws InterruptedException {
         UUID playerUUID = UUID.randomUUID();
         playerDataManager.createPlayerData(playerUUID, "testPlayer", "127.0.0.1");
+        Thread.sleep(100); // Wait for async create to finish
         MuteEntry mute = new MuteEntry(playerUUID, "testPlayer", "test reason", "staff", -1);
 
         punishmentManager.addMute(mute);
+        Thread.sleep(100); // Wait for async addMute to finish
         assertTrue(punishmentManager.isMuted(playerUUID));
 
         punishmentManager.removeMute(playerUUID);
+        Thread.sleep(100); // Wait for async removeMute to finish
         assertFalse(punishmentManager.isMuted(playerUUID));
     }
 
     @Test
-    void testWarn() {
+    void testWarn() throws InterruptedException {
         UUID playerUUID = UUID.randomUUID();
         String playerName = "testPlayer";
         playerDataManager.createPlayerData(playerUUID, playerName, "127.0.0.1");
+        Thread.sleep(100); // Wait for async create to finish
         WarnEntry warn = new WarnEntry(playerUUID, playerName, "test reason", "staff");
 
         punishmentManager.addWarn(warn);
+        Thread.sleep(100); // Wait for async addWarn to finish
         List<PunishmentLogEntry> history = punishmentManager.getPlayerHistory(playerUUID);
 
         assertFalse(history.isEmpty());
         assertEquals("warn", history.get(0).getPunishmentType());
+    }
+
+    @Test
+    void testConcurrentWarns() throws InterruptedException {
+        int numberOfThreads = 10;
+        int warnsPerThread = 20;
+        int totalWarns = numberOfThreads * warnsPerThread;
+        UUID playerUUID = UUID.randomUUID();
+        String playerName = "testPlayer";
+
+        playerDataManager.createPlayerData(playerUUID, playerName, "127.0.0.1");
+
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+        CountDownLatch latch = new CountDownLatch(totalWarns);
+
+        for (int i = 0; i < totalWarns; i++) {
+            final int warnId = i;
+            executor.submit(() -> {
+                try {
+                    WarnEntry warn = new WarnEntry(playerUUID, playerName, "Concurrent warn " + warnId, "TestThread");
+                    punishmentManager.addWarn(warn);
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        assertTrue(latch.await(30, TimeUnit.SECONDS), "Not all warn tasks completed in time");
+        executor.shutdown();
+        assertTrue(executor.awaitTermination(10, TimeUnit.SECONDS), "Executor did not terminate in time");
+
+        // Allow some time for the async writes to complete
+        Thread.sleep(2000);
+
+        List<PunishmentLogEntry> history = punishmentManager.getPlayerHistory(playerUUID);
+        assertEquals(totalWarns, history.size(), "Not all warnings were persisted to the database.");
     }
 }

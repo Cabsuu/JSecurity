@@ -9,10 +9,13 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class DatabaseManager {
     private final JSecurity plugin;
     private HikariDataSource dataSource;
+    private final ExecutorService databaseExecutor = Executors.newSingleThreadExecutor();
 
     public DatabaseManager(JSecurity plugin) {
         this.plugin = plugin;
@@ -76,9 +79,14 @@ public class DatabaseManager {
         return dataSource.getConnection();
     }
 
+    public void executeAsync(Runnable task) {
+        databaseExecutor.submit(task);
+    }
+
     public void close() {
         if (dataSource != null && !dataSource.isClosed()) {
             dataSource.close();
         }
+        databaseExecutor.shutdown();
     }
 }

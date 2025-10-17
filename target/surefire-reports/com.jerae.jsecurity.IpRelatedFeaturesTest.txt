@@ -1,0 +1,61 @@
+-------------------------------------------------------------------------------
+Test set: com.jerae.jsecurity.IpRelatedFeaturesTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 5, Skipped: 0, Time elapsed: 2.612 s <<< FAILURE! -- in com.jerae.jsecurity.IpRelatedFeaturesTest
+com.jerae.jsecurity.IpRelatedFeaturesTest.testBanEvasionTriggeredForAuthenticatedPlayer -- Time elapsed: 2.407 s <<< ERROR!
+org.mockito.exceptions.misusing.UnnecessaryStubbingException:
+
+Unnecessary stubbings detected.
+Clean & maintainable test code requires zero unnecessary code.
+Following stubbings are unnecessary (click to navigate to relevant line of code):
+  1. -> at com.jerae.jsecurity.IpRelatedFeaturesTest.setUp(IpRelatedFeaturesTest.java:56)
+Please remove unnecessary stubbings or use 'lenient' strictness. More info: javadoc for UnnecessaryStubbingException class.
+	at org.mockito.junit.jupiter.MockitoExtension.afterEach(MockitoExtension.java:197)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.IpRelatedFeaturesTest.testAltAccountAlertTriggeredForAuthenticatedPlayer -- Time elapsed: 0.087 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "org.bukkit.Server.getOnlinePlayers()" because "org.bukkit.Bukkit.server" is null
+	at org.bukkit.Bukkit.getOnlinePlayers(Bukkit.java:205)
+	at com.jerae.jsecurity.managers.IpManager.checkAltAccounts(IpManager.java:113)
+	at com.jerae.jsecurity.managers.IpManager.handlePlayerIp(IpManager.java:39)
+	at com.jerae.jsecurity.IpRelatedFeaturesTest.testAltAccountAlertTriggeredForAuthenticatedPlayer(IpRelatedFeaturesTest.java:127)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.IpRelatedFeaturesTest.testAltAccountAlertNotTriggeredForUnauthenticatedPlayer -- Time elapsed: 0.019 s <<< ERROR!
+org.mockito.exceptions.misusing.UnnecessaryStubbingException:
+
+Unnecessary stubbings detected.
+Clean & maintainable test code requires zero unnecessary code.
+Following stubbings are unnecessary (click to navigate to relevant line of code):
+  1. -> at com.jerae.jsecurity.IpRelatedFeaturesTest.setUp(IpRelatedFeaturesTest.java:56)
+Please remove unnecessary stubbings or use 'lenient' strictness. More info: javadoc for UnnecessaryStubbingException class.
+	at org.mockito.junit.jupiter.MockitoExtension.afterEach(MockitoExtension.java:197)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.IpRelatedFeaturesTest.testIpLoggedAfterSuccessfulLogin -- Time elapsed: 0.013 s <<< ERROR!
+org.mockito.exceptions.misusing.UnnecessaryStubbingException:
+
+Unnecessary stubbings detected.
+Clean & maintainable test code requires zero unnecessary code.
+Following stubbings are unnecessary (click to navigate to relevant line of code):
+  1. -> at com.jerae.jsecurity.IpRelatedFeaturesTest.setUp(IpRelatedFeaturesTest.java:56)
+Please remove unnecessary stubbings or use 'lenient' strictness. More info: javadoc for UnnecessaryStubbingException class.
+	at org.mockito.junit.jupiter.MockitoExtension.afterEach(MockitoExtension.java:197)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.IpRelatedFeaturesTest.testBanEvasionNotTriggeredForUnauthenticatedPlayer -- Time elapsed: 0.010 s <<< ERROR!
+org.mockito.exceptions.misusing.UnnecessaryStubbingException:
+
+Unnecessary stubbings detected.
+Clean & maintainable test code requires zero unnecessary code.
+Following stubbings are unnecessary (click to navigate to relevant line of code):
+  1. -> at com.jerae.jsecurity.IpRelatedFeaturesTest.setUp(IpRelatedFeaturesTest.java:56)
+Please remove unnecessary stubbings or use 'lenient' strictness. More info: javadoc for UnnecessaryStubbingException class.
+	at org.mockito.junit.jupiter.MockitoExtension.afterEach(MockitoExtension.java:197)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)

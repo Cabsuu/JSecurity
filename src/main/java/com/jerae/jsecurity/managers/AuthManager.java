@@ -32,11 +32,14 @@ public class AuthManager {
     private final Map<UUID, GameMode> lastGameModes = new HashMap<>();
     private final Map<UUID, Long> sessionTimestamps = new HashMap<>();
 
-    public AuthManager(JSecurity plugin, ConfigManager configManager, DatabaseManager databaseManager, InventoryManager inventoryManager) {
+    private final IpManager ipManager;
+
+    public AuthManager(JSecurity plugin, ConfigManager configManager, DatabaseManager databaseManager, InventoryManager inventoryManager, IpManager ipManager) {
         this.plugin = plugin;
         this.configManager = configManager;
         this.databaseManager = databaseManager;
         this.inventoryManager = inventoryManager;
+        this.ipManager = ipManager;
     }
 
     public boolean isRegistered(UUID uuid) {
@@ -103,6 +106,9 @@ public class AuthManager {
         if (configManager.isSessionReconnection()) {
             sessionTimestamps.put(player.getUniqueId(), System.currentTimeMillis());
         }
+
+        // Handle IP logging and checks after successful login
+        ipManager.handlePlayerIp(player);
     }
 
     public void logoutPlayer(Player player) {

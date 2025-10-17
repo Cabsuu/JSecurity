@@ -60,30 +60,35 @@ public class PlayerDataManager {
 
     public void createPlayerData(UUID uuid, String name, String ip) {
         if (getPlayerData(uuid) == null) {
-            String joined = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd, HH:mm").format(java.time.LocalDateTime.now());
-            try (Connection connection = databaseManager.getConnection();
-                 PreparedStatement statement = connection.prepareStatement("INSERT INTO player_data (uuid, name, ips, joined) VALUES (?, ?, ?, ?)")) {
-                statement.setString(1, uuid.toString());
-                statement.setString(2, name);
-                statement.setString(3, ip);
-                statement.setString(4, joined);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                plugin.getLogger().severe("Could not create player data: " + e.getMessage());
-            }
+            databaseManager.executeAsync(() -> {
+                String joined = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd, HH:mm").format(java.time.LocalDateTime.now());
+                try (Connection connection = databaseManager.getConnection();
+                     PreparedStatement statement = connection.prepareStatement("INSERT INTO player_data (uuid, name, ips, joined) VALUES (?, ?, ?, ?)")) {
+                    statement.setString(1, uuid.toString());
+                    statement.setString(2, name);
+                    statement.setString(3, ip);
+                    statement.setString(4, joined);
+                    statement.executeUpdate();
+                } catch (SQLException e) {
+                    plugin.getLogger().severe("Could not create player data: " + e.getMessage());
+                }
+            });
         }
     }
 
     public void updatePlayerData(PlayerData playerData) {
-        try (Connection connection = databaseManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement("UPDATE player_data SET ips = ? WHERE uuid = ?")) {
-            statement.setString(1, String.join(",", playerData.getIps()));
-            statement.setString(2, playerData.getUuid().toString());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            plugin.getLogger().severe("Could not update player data: " + e.getMessage());
-        }
+        databaseManager.executeAsync(() -> {
+            try (Connection connection = databaseManager.getConnection();
+                 PreparedStatement statement = connection.prepareStatement("UPDATE player_data SET ips = ? WHERE uuid = ?")) {
+                statement.setString(1, String.join(",", playerData.getIps()));
+                statement.setString(2, playerData.getUuid().toString());
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                plugin.getLogger().severe("Could not update player data: " + e.getMessage());
+            }
+        });
     }
+
 
     public List<PlayerData> getAllPlayerData() {
         List<PlayerData> playerDataList = new ArrayList<>();
