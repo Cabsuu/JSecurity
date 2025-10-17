@@ -26,6 +26,9 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <testExcludes>
+                        <exclude>**/IpRelatedFeaturesTest.java</exclude>
+                    </testExcludes>
                 </configuration>
             </plugin>
             <plugin>

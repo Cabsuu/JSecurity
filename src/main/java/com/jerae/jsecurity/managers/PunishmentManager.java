@@ -25,40 +25,44 @@ public class PunishmentManager {
     }
 
     public void addBan(BanEntry ban) {
-        try (Connection connection = databaseManager.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO punishments (uuid, type, reason, staff_name, end_time) VALUES (?, ?, ?, ?, ?)")) {
-                statement.setString(1, ban.getUuid().toString());
-                statement.setString(2, "ban");
-                statement.setString(3, ban.getReason());
-                statement.setString(4, ban.getStaffName());
-                statement.setLong(5, ban.getExpiration());
-                statement.executeUpdate();
-            }
-            if (ban.getIpAddress() != null) {
-                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO ip_bans (ip_address, uuid) VALUES (?, ?)")) {
-                    statement.setString(1, ban.getIpAddress());
-                    statement.setString(2, ban.getUuid().toString());
+        databaseManager.executeAsync(() -> {
+            try (Connection connection = databaseManager.getConnection()) {
+                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO punishments (uuid, type, reason, staff_name, end_time) VALUES (?, ?, ?, ?, ?)")) {
+                    statement.setString(1, ban.getUuid().toString());
+                    statement.setString(2, "ban");
+                    statement.setString(3, ban.getReason());
+                    statement.setString(4, ban.getStaffName());
+                    statement.setLong(5, ban.getExpiration());
                     statement.executeUpdate();
                 }
+                if (ban.getIpAddress() != null) {
+                    try (PreparedStatement statement = connection.prepareStatement("INSERT INTO ip_bans (ip_address, uuid) VALUES (?, ?)")) {
+                        statement.setString(1, ban.getIpAddress());
+                        statement.setString(2, ban.getUuid().toString());
+                        statement.executeUpdate();
+                    }
+                }
+            } catch (SQLException e) {
+                plugin.getLogger().severe("Could not add ban: " + e.getMessage());
             }
-        } catch (SQLException e) {
-            plugin.getLogger().severe("Could not add ban: " + e.getMessage());
-        }
+        });
     }
 
     public void removeBan(UUID uuid) {
-        try (Connection connection = databaseManager.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM punishments WHERE uuid = ? AND type = 'ban'")) {
-                statement.setString(1, uuid.toString());
-                statement.executeUpdate();
+        databaseManager.executeAsync(() -> {
+            try (Connection connection = databaseManager.getConnection()) {
+                try (PreparedStatement statement = connection.prepareStatement("DELETE FROM punishments WHERE uuid = ? AND type = 'ban'")) {
+                    statement.setString(1, uuid.toString());
+                    statement.executeUpdate();
+                }
+                try (PreparedStatement statement = connection.prepareStatement("DELETE FROM ip_bans WHERE uuid = ?")) {
+                    statement.setString(1, uuid.toString());
+                    statement.executeUpdate();
+                }
+            } catch (SQLException e) {
+                plugin.getLogger().severe("Could not remove ban: " + e.getMessage());
             }
-            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM ip_bans WHERE uuid = ?")) {
-                statement.setString(1, uuid.toString());
-                statement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            plugin.getLogger().severe("Could not remove ban: " + e.getMessage());
-        }
+        });
     }
 
     public BanEntry getBan(UUID uuid) {
@@ -88,27 +92,31 @@ public class PunishmentManager {
     }
 
     public void addMute(MuteEntry mute) {
-        try (Connection connection = databaseManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement("INSERT INTO punishments (uuid, type, reason, staff_name, end_time) VALUES (?, ?, ?, ?, ?)")) {
-            statement.setString(1, mute.getUuid().toString());
-            statement.setString(2, "mute");
-            statement.setString(3, mute.getReason());
-            statement.setString(4, mute.getStaffName());
-            statement.setLong(5, mute.getExpiration());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            plugin.getLogger().severe("Could not add mute: " + e.getMessage());
-        }
+        databaseManager.executeAsync(() -> {
+            try (Connection connection = databaseManager.getConnection();
+                 PreparedStatement statement = connection.prepareStatement("INSERT INTO punishments (uuid, type, reason, staff_name, end_time) VALUES (?, ?, ?, ?, ?)")) {
+                statement.setString(1, mute.getUuid().toString());
+                statement.setString(2, "mute");
+                statement.setString(3, mute.getReason());
+                statement.setString(4, mute.getStaffName());
+                statement.setLong(5, mute.getExpiration());
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                plugin.getLogger().severe("Could not add mute: " + e.getMessage());
+            }
+        });
     }
 
     public void removeMute(UUID uuid) {
-        try (Connection connection = databaseManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement("DELETE FROM punishments WHERE uuid = ? AND type = 'mute'")) {
-            statement.setString(1, uuid.toString());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            plugin.getLogger().severe("Could not remove mute: " + e.getMessage());
-        }
+        databaseManager.executeAsync(() -> {
+            try (Connection connection = databaseManager.getConnection();
+                 PreparedStatement statement = connection.prepareStatement("DELETE FROM punishments WHERE uuid = ? AND type = 'mute'")) {
+                statement.setString(1, uuid.toString());
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                plugin.getLogger().severe("Could not remove mute: " + e.getMessage());
+            }
+        });
     }
 
     public MuteEntry getMute(UUID uuid) {
@@ -253,16 +261,18 @@ public class PunishmentManager {
     }
 
     public void addWarn(WarnEntry warn) {
-        try (Connection connection = databaseManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement("INSERT INTO punishments (uuid, type, reason, staff_name, end_time) VALUES (?, ?, ?, ?, ?)")) {
-            statement.setString(1, warn.getUuid().toString());
-            statement.setString(2, "warn");
-            statement.setString(3, warn.getReason());
-            statement.setString(4, warn.getStaffName());
-            statement.setLong(5, -1);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            plugin.getLogger().severe("Could not add warn: " + e.getMessage());
-        }
+        databaseManager.executeAsync(() -> {
+            try (Connection connection = databaseManager.getConnection();
+                 PreparedStatement statement = connection.prepareStatement("INSERT INTO punishments (uuid, type, reason, staff_name, end_time) VALUES (?, ?, ?, ?, ?)")) {
+                statement.setString(1, warn.getUuid().toString());
+                statement.setString(2, "warn");
+                statement.setString(3, warn.getReason());
+                statement.setString(4, warn.getStaffName());
+                statement.setLong(5, -1);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                plugin.getLogger().severe("Could not add warn: " + e.getMessage());
+            }
+        });
     }
 }

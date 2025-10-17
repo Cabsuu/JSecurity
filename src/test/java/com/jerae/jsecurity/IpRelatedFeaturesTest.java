@@ -137,7 +137,9 @@ public class IpRelatedFeaturesTest {
             when(configManager.getMessage("alt-account-alert")).thenReturn("Alert for {player}");
             Player onlinePlayer = mock(Player.class);
             when(onlinePlayer.hasPermission("jsecurity.alt.alert")).thenReturn(true);
-            when(server.getOnlinePlayers()).thenReturn(Collections.singletonList(onlinePlayer));
+            java.util.List<Player> onlinePlayers = new java.util.ArrayList<>();
+            onlinePlayers.add(onlinePlayer);
+            when(server.getOnlinePlayers()).thenReturn(onlinePlayers);
 
             // When
             ipManager.handlePlayerIp(player);

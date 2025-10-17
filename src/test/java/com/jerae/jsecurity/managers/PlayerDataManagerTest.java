@@ -53,20 +53,21 @@ class PlayerDataManagerTest {
     }
 
     @Test
-    void testCreateAndGetPlayerData() {
+    void testCreateAndGetPlayerData() throws InterruptedException {
         UUID playerUUID = UUID.randomUUID();
         String playerName = "TestPlayer";
         String playerIP = "127.0.0.1";
 
-        // Pre-condition: No data should exist for the player
+        // Pre-condition: No data should exist for the.
         assertNull(playerDataManager.getPlayerData(playerUUID));
 
         // Action: Create player data
         playerDataManager.createPlayerData(playerUUID, playerName, playerIP);
+        Thread.sleep(100); // Wait for async create to finish
 
         // Verification: Player data should now exist
         PlayerData retrievedData = playerDataManager.getPlayerData(playerUUID);
-        assertNotNull(retrievedData);
+        assertNotNull(retrievedData, "Retrieved player data should not be null");
         assertEquals(playerUUID, retrievedData.getUuid());
         assertEquals(playerName, retrievedData.getName());
         assertTrue(retrievedData.getIps().contains(playerIP));
@@ -74,7 +75,7 @@ class PlayerDataManagerTest {
     }
 
     @Test
-    void testAddIpToExistingPlayer() {
+    void testAddIpToExistingPlayer() throws InterruptedException {
         UUID playerUUID = UUID.randomUUID();
         String playerName = "TestPlayer";
         String firstIP = "1.1.1.1";
@@ -82,9 +83,14 @@ class PlayerDataManagerTest {
 
         // Action: Create player and add a new IP
         playerDataManager.createPlayerData(playerUUID, playerName, firstIP);
+        Thread.sleep(100); // Wait for async create to finish
+
         PlayerData playerData = playerDataManager.getPlayerData(playerUUID);
-        playerData.addIp(secondIP);
+        assertNotNull(playerData, "Player data should exist after creation");
+        playerData.getIps().add(secondIP);
         playerDataManager.updatePlayerData(playerData);
+        Thread.sleep(100); // Wait for async update to finish
+
 
         // Verification
         PlayerData reloadedData = playerDataManager.getPlayerData(playerUUID);
