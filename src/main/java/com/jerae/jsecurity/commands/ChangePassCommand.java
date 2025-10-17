@@ -20,23 +20,23 @@ public class ChangePassCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("This command can only be used by players.");
+            sender.sendMessage(configManager.getPlayerOnlyCommandMessage());
             return true;
         }
 
-        if (!configManager.getBoolean("authentication.enabled")) {
-            sender.sendMessage("The authentication system is disabled.");
+        if (!configManager.isAuthEnabled()) {
+            sender.sendMessage(configManager.getAuthDisabledMessage());
             return true;
         }
 
         Player player = (Player) sender;
         if (!authManager.isRegistered(player.getUniqueId())) {
-            player.sendMessage("You are not registered.");
+            player.sendMessage(configManager.getNotRegisteredMessage());
             return true;
         }
 
         if (args.length < 2) {
-            player.sendMessage("Usage: /changepass <oldPassword> <newPassword>");
+            player.sendMessage(configManager.getChangePassUsageMessage());
             return true;
         }
 
@@ -44,7 +44,7 @@ public class ChangePassCommand implements CommandExecutor {
         String newPassword = args[1];
 
         if (!authManager.checkPassword(player.getUniqueId(), oldPassword)) {
-            player.sendMessage("Incorrect old password.");
+            player.sendMessage(configManager.getChangePassFailMessage());
             return true;
         }
 
@@ -55,7 +55,7 @@ public class ChangePassCommand implements CommandExecutor {
         }
 
         authManager.changePassword(player.getUniqueId(), newPassword);
-        player.sendMessage("Your password has been changed successfully.");
+        player.sendMessage(configManager.getChangePassSuccessMessage());
         return true;
     }
 }

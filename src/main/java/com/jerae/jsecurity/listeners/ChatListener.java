@@ -1,6 +1,9 @@
 package com.jerae.jsecurity.listeners;
 
 import com.jerae.jsecurity.managers.ConfigManager;
+import com.jerae.jsecurity.managers.StaffChatManager;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,15 +18,36 @@ import java.util.regex.Pattern;
 public class ChatListener implements Listener {
 
     private final ConfigManager configManager;
+    private final StaffChatManager staffChatManager;
     private final Map<UUID, Long> chatDelay = new HashMap<>();
 
-    public ChatListener(ConfigManager configManager) {
+    public ChatListener(ConfigManager configManager, StaffChatManager staffChatManager) {
         this.configManager = configManager;
+        this.staffChatManager = staffChatManager;
     }
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
+
+        if (staffChatManager.isInStaffChat(player.getUniqueId())) {
+            if (!player.hasPermission("jsecurity.staffchat")) {
+                staffChatManager.toggleStaffChat(player.getUniqueId());
+                return;
+            }
+            String message = event.getMessage();
+            String format = configManager.getStaffChatMessageFormat()
+                    .replace("{player}", player.getName())
+                    .replace("{message}", message);
+
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                if (onlinePlayer.hasPermission("jsecurity.staffchat")) {
+                    onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', format));
+                }
+            }
+            event.setCancelled(true);
+            return;
+        }
 
         if (configManager.isChatDelayEnabled() && !player.hasPermission("jsecurity.chat.delay.bypass")) {
             if (chatDelay.containsKey(player.getUniqueId())) {
@@ -37,7 +61,7 @@ public class ChatListener implements Listener {
             chatDelay.put(player.getUniqueId(), System.currentTimeMillis());
         }
 
-        if (configManager.isKeywordReplacementEnabled()) {
+        if (configManager.isKeywordReplacementEnabled() && !player.hasPermission("jsecurity.replaceword.bypass")) {
             String message = event.getMessage();
             Map<String, String> replacementMap = configManager.getKeywordReplacementMap();
 

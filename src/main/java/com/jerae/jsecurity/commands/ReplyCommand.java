@@ -27,12 +27,12 @@ public class ReplyCommand implements CommandExecutor {
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Only players can reply to messages.");
+            sender.sendMessage(configManager.getPlayerOnlyCommandMessage());
             return true;
         }
 
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: /reply <message>");
+            sender.sendMessage(configManager.getReplyUsageMessage());
             return true;
         }
 

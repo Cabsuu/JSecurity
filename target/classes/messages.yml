@@ -45,9 +45,98 @@ punishments:
 # Other messages
 other:
   no-permission: "&cYou do not have permission to use this command."
+  staff-chat-format: "&8[&cStaffChat&8] &7{player}: {message}"
+  staff-chat-usage: "&cUsage: /staffchat <message> or /sc <message>"
+  staff-chat-toggle-on: "&aStaff chat toggled on."
+  staff-chat-toggle-off: "&cStaff chat toggled off."
+  player-only-command: "&cThis command can only be used by players."
+  player-not-found: "&cPlayer not found."
+  invalid-page-number: "&cInvalid page number."
   private-message:
     to-sender: "&7[&bme &d-> &b{target}&7] &f{content}"
     to-receiver: "&7[&b{sender} &d-> &bme&7] &f{content}"
+    usage: "&cUsage: /message <player> <message>"
+  reply:
+    usage: "&cUsage: /reply <message>"
+    no-one-to-reply-to: "&cYou have no one to reply to."
+  social-spy:
+    enabled: "&aSocial spy enabled."
+    disabled: "&cSocial spy disabled."
+  vanish:
+    vanished: "&aYou are now vanished."
+    unvanished: "&aYou are no longer vanished."
+  freeze:
+    already-frozen: "&c{player} is already frozen."
+    not-frozen: "&c{player} is not frozen."
+    frozen: "&aYou have frozen {player}."
+    unfrozen: "&aYou have unfrozen {player}."
+    usage-freeze: "&cUsage: /freeze <player>"
+    usage-unfreeze: "&cUsage: /unfreeze <player>"
+  jsecurity:
+    record:
+      header: "&6--- Player Records (Page {page}/{totalPages}) ---"
+      format: "&e{id}. &f{name}"
+    profile:
+      usage: "&cUsage: /js profile <player>"
+      header: "&6--- Player Profile: {player} ---"
+      id: "&eID: &f{id}"
+      uuid: "&eUUID: &f{uuid}"
+      last-ip: "&eLast IP: &f{ip}"
+      first-joined: "&eFirst Joined: &f{date}"
+      status: "&eStatus: {status}"
+      banned-reason: "&eReason: &f{reason}"
+      notes: "&eNotes:"
+      note-format: "&f- {note}"
+    log:
+      no-logs: "&eThere are no punishment logs."
+      header: "&6--- Punishment Log (Page {page}/{totalPages}) ---"
+      format: "&7[{date}] &e{player} - {type} - {reason}"
+    history:
+      usage: "&cUsage: /js history <player> [page]"
+      no-history: "&eThis player has no punishment history."
+      header: "&6--- History for {player} (Page {page}/{totalPages}) ---"
+      format: "&7[{date}] &e{type} - {reason}"
+    note:
+      usage: "&cUsage: /js note <player> <note|-clear>"
+      cleared: "&aNotes cleared for {player}."
+      added: "&aNote added to {player}'s profile."
+    unregister:
+      usage: "&cUsage: /js unregister <player>"
+      not-registered: "&cThat player is not registered."
+      unregistered: "&a{player} has been unregistered."
+      confirm: "&eAre you sure you want to unregister {player}? This action cannot be undone. Re-enter the command to confirm."
+    help:
+      header: "&6--- JSecurity Help ---"
+      help: "&e/js help &7- Shows this help message."
+      reload: "&e/js reload &7- Reloads the configuration."
+      record: "&e/js record [page] [-sort] &7- Shows player records."
+      profile: "&e/js profile <player> &7- Shows a player's profile."
+      log: "&e/js log [page] &7- Shows the punishment log."
+      history: "&e/js history <player> [page] &7- Shows a player's punishment history."
+      note: "&e/js note <player> <note> &7- Adds a note to a player's profile."
+  authentication:
+    enabled: false
+    disabled: "&cThe authentication system is disabled."
+    already-logged-in: "&cYou are already logged in."
+    not-registered: "&cYou are not registered. Please register using /register <password> <confirmPassword>"
+    login:
+      usage: "&cUsage: /login <password>"
+      success: "&aYou have logged in successfully."
+      fail: "&cIncorrect password."
+    register:
+      usage: "&cUsage: /register <password> <confirmPassword>"
+      already-registered: "&cYou are already registered."
+      password-mismatch: "&cPasswords do not match."
+      success: "&aYou have been registered successfully. Please log in using /login <password>"
+    changepass:
+      usage: "&cUsage: /changepass <oldPassword> <newPassword>"
+      success: "&aYour password has been changed successfully."
+      fail: "&cIncorrect old password."
+    unregister:
+      usage: "&cUsage: /unregister <password>"
+      success: "&aYou have been unregistered successfully."
+      fail: "&cIncorrect password."
+      confirm: "&eAre you sure you want to unregister? This action cannot be undone. Re-enter the command within 60 seconds to confirm."
   unban-broadcast: "&a{player} has been unbanned by {staff}."
   unmute-broadcast: "&a{player} has been unmuted by {staff}."
   freeze-message: "&cYou have been frozen by a staff member."

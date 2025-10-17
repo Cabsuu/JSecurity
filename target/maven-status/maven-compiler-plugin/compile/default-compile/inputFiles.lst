@@ -12,6 +12,7 @@
 /app/src/main/java/com/jerae/jsecurity/commands/RegisterCommand.java
 /app/src/main/java/com/jerae/jsecurity/commands/ReplyCommand.java
 /app/src/main/java/com/jerae/jsecurity/commands/SocialSpyCommand.java
+/app/src/main/java/com/jerae/jsecurity/commands/StaffChatCommand.java
 /app/src/main/java/com/jerae/jsecurity/commands/TempBanCommand.java
 /app/src/main/java/com/jerae/jsecurity/commands/TempMuteCommand.java
 /app/src/main/java/com/jerae/jsecurity/commands/UnbanCommand.java
@@ -36,6 +37,7 @@
 /app/src/main/java/com/jerae/jsecurity/managers/MuteEntry.java
 /app/src/main/java/com/jerae/jsecurity/managers/PlayerDataManager.java
 /app/src/main/java/com/jerae/jsecurity/managers/PunishmentManager.java
+/app/src/main/java/com/jerae/jsecurity/managers/StaffChatManager.java
 /app/src/main/java/com/jerae/jsecurity/managers/VanishManager.java
 /app/src/main/java/com/jerae/jsecurity/models/PlayerData.java
 /app/src/main/java/com/jerae/jsecurity/models/PunishmentLogEntry.java

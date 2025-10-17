@@ -27,17 +27,17 @@ public class VanishCommand implements CommandExecutor {
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Only players can use vanish.");
+            sender.sendMessage(configManager.getPlayerOnlyCommandMessage());
             return true;
         }
 
         Player player = (Player) sender;
         if (vanishManager.isVanished(player)) {
             vanishManager.unvanish(player);
-            player.sendMessage(ChatColor.GREEN + "You are no longer vanished.");
+            player.sendMessage(configManager.getUnvanishMessage());
         } else {
             vanishManager.vanish(player);
-            player.sendMessage(ChatColor.GREEN + "You are now vanished.");
+            player.sendMessage(configManager.getVanishMessage());
         }
         return true;
     }

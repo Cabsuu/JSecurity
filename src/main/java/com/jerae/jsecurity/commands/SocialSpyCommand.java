@@ -27,15 +27,15 @@ public class SocialSpyCommand implements CommandExecutor {
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Only players can use social spy.");
+            sender.sendMessage(configManager.getPlayerOnlyCommandMessage());
             return true;
         }
 
         Player player = (Player) sender;
         if (messageManager.toggleSocialSpy(player)) {
-            player.sendMessage(ChatColor.GREEN + "Social spy enabled.");
+            player.sendMessage(configManager.getSocialSpyEnabledMessage());
         } else {
-            player.sendMessage(ChatColor.RED + "Social spy disabled.");
+            player.sendMessage(configManager.getSocialSpyDisabledMessage());
         }
         return true;
     }

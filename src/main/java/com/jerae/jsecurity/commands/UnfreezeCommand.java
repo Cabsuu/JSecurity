@@ -28,24 +28,24 @@ public class UnfreezeCommand implements CommandExecutor {
         }
 
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: /unfreeze <player>");
+            sender.sendMessage(configManager.getUnfreezeUsageMessage());
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            sender.sendMessage(ChatColor.RED + "Player not found.");
+            sender.sendMessage(configManager.getPlayerNotFoundMessage());
             return true;
         }
 
         if (!freezeManager.isFrozen(target)) {
-            sender.sendMessage(ChatColor.RED + "That player is not frozen.");
+            sender.sendMessage(configManager.getNotFrozenMessage(target.getName()));
             return true;
         }
 
         freezeManager.unfreeze(target);
         target.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("unfreeze-message")));
-        sender.sendMessage(ChatColor.GREEN + "You have unfrozen " + target.getName() + ".");
+        sender.sendMessage(configManager.getUnfrozenMessage(target.getName()));
 
         return true;
     }
