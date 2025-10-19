@@ -3,10 +3,10 @@ package com.jerae.jsecurity.commands;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.MuteEntry;
 import com.jerae.jsecurity.managers.PunishmentManager;
+import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PermissionUtils;
 import com.jerae.jsecurity.utils.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -39,21 +39,21 @@ public class MuteCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 1) {
-            Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /mute <player> [reason] [-s]");
+            Component usageMessage = ColorUtil.format("&cUsage: /mute <player> [reason] [-s]");
             sender.sendMessage(usageMessage);
             return true;
         }
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (!target.hasPlayedBefore() && !target.isOnline()) {
-            Component playerNotFoundMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cPlayer not found.");
+            Component playerNotFoundMessage = ColorUtil.format("&cPlayer not found.");
             sender.sendMessage(playerNotFoundMessage);
             return true;
         }
 
         UUID targetUUID = target.getUniqueId();
         if (punishmentManager.isMuted(targetUUID)) {
-            Component alreadyMutedMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cThat player is already muted.");
+            Component alreadyMutedMessage = ColorUtil.format("&cThat player is already muted.");
             sender.sendMessage(alreadyMutedMessage);
             return true;
         }
@@ -81,7 +81,7 @@ public class MuteCommand implements CommandExecutor, TabCompleter {
 
         String muteMessagePath = "mute-message";
         String muteMessageStr = configManager.getMessage(muteMessagePath, hasReason);
-        Component muteMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(muteMessageStr, data));
+        Component muteMessage = ColorUtil.format(PlaceholderAPI.setPlaceholders(muteMessageStr, data));
 
         if (target.isOnline()) {
             target.getPlayer().sendMessage(muteMessage);
@@ -90,7 +90,7 @@ public class MuteCommand implements CommandExecutor, TabCompleter {
         if (!silent) {
             String broadcastMessagePath = "mute-broadcast";
             String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason);
-            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
+            Component broadcastMessage = ColorUtil.format(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
             Bukkit.getServer().broadcast(broadcastMessage);
         }
 

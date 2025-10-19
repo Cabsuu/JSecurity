@@ -2,10 +2,12 @@ package com.jerae.jsecurity.commands;
 
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.MuteEntry;
+import com.jerae.jsecurity.managers.ConfigManager;
+import com.jerae.jsecurity.managers.MuteEntry;
 import com.jerae.jsecurity.managers.PunishmentManager;
+import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PermissionUtils;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -37,7 +39,7 @@ public class UnmuteCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 1) {
-            Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /unmute <player> [-s]");
+            Component usageMessage = ColorUtil.format("&cUsage: /unmute <player> [-s]");
             sender.sendMessage(usageMessage);
             return true;
         }
@@ -47,7 +49,7 @@ public class UnmuteCommand implements CommandExecutor, TabCompleter {
         MuteEntry muteEntry = punishmentManager.getMute(targetUUID);
 
         if (muteEntry == null) {
-            Component notMutedMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cThat player is not muted.");
+            Component notMutedMessage = ColorUtil.format("&cThat player is not muted.");
             sender.sendMessage(notMutedMessage);
             return true;
         }
@@ -61,11 +63,11 @@ public class UnmuteCommand implements CommandExecutor, TabCompleter {
             String broadcastMessageStr = configManager.getMessage("unmute-broadcast")
                     .replace("{player}", targetName)
                     .replace("{staff}", sender.getName());
-            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(broadcastMessageStr);
+            Component broadcastMessage = ColorUtil.format(broadcastMessageStr);
             Bukkit.getServer().broadcast(broadcastMessage);
         }
 
-        Component successMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&aSuccessfully unmuted " + targetName + ".");
+        Component successMessage = ColorUtil.format("&aSuccessfully unmuted " + targetName + ".");
         sender.sendMessage(successMessage);
 
         return true;

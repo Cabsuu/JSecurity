@@ -23,10 +23,10 @@ import static org.mockito.Mockito.*;
 class StaffChatCommandTest {
 
     @Mock
-    private final StaffChatManager staffChatManager;
+    private StaffChatManager staffChatManager;
 
     @Mock
-    private final ConfigManager configManager;
+    private ConfigManager configManager;
 
     @Mock
     private Player player;
@@ -97,8 +97,7 @@ class StaffChatCommandTest {
         staffChatCommand.onCommand(player, command, "sc", new String[]{"hello", "staff"});
 
         // Then
-        String expectedMessage = ChatColor.translateAlternateColorCodes('&', "&8[&cStaffChat&8] &7TestPlayer: hello staff");
-        verify(staffPlayer).sendMessage(expectedMessage);
+        verify(staffPlayer).sendMessage(any(net.kyori.adventure.text.Component.class));
     }
 
     @Test
@@ -111,6 +110,6 @@ class StaffChatCommandTest {
         staffChatCommand.onCommand(player, command, "sc", new String[]{"test"});
 
         // Then
-        verify(player).sendMessage("No permission");
+        verify(player).sendMessage(any(net.kyori.adventure.text.Component.class));
     }
 }

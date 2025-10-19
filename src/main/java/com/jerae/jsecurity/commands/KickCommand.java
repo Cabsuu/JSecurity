@@ -1,10 +1,11 @@
 package com.jerae.jsecurity.commands;
 
 import com.jerae.jsecurity.managers.ConfigManager;
+import com.jerae.jsecurity.managers.ConfigManager;
+import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PermissionUtils;
 import com.jerae.jsecurity.utils.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,14 +34,14 @@ public class KickCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 1) {
-            Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /kick <player> [reason] [-s]");
+            Component usageMessage = ColorUtil.format("&cUsage: /kick <player> [reason] [-s]");
             sender.sendMessage(usageMessage);
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            Component playerNotFoundMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cPlayer not found.");
+            Component playerNotFoundMessage = ColorUtil.format("&cPlayer not found.");
             sender.sendMessage(playerNotFoundMessage);
             return true;
         }
@@ -63,18 +64,18 @@ public class KickCommand implements CommandExecutor, TabCompleter {
 
         String kickMessagePath = "kick-message";
         String kickMessageStr = configManager.getMessage(kickMessagePath, hasReason);
-        Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(kickMessageStr, data));
+        Component kickMessage = ColorUtil.format(PlaceholderAPI.setPlaceholders(kickMessageStr, data));
 
         target.kick(kickMessage);
 
         if (!silent) {
             String broadcastMessagePath = "kick-broadcast";
             String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason);
-            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
+            Component broadcastMessage = ColorUtil.format(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
             Bukkit.getServer().broadcast(broadcastMessage);
         }
 
-        Component successMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(configManager.getMessage("kick-success", true), data));
+        Component successMessage = ColorUtil.format(PlaceholderAPI.setPlaceholders(configManager.getMessage("kick-success", true), data));
         sender.sendMessage(successMessage);
         return true;
     }

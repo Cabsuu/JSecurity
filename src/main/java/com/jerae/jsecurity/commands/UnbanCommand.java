@@ -1,11 +1,12 @@
 package com.jerae.jsecurity.commands;
 
 import com.jerae.jsecurity.managers.BanEntry;
+import com.jerae.jsecurity.managers.BanEntry;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
+import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PermissionUtils;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -37,7 +38,7 @@ public class UnbanCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 1) {
-            Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /unban <player> [-s]");
+            Component usageMessage = ColorUtil.format("&cUsage: /unban <player> [-s]");
             sender.sendMessage(usageMessage);
             return true;
         }
@@ -49,7 +50,7 @@ public class UnbanCommand implements CommandExecutor, TabCompleter {
         BanEntry banEntry = punishmentManager.getBan(targetUUID);
 
         if (banEntry == null) {
-            Component notBannedMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cThat player is not banned.");
+            Component notBannedMessage = ColorUtil.format("&cThat player is not banned.");
             sender.sendMessage(notBannedMessage);
             return true;
         }
@@ -63,11 +64,11 @@ public class UnbanCommand implements CommandExecutor, TabCompleter {
             String broadcastMessageStr = configManager.getMessage("unban-broadcast")
                     .replace("{player}", targetName)
                     .replace("{staff}", sender.getName());
-            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(broadcastMessageStr);
+            Component broadcastMessage = ColorUtil.format(broadcastMessageStr);
             Bukkit.getServer().broadcast(broadcastMessage);
         }
 
-        Component successMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&aSuccessfully unbanned " + targetName + ".");
+        Component successMessage = ColorUtil.format("&aSuccessfully unbanned " + targetName + ".");
         sender.sendMessage(successMessage);
 
         return true;

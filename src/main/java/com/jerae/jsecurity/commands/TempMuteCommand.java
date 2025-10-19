@@ -4,10 +4,10 @@ import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.MuteEntry;
 import com.jerae.jsecurity.managers.PunishmentManager;
 import com.jerae.jsecurity.utils.PermissionUtils;
+import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PlaceholderAPI;
 import com.jerae.jsecurity.utils.TimeUtil;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -40,21 +40,21 @@ public class TempMuteCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2) {
-            Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /tempmute <player> <duration> [reason] [-s]");
+            Component usageMessage = ColorUtil.format("&cUsage: /tempmute <player> <duration> [reason] [-s]");
             sender.sendMessage(usageMessage);
             return true;
         }
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (!target.hasPlayedBefore() && !target.isOnline()) {
-            Component playerNotFoundMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cPlayer not found.");
+            Component playerNotFoundMessage = ColorUtil.format("&cPlayer not found.");
             sender.sendMessage(playerNotFoundMessage);
             return true;
         }
 
         UUID targetUUID = target.getUniqueId();
         if (punishmentManager.isMuted(targetUUID)) {
-            Component alreadyMutedMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cThat player is already muted.");
+            Component alreadyMutedMessage = ColorUtil.format("&cThat player is already muted.");
             sender.sendMessage(alreadyMutedMessage);
             return true;
         }
@@ -93,7 +93,7 @@ public class TempMuteCommand implements CommandExecutor, TabCompleter {
 
         String muteMessagePath = "tempmute-message";
         String muteMessageStr = configManager.getMessage(muteMessagePath, hasReason);
-        Component muteMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(muteMessageStr, data));
+        Component muteMessage = ColorUtil.format(PlaceholderAPI.setPlaceholders(muteMessageStr, data));
 
         if (target.isOnline()) {
             target.getPlayer().sendMessage(muteMessage);
@@ -102,7 +102,7 @@ public class TempMuteCommand implements CommandExecutor, TabCompleter {
         if (!silent) {
             String broadcastMessagePath = "tempmute-broadcast";
             String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason);
-            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
+            Component broadcastMessage = ColorUtil.format(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
             Bukkit.getServer().broadcast(broadcastMessage);
         }
 
