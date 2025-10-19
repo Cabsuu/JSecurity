@@ -64,7 +64,7 @@ class StaffChatCommandTest {
 
         // Then
         verify(staffChatManager).toggleStaffChat(player.getUniqueId());
-        verify(player).sendMessage(any(net.kyori.adventure.text.Component.class));
+        verify(player).sendMessage("Staff chat toggled on.");
     }
 
     @Test
@@ -79,7 +79,7 @@ class StaffChatCommandTest {
 
         // Then
         verify(staffChatManager).toggleStaffChat(player.getUniqueId());
-        verify(player).sendMessage(any(net.kyori.adventure.text.Component.class));
+        verify(player).sendMessage("Staff chat toggled off.");
     }
 
     @Test
@@ -97,7 +97,7 @@ class StaffChatCommandTest {
         staffChatCommand.onCommand(player, command, "sc", new String[]{"hello", "staff"});
 
         // Then
-        verify(staffPlayer).sendMessage(any(net.kyori.adventure.text.Component.class));
+        verify(staffPlayer).sendMessage("&8[&cStaffChat&8] &7TestPlayer: {message}");
     }
 
     @Test
@@ -110,6 +110,6 @@ class StaffChatCommandTest {
         staffChatCommand.onCommand(player, command, "sc", new String[]{"test"});
 
         // Then
-        verify(player).sendMessage(any(net.kyori.adventure.text.Component.class));
+        verify(player).sendMessage("No permission");
     }
 }

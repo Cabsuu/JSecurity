@@ -6,7 +6,6 @@ import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
 import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PermissionUtils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -38,8 +37,7 @@ public class UnbanCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 1) {
-            Component usageMessage = ColorUtil.format("&cUsage: /unban <player> [-s]");
-            sender.sendMessage(usageMessage);
+            sender.sendMessage(ColorUtil.colorize("&cUsage: /unban <player> [-s]"));
             return true;
         }
 
@@ -50,8 +48,7 @@ public class UnbanCommand implements CommandExecutor, TabCompleter {
         BanEntry banEntry = punishmentManager.getBan(targetUUID);
 
         if (banEntry == null) {
-            Component notBannedMessage = ColorUtil.format("&cThat player is not banned.");
-            sender.sendMessage(notBannedMessage);
+            sender.sendMessage(ColorUtil.colorize("&cThat player is not banned."));
             return true;
         }
 
@@ -64,12 +61,11 @@ public class UnbanCommand implements CommandExecutor, TabCompleter {
             String broadcastMessageStr = configManager.getMessage("unban-broadcast")
                     .replace("{player}", targetName)
                     .replace("{staff}", sender.getName());
-            Component broadcastMessage = ColorUtil.format(broadcastMessageStr);
-            Bukkit.getServer().broadcast(broadcastMessage);
+            String broadcastMessage = ColorUtil.colorize(broadcastMessageStr);
+            Bukkit.getServer().broadcastMessage(broadcastMessage);
         }
 
-        Component successMessage = ColorUtil.format("&aSuccessfully unbanned " + targetName + ".");
-        sender.sendMessage(successMessage);
+        sender.sendMessage(ColorUtil.colorize("&aSuccessfully unbanned " + targetName + "."));
 
         return true;
     }

@@ -43,7 +43,7 @@ public class ChatListener implements Listener {
 
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 if (onlinePlayer.hasPermission("jsecurity.staffchat")) {
-                    onlinePlayer.sendMessage(ColorUtil.format(format));
+                    onlinePlayer.sendMessage(ColorUtil.colorize(format));
                 }
             }
             event.setCancelled(true);
@@ -54,7 +54,7 @@ public class ChatListener implements Listener {
             if (chatDelay.containsKey(player.getUniqueId())) {
                 long timeLeft = (long) ((chatDelay.get(player.getUniqueId()) + (configManager.getChatDelay() * 1000L)) - System.currentTimeMillis());
                 if (timeLeft > 0) {
-                    player.sendMessage(ColorUtil.format(configManager.getChatDelayMessage().replace("{time}", String.format("%.2f", timeLeft / 1000.0))));
+                    player.sendMessage(ColorUtil.colorize(configManager.getChatDelayMessage().replace("{time}", String.format("%.2f", timeLeft / 1000.0))));
                     event.setCancelled(true);
                     return;
                 }
@@ -70,25 +70,15 @@ public class ChatListener implements Listener {
                 return;
             }
 
-            String regex = replacementMap.keySet().stream()
-                    .map(Pattern::quote)
-                    .collect(Collectors.joining("|", "\\b(", ")\\b"));
+            for (Map.Entry<String, String> entry : replacementMap.entrySet()) {
+                String keyword = entry.getKey();
+                String replacement = entry.getValue();
 
-            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(message);
-            StringBuffer sb = new StringBuffer();
-
-            while (matcher.find()) {
-                String matchedKeyword = matcher.group(1);
-                for (Map.Entry<String, String> entry : replacementMap.entrySet()) {
-                    if (entry.getKey().equalsIgnoreCase(matchedKeyword)) {
-                        matcher.appendReplacement(sb, Matcher.quoteReplacement(entry.getValue()));
-                        break;
-                    }
-                }
+                Pattern pattern = Pattern.compile("\\b" + Pattern.quote(keyword) + "\\b", Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(message);
+                message = matcher.replaceAll(replacement);
             }
-            matcher.appendTail(sb);
-            event.setMessage(sb.toString());
+            event.setMessage(message);
         }
     }
 }

@@ -5,7 +5,6 @@ import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PermissionUtils;
 import com.jerae.jsecurity.utils.PlaceholderAPI;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -34,15 +33,13 @@ public class KickCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 1) {
-            Component usageMessage = ColorUtil.format("&cUsage: /kick <player> [reason] [-s]");
-            sender.sendMessage(usageMessage);
+            sender.sendMessage(ColorUtil.colorize("&cUsage: /kick <player> [reason] [-s]"));
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            Component playerNotFoundMessage = ColorUtil.format("&cPlayer not found.");
-            sender.sendMessage(playerNotFoundMessage);
+            sender.sendMessage(ColorUtil.colorize("&cPlayer not found."));
             return true;
         }
 
@@ -64,19 +61,18 @@ public class KickCommand implements CommandExecutor, TabCompleter {
 
         String kickMessagePath = "kick-message";
         String kickMessageStr = configManager.getMessage(kickMessagePath, hasReason);
-        Component kickMessage = ColorUtil.format(PlaceholderAPI.setPlaceholders(kickMessageStr, data));
+        String kickMessage = ColorUtil.colorize(PlaceholderAPI.setPlaceholders(kickMessageStr, data));
 
-        target.kick(kickMessage);
+        target.kickPlayer(kickMessage);
 
         if (!silent) {
             String broadcastMessagePath = "kick-broadcast";
             String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason);
-            Component broadcastMessage = ColorUtil.format(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
-            Bukkit.getServer().broadcast(broadcastMessage);
+            String broadcastMessage = ColorUtil.colorize(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
+            Bukkit.getServer().broadcastMessage(broadcastMessage);
         }
 
-        Component successMessage = ColorUtil.format(PlaceholderAPI.setPlaceholders(configManager.getMessage("kick-success", true), data));
-        sender.sendMessage(successMessage);
+        sender.sendMessage(ColorUtil.colorize(PlaceholderAPI.setPlaceholders(configManager.getMessage("kick-success", true), data)));
         return true;
     }
 

@@ -7,7 +7,6 @@ import com.jerae.jsecurity.utils.PermissionUtils;
 import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PlaceholderAPI;
 import com.jerae.jsecurity.utils.TimeUtil;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -40,22 +39,19 @@ public class TempMuteCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2) {
-            Component usageMessage = ColorUtil.format("&cUsage: /tempmute <player> <duration> [reason] [-s]");
-            sender.sendMessage(usageMessage);
+            sender.sendMessage(ColorUtil.colorize("&cUsage: /tempmute <player> <duration> [reason] [-s]"));
             return true;
         }
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (!target.hasPlayedBefore() && !target.isOnline()) {
-            Component playerNotFoundMessage = ColorUtil.format("&cPlayer not found.");
-            sender.sendMessage(playerNotFoundMessage);
+            sender.sendMessage(ColorUtil.colorize("&cPlayer not found."));
             return true;
         }
 
         UUID targetUUID = target.getUniqueId();
         if (punishmentManager.isMuted(targetUUID)) {
-            Component alreadyMutedMessage = ColorUtil.format("&cThat player is already muted.");
-            sender.sendMessage(alreadyMutedMessage);
+            sender.sendMessage(ColorUtil.colorize("&cThat player is already muted."));
             return true;
         }
 
@@ -93,7 +89,7 @@ public class TempMuteCommand implements CommandExecutor, TabCompleter {
 
         String muteMessagePath = "tempmute-message";
         String muteMessageStr = configManager.getMessage(muteMessagePath, hasReason);
-        Component muteMessage = ColorUtil.format(PlaceholderAPI.setPlaceholders(muteMessageStr, data));
+        String muteMessage = ColorUtil.colorize(PlaceholderAPI.setPlaceholders(muteMessageStr, data));
 
         if (target.isOnline()) {
             target.getPlayer().sendMessage(muteMessage);
@@ -102,8 +98,8 @@ public class TempMuteCommand implements CommandExecutor, TabCompleter {
         if (!silent) {
             String broadcastMessagePath = "tempmute-broadcast";
             String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason);
-            Component broadcastMessage = ColorUtil.format(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
-            Bukkit.getServer().broadcast(broadcastMessage);
+            String broadcastMessage = ColorUtil.colorize(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
+            Bukkit.getServer().broadcastMessage(broadcastMessage);
         }
 
         return true;

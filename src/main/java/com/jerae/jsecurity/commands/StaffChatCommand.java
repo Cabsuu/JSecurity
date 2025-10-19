@@ -28,12 +28,12 @@ public class StaffChatCommand implements CommandExecutor {
 
         Player player = (Player) sender;
         if (!player.hasPermission("jsecurity.staffchat")) {
-            player.sendMessage(ColorUtil.format(configManager.getNoPermissionMessage()));
+            player.sendMessage(ColorUtil.colorize(configManager.getNoPermissionMessage()));
             return true;
         }
 
         if (args.length == 0) {
-            player.sendMessage(ColorUtil.format(configManager.getStaffChatUsageMessage()));
+            player.sendMessage(ColorUtil.colorize(configManager.getStaffChatUsageMessage()));
             return true;
         }
 
@@ -41,7 +41,7 @@ public class StaffChatCommand implements CommandExecutor {
         if (firstArg.equalsIgnoreCase("toggle")) {
             staffChatManager.toggleStaffChat(player.getUniqueId());
             boolean isInStaffChat = staffChatManager.isInStaffChat(player.getUniqueId());
-            player.sendMessage(ColorUtil.format(configManager.getStaffChatToggleMessage(isInStaffChat)));
+            player.sendMessage(ColorUtil.colorize(configManager.getStaffChatToggleMessage(isInStaffChat)));
         } else {
             String message = String.join(" ", args);
             String format = configManager.getStaffChatMessageFormat()
@@ -50,7 +50,7 @@ public class StaffChatCommand implements CommandExecutor {
 
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 if (onlinePlayer.hasPermission("jsecurity.staffchat")) {
-                    onlinePlayer.sendMessage(ColorUtil.format(format));
+                    onlinePlayer.sendMessage(ColorUtil.colorize(format));
                 }
             }
         }
