@@ -1,4 +1,79 @@
 -------------------------------------------------------------------------------
 Test set: com.jerae.jsecurity.commands.StaffChatCommandTest
 -------------------------------------------------------------------------------
-Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.375 s -- in com.jerae.jsecurity.commands.StaffChatCommandTest
+Tests run: 4, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 3.341 s <<< FAILURE! -- in com.jerae.jsecurity.commands.StaffChatCommandTest
+com.jerae.jsecurity.commands.StaffChatCommandTest.onCommand_ToggleStaffChatOn -- Time elapsed: 0.064 s <<< FAILURE!
+Argument(s) are different! Wanted:
+player.sendMessage(
+    <any net.kyori.adventure.text.Component>
+);
+-> at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+Actual invocations have different arguments:
+player.getUniqueId(
+
+);
+-> at com.jerae.jsecurity.commands.StaffChatCommandTest.onCommand_ToggleStaffChatOn(StaffChatCommandTest.java:58)
+player.hasPermission(
+    "jsecurity.staffchat"
+);
+-> at com.jerae.jsecurity.commands.StaffChatCommand.onCommand(StaffChatCommand.java:30)
+player.getUniqueId(
+
+);
+-> at com.jerae.jsecurity.commands.StaffChatCommand.onCommand(StaffChatCommand.java:42)
+player.getUniqueId(
+
+);
+-> at com.jerae.jsecurity.commands.StaffChatCommand.onCommand(StaffChatCommand.java:43)
+player.sendMessage(
+    null
+);
+-> at com.jerae.jsecurity.commands.StaffChatCommand.onCommand(StaffChatCommand.java:44)
+player.getUniqueId(
+
+);
+-> at com.jerae.jsecurity.commands.StaffChatCommandTest.onCommand_ToggleStaffChatOn(StaffChatCommandTest.java:64)
+
+	at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+	at com.jerae.jsecurity.commands.StaffChatCommandTest.onCommand_ToggleStaffChatOn(StaffChatCommandTest.java:65)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jerae.jsecurity.commands.StaffChatCommandTest.onCommand_ToggleStaffChatOff -- Time elapsed: 0.011 s <<< FAILURE!
+Argument(s) are different! Wanted:
+player.sendMessage(
+    <any net.kyori.adventure.text.Component>
+);
+-> at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+Actual invocations have different arguments:
+player.getUniqueId(
+
+);
+-> at com.jerae.jsecurity.commands.StaffChatCommandTest.onCommand_ToggleStaffChatOff(StaffChatCommandTest.java:72)
+player.hasPermission(
+    "jsecurity.staffchat"
+);
+-> at com.jerae.jsecurity.commands.StaffChatCommand.onCommand(StaffChatCommand.java:30)
+player.getUniqueId(
+
+);
+-> at com.jerae.jsecurity.commands.StaffChatCommand.onCommand(StaffChatCommand.java:42)
+player.getUniqueId(
+
+);
+-> at com.jerae.jsecurity.commands.StaffChatCommand.onCommand(StaffChatCommand.java:43)
+player.sendMessage(
+    null
+);
+-> at com.jerae.jsecurity.commands.StaffChatCommand.onCommand(StaffChatCommand.java:44)
+player.getUniqueId(
+
+);
+-> at com.jerae.jsecurity.commands.StaffChatCommandTest.onCommand_ToggleStaffChatOff(StaffChatCommandTest.java:78)
+
+	at net.kyori.adventure.audience.Audience.sendMessage(Audience.java:223)
+	at com.jerae.jsecurity.commands.StaffChatCommandTest.onCommand_ToggleStaffChatOff(StaffChatCommandTest.java:79)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)

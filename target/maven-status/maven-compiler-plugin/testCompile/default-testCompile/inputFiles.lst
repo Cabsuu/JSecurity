@@ -6,5 +6,6 @@
 /app/src/test/java/com/jerae/jsecurity/listeners/VanishListenerTest.java
 /app/src/test/java/com/jerae/jsecurity/managers/PlayerDataManagerTest.java
 /app/src/test/java/com/jerae/jsecurity/managers/PunishmentManagerTest.java
+/app/src/test/java/com/jerae/jsecurity/utils/ColorUtilTest.java
 /app/src/test/java/com/jerae/jsecurity/utils/LoginCommandFilterTest.java
 /app/src/test/java/com/jerae/jsecurity/utils/TimeUtilTest.java

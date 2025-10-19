@@ -2,8 +2,8 @@ package com.jerae.jsecurity.commands;
 
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.StaffChatManager;
+import com.jerae.jsecurity.utils.ColorUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,12 +28,12 @@ public class StaffChatCommand implements CommandExecutor {
 
         Player player = (Player) sender;
         if (!player.hasPermission("jsecurity.staffchat")) {
-            player.sendMessage(configManager.getNoPermissionMessage());
+            player.sendMessage(ColorUtil.format(configManager.getNoPermissionMessage()));
             return true;
         }
 
         if (args.length == 0) {
-            player.sendMessage(configManager.getStaffChatUsageMessage());
+            player.sendMessage(ColorUtil.format(configManager.getStaffChatUsageMessage()));
             return true;
         }
 
@@ -41,7 +41,7 @@ public class StaffChatCommand implements CommandExecutor {
         if (firstArg.equalsIgnoreCase("toggle")) {
             staffChatManager.toggleStaffChat(player.getUniqueId());
             boolean isInStaffChat = staffChatManager.isInStaffChat(player.getUniqueId());
-            player.sendMessage(configManager.getStaffChatToggleMessage(isInStaffChat));
+            player.sendMessage(ColorUtil.format(configManager.getStaffChatToggleMessage(isInStaffChat)));
         } else {
             String message = String.join(" ", args);
             String format = configManager.getStaffChatMessageFormat()
@@ -50,7 +50,7 @@ public class StaffChatCommand implements CommandExecutor {
 
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 if (onlinePlayer.hasPermission("jsecurity.staffchat")) {
-                    onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', format));
+                    onlinePlayer.sendMessage(ColorUtil.format(format));
                 }
             }
         }

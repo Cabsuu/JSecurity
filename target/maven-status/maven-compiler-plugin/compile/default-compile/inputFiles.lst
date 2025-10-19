@@ -42,6 +42,7 @@
 /app/src/main/java/com/jerae/jsecurity/models/PlayerData.java
 /app/src/main/java/com/jerae/jsecurity/models/PunishmentLogEntry.java
 /app/src/main/java/com/jerae/jsecurity/models/WarnEntry.java
+/app/src/main/java/com/jerae/jsecurity/utils/ColorUtil.java
 /app/src/main/java/com/jerae/jsecurity/utils/LoginCommandFilter.java
 /app/src/main/java/com/jerae/jsecurity/utils/PermissionUtils.java
 /app/src/main/java/com/jerae/jsecurity/utils/PlaceholderAPI.java

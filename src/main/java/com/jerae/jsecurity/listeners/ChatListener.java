@@ -2,8 +2,8 @@ package com.jerae.jsecurity.listeners;
 
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.StaffChatManager;
+import com.jerae.jsecurity.utils.ColorUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ChatListener implements Listener {
 
@@ -42,7 +43,7 @@ public class ChatListener implements Listener {
 
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 if (onlinePlayer.hasPermission("jsecurity.staffchat")) {
-                    onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', format));
+                    onlinePlayer.sendMessage(ColorUtil.format(format));
                 }
             }
             event.setCancelled(true);
@@ -53,7 +54,7 @@ public class ChatListener implements Listener {
             if (chatDelay.containsKey(player.getUniqueId())) {
                 long timeLeft = (long) ((chatDelay.get(player.getUniqueId()) + (configManager.getChatDelay() * 1000L)) - System.currentTimeMillis());
                 if (timeLeft > 0) {
-                    player.sendMessage("You must wait " + String.format("%.2f", timeLeft / 1000.0) + " seconds before chatting again.");
+                    player.sendMessage(ColorUtil.format(configManager.getChatDelayMessage().replace("{time}", String.format("%.2f", timeLeft / 1000.0))));
                     event.setCancelled(true);
                     return;
                 }
@@ -65,15 +66,29 @@ public class ChatListener implements Listener {
             String message = event.getMessage();
             Map<String, String> replacementMap = configManager.getKeywordReplacementMap();
 
-            for (Map.Entry<String, String> entry : replacementMap.entrySet()) {
-                String keyword = entry.getKey();
-                String replacement = entry.getValue();
-
-                Pattern pattern = Pattern.compile("\\b" + Pattern.quote(keyword) + "\\b", Pattern.CASE_INSENSITIVE);
-                Matcher matcher = pattern.matcher(message);
-                message = matcher.replaceAll(replacement);
+            if (replacementMap == null || replacementMap.isEmpty()) {
+                return;
             }
-            event.setMessage(message);
+
+            String regex = replacementMap.keySet().stream()
+                    .map(Pattern::quote)
+                    .collect(Collectors.joining("|", "\\b(", ")\\b"));
+
+            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(message);
+            StringBuffer sb = new StringBuffer();
+
+            while (matcher.find()) {
+                String matchedKeyword = matcher.group(1);
+                for (Map.Entry<String, String> entry : replacementMap.entrySet()) {
+                    if (entry.getKey().equalsIgnoreCase(matchedKeyword)) {
+                        matcher.appendReplacement(sb, Matcher.quoteReplacement(entry.getValue()));
+                        break;
+                    }
+                }
+            }
+            matcher.appendTail(sb);
+            event.setMessage(sb.toString());
         }
     }
 }

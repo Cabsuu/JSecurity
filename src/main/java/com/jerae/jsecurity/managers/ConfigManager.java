@@ -141,6 +141,10 @@ public class ConfigManager {
         return config.getDouble("chat-delay.period", 3.0);
     }
 
+    public String getChatDelayMessage() {
+        return messagesConfig.getString("other.chat-delay-message", "&cYou must wait {time} seconds before chatting again.");
+    }
+
     public boolean isKeywordReplacementEnabled() {
         return config.getBoolean("keyword-replacement.enabled", false);
     }

@@ -23,10 +23,10 @@ import static org.mockito.Mockito.*;
 class StaffChatCommandTest {
 
     @Mock
-    private StaffChatManager staffChatManager;
+    private final StaffChatManager staffChatManager;
 
     @Mock
-    private ConfigManager configManager;
+    private final ConfigManager configManager;
 
     @Mock
     private Player player;
@@ -44,6 +44,7 @@ class StaffChatCommandTest {
         MockitoAnnotations.openMocks(this);
         bukkitMock = mockStatic(Bukkit.class);
         when(player.getUniqueId()).thenReturn(UUID.randomUUID());
+        when(configManager.getStaffChatToggleMessage(anyBoolean())).thenReturn("some message");
     }
 
     @AfterEach
@@ -56,13 +57,14 @@ class StaffChatCommandTest {
         // Given
         when(player.hasPermission("jsecurity.staffchat")).thenReturn(true);
         when(staffChatManager.isInStaffChat(player.getUniqueId())).thenReturn(true);
+        when(configManager.getStaffChatToggleMessage(true)).thenReturn("Staff chat toggled on.");
 
         // When
         staffChatCommand.onCommand(player, command, "sc", new String[]{"toggle"});
 
         // Then
         verify(staffChatManager).toggleStaffChat(player.getUniqueId());
-        verify(player).sendMessage(ChatColor.GREEN + "Staff chat toggled on.");
+        verify(player).sendMessage(any(net.kyori.adventure.text.Component.class));
     }
 
     @Test
@@ -70,13 +72,14 @@ class StaffChatCommandTest {
         // Given
         when(player.hasPermission("jsecurity.staffchat")).thenReturn(true);
         when(staffChatManager.isInStaffChat(player.getUniqueId())).thenReturn(false);
+        when(configManager.getStaffChatToggleMessage(false)).thenReturn("Staff chat toggled off.");
 
         // When
         staffChatCommand.onCommand(player, command, "sc", new String[]{"toggle"});
 
         // Then
         verify(staffChatManager).toggleStaffChat(player.getUniqueId());
-        verify(player).sendMessage(ChatColor.GREEN + "Staff chat toggled off.");
+        verify(player).sendMessage(any(net.kyori.adventure.text.Component.class));
     }
 
     @Test

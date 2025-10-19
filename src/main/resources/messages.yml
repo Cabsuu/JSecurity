@@ -44,6 +44,7 @@ punishments:
 
 # Other messages
 other:
+  chat-delay-message: "&cYou must wait {time} seconds before chatting again."
   no-permission: "&cYou do not have permission to use this command."
   staff-chat-format: "&8[&cStaffChat&8] &7{player}: {message}"
   staff-chat-usage: "&cUsage: /staffchat <message> or /sc <message>"
@@ -106,7 +107,7 @@ other:
       unregistered: "&a{player} has been unregistered."
       confirm: "&eAre you sure you want to unregister {player}? This action cannot be undone. Re-enter the command to confirm."
     help:
-      header: "&6--- JSecurity Help ---"
+      header: "<#55C156>-- JSecurity Help --"
       help: "&e/js help &7- Shows this help message."
       reload: "&e/js reload &7- Reloads the configuration."
       record: "&e/js record [page] [-sort] &7- Shows player records."
@@ -115,7 +116,6 @@ other:
       history: "&e/js history <player> [page] &7- Shows a player's punishment history."
       note: "&e/js note <player> <note> &7- Adds a note to a player's profile."
   authentication:
-    enabled: false
     disabled: "&cThe authentication system is disabled."
     already-logged-in: "&cYou are already logged in."
     not-registered: "&cYou are not registered. Please register using /register <password> <confirmPassword>"
