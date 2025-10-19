@@ -8,9 +8,9 @@ import com.jerae.jsecurity.managers.AuthManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
 import com.jerae.jsecurity.models.PlayerData;
 import com.jerae.jsecurity.models.PunishmentLogEntry;
+import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PermissionUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -125,7 +125,7 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
 
     private void handleReload(CommandSender sender) {
         configManager.reloadConfig();
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getReloadMessage()));
+        sender.sendMessage(ColorUtil.colorize(configManager.getReloadMessage()));
     }
 
     private void handleRecord(CommandSender sender, String[] args) {
@@ -142,7 +142,7 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
             try {
                 page = Integer.parseInt(argsList.get(0));
             } catch (NumberFormatException e) {
-                sender.sendMessage(configManager.getInvalidPageNumberMessage());
+                sender.sendMessage(ColorUtil.colorize(configManager.getInvalidPageNumberMessage()));
                 return;
             }
         }
@@ -160,20 +160,20 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
             page = 1;
         }
 
-        sender.sendMessage(configManager.getJsecurityRecordHeader(page, totalPages));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityRecordHeader(page, totalPages)));
 
         int startIndex = (page - 1) * 10;
         int endIndex = Math.min(startIndex + 10, allPlayerData.size());
 
         for (int i = startIndex; i < endIndex; i++) {
             PlayerData pd = allPlayerData.get(i);
-            sender.sendMessage(configManager.getJsecurityRecordFormat(pd.getId(), pd.getName()));
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityRecordFormat(pd.getId(), pd.getName())));
         }
     }
 
     private void handleProfile(CommandSender sender, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(configManager.getJsecurityProfileUsageMessage());
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityProfileUsageMessage()));
             return;
         }
 
@@ -181,7 +181,7 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         PlayerData playerData = playerDataManager.getPlayerData(playerName);
 
         if (playerData == null) {
-            sender.sendMessage(configManager.getPlayerNotFoundMessage());
+            sender.sendMessage(ColorUtil.colorize(configManager.getPlayerNotFoundMessage()));
             return;
         }
 
@@ -190,28 +190,28 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
 
         String status;
         if (banEntry != null) {
-            status = ChatColor.RED + "Banned";
+            status = "&c" + "Banned";
         } else if (offlinePlayer.isOnline()) {
-            status = ChatColor.GREEN + "Online";
+            status = "&a" + "Online";
         } else {
-            status = ChatColor.GRAY + "Offline";
+            status = "&7" + "Offline";
         }
 
-        sender.sendMessage(configManager.getJsecurityProfileHeader(playerData.getName()));
-        sender.sendMessage(configManager.getJsecurityProfileId(playerData.getId()));
-        sender.sendMessage(configManager.getJsecurityProfileUuid(playerData.getUuid().toString()));
-        sender.sendMessage(configManager.getJsecurityProfileLastIp(playerData.getIps().get(playerData.getIps().size() - 1)));
-        sender.sendMessage(configManager.getJsecurityProfileFirstJoined(playerData.getJoined().toString()));
-        sender.sendMessage(configManager.getJsecurityProfileStatus(status));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityProfileHeader(playerData.getName())));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityProfileId(playerData.getId())));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityProfileUuid(playerData.getUuid().toString())));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityProfileLastIp(playerData.getIps().get(playerData.getIps().size() - 1))));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityProfileFirstJoined(playerData.getJoined().toString())));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityProfileStatus(status)));
 
         if (banEntry != null) {
-            sender.sendMessage(configManager.getJsecurityProfileBannedReason(banEntry.getReason()));
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityProfileBannedReason(banEntry.getReason())));
         }
 
         if (playerData.getNotes() != null && !playerData.getNotes().isEmpty()) {
-            sender.sendMessage(configManager.getJsecurityProfileNotesHeader());
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityProfileNotesHeader()));
             for (String note : playerData.getNotes()) {
-                sender.sendMessage(configManager.getJsecurityProfileNoteFormat(note));
+                sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityProfileNoteFormat(note)));
             }
         }
     }
@@ -222,14 +222,14 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
             try {
                 page = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                sender.sendMessage(configManager.getInvalidPageNumberMessage());
+                sender.sendMessage(ColorUtil.colorize(configManager.getInvalidPageNumberMessage()));
                 return;
             }
         }
 
         List<PunishmentLogEntry> logs = punishmentManager.getPunishmentLogs();
         if (logs.isEmpty()) {
-            sender.sendMessage(configManager.getJsecurityLogNoLogsMessage());
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityLogNoLogsMessage()));
             return;
         }
 
@@ -237,7 +237,7 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         if (page < 1) page = 1;
         if (page > totalPages) page = totalPages;
 
-        sender.sendMessage(configManager.getJsecurityLogHeader(page, totalPages));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityLogHeader(page, totalPages)));
 
         int startIndex = (page - 1) * 10;
         int endIndex = Math.min(startIndex + 10, logs.size());
@@ -247,19 +247,19 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         for (int i = startIndex; i < endIndex; i++) {
             PunishmentLogEntry log = logs.get(i);
             LocalDate date = Instant.ofEpochMilli(log.getTimestamp()).atZone(ZoneId.systemDefault()).toLocalDate();
-            sender.sendMessage(configManager.getJsecurityLogFormat(date.format(formatter), log.getPlayerName(), log.getPunishmentType().toString(), log.getReason()));
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityLogFormat(date.format(formatter), log.getPlayerName(), log.getPunishmentType().toString(), log.getReason())));
         }
     }
 
     private void handleHistory(CommandSender sender, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(configManager.getJsecurityHistoryUsageMessage());
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityHistoryUsageMessage()));
             return;
         }
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (!target.hasPlayedBefore() && !target.isOnline()) {
-            sender.sendMessage(configManager.getPlayerNotFoundMessage());
+            sender.sendMessage(ColorUtil.colorize(configManager.getPlayerNotFoundMessage()));
             return;
         }
 
@@ -268,14 +268,14 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
             try {
                 page = Integer.parseInt(args[1]);
             } catch (NumberFormatException e) {
-                sender.sendMessage(configManager.getInvalidPageNumberMessage());
+                sender.sendMessage(ColorUtil.colorize(configManager.getInvalidPageNumberMessage()));
                 return;
             }
         }
 
         List<PunishmentLogEntry> history = punishmentManager.getPlayerHistory(target.getUniqueId());
         if (history.isEmpty()) {
-            sender.sendMessage(configManager.getJsecurityHistoryNoHistoryMessage());
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityHistoryNoHistoryMessage()));
             return;
         }
 
@@ -283,7 +283,7 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         if (page < 1) page = 1;
         if (page > totalPages) page = totalPages;
 
-        sender.sendMessage(configManager.getJsecurityHistoryHeader(target.getName(), page, totalPages));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityHistoryHeader(target.getName(), page, totalPages)));
 
         int startIndex = (page - 1) * 10;
         int endIndex = Math.min(startIndex + 10, history.size());
@@ -293,13 +293,13 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         for (int i = startIndex; i < endIndex; i++) {
             PunishmentLogEntry log = history.get(i);
             LocalDate date = Instant.ofEpochMilli(log.getTimestamp()).atZone(ZoneId.systemDefault()).toLocalDate();
-            sender.sendMessage(configManager.getJsecurityHistoryFormat(date.format(formatter), log.getPunishmentType().toString(), log.getReason()));
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityHistoryFormat(date.format(formatter), log.getPunishmentType().toString(), log.getReason())));
         }
     }
 
     private void handleNote(CommandSender sender, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(configManager.getJsecurityNoteUsageMessage());
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityNoteUsageMessage()));
             return;
         }
 
@@ -307,19 +307,19 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         PlayerData playerData = playerDataManager.getPlayerData(playerName);
 
         if (playerData == null) {
-            sender.sendMessage(configManager.getPlayerNotFoundMessage());
+            sender.sendMessage(ColorUtil.colorize(configManager.getPlayerNotFoundMessage()));
             return;
         }
 
         if (args.length == 2 && args[1].equalsIgnoreCase("-clear")) {
             playerData.clearNotes();
-            sender.sendMessage(configManager.getJsecurityNoteClearedMessage(playerName));
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityNoteClearedMessage(playerName)));
         } else if (args.length > 1) {
             String note = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
             playerData.addNote(note);
-            sender.sendMessage(configManager.getJsecurityNoteAddedMessage(playerName));
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityNoteAddedMessage(playerName)));
         } else {
-            sender.sendMessage(configManager.getJsecurityNoteUsageMessage());
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityNoteUsageMessage()));
         }
     }
 
@@ -329,7 +329,7 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
 
     private void handleUnregister(CommandSender sender, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(configManager.getJsecurityUnregisterUsageMessage());
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityUnregisterUsageMessage()));
             return;
         }
 
@@ -337,26 +337,26 @@ public class JSecurityCommand implements CommandExecutor, TabCompleter {
         OfflinePlayer target = Bukkit.getOfflinePlayer(playerName);
 
         if (!target.hasPlayedBefore() && !target.isOnline()) {
-            sender.sendMessage(configManager.getPlayerNotFoundMessage());
+            sender.sendMessage(ColorUtil.colorize(configManager.getPlayerNotFoundMessage()));
             return;
         }
 
         UUID targetUUID = target.getUniqueId();
         if (!authManager.isRegistered(targetUUID)) {
-            sender.sendMessage(configManager.getJsecurityUnregisterNotRegisteredMessage());
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityUnregisterNotRegisteredMessage()));
             return;
         }
 
         if (unregisterConfirmation.containsKey(sender instanceof Player ? ((Player) sender).getUniqueId() : null) && unregisterConfirmation.get(sender instanceof Player ? ((Player) sender).getUniqueId() : null).equalsIgnoreCase(playerName)) {
             authManager.unregisterPlayer(targetUUID);
-            sender.sendMessage(configManager.getJsecurityUnregisterUnregisteredMessage(playerName));
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityUnregisterUnregisteredMessage(playerName)));
             System.out.println(playerName + " has been unregistered by " + sender.getName() + ".");
             if (target.isOnline()) {
                 authManager.setUnauthenticated(target.getPlayer());
             }
             unregisterConfirmation.remove(sender instanceof Player ? ((Player) sender).getUniqueId() : null);
         } else {
-            sender.sendMessage(configManager.getJsecurityUnregisterConfirmMessage(playerName));
+            sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityUnregisterConfirmMessage(playerName)));
             unregisterConfirmation.put(sender instanceof Player ? ((Player) sender).getUniqueId() : null, playerName);
         }
     }

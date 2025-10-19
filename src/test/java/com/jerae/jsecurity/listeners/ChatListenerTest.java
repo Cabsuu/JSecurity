@@ -65,10 +65,12 @@ class ChatListenerTest {
         when(player.hasPermission("jsecurity.replaceword.bypass")).thenReturn(false);
         when(configManager.getKeywordReplacementMap()).thenReturn(replacementMap);
         when(event.getPlayer()).thenReturn(player);
-        when(event.getMessage()).thenReturn("This is a badword");
+        doCallRealMethod().when(event).getMessage();
+        doCallRealMethod().when(event).setMessage(anyString());
+        event.setMessage("This is a badword");
 
         chatListener.onPlayerChat(event);
 
-        assertEquals("This is a badword", event.getMessage());
+        assertEquals("This is a goodword", event.getMessage());
     }
 }

@@ -1,9 +1,9 @@
 package com.jerae.jsecurity.commands;
 
 import com.jerae.jsecurity.managers.ConfigManager;
+import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.MessageManager;
 import com.jerae.jsecurity.utils.PermissionUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

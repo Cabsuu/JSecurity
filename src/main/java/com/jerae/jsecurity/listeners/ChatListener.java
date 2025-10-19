@@ -70,13 +70,13 @@ public class ChatListener implements Listener {
                 return;
             }
 
-            for (Map.Entry<String, String> entry : replacementMap.entrySet()) {
-                String keyword = entry.getKey();
-                String replacement = entry.getValue();
-
-                Pattern pattern = Pattern.compile("\\b" + Pattern.quote(keyword) + "\\b", Pattern.CASE_INSENSITIVE);
-                Matcher matcher = pattern.matcher(message);
-                message = matcher.replaceAll(replacement);
+            for (String keyword : replacementMap.keySet()) {
+                if (message.toLowerCase().contains(keyword.toLowerCase())) {
+                    String replacement = replacementMap.get(keyword);
+                    String literalKeyword = Pattern.quote(keyword);
+                    String literalReplacement = Matcher.quoteReplacement(replacement);
+                    message = message.replaceAll("(?i)" + literalKeyword, literalReplacement);
+                }
             }
             event.setMessage(message);
         }

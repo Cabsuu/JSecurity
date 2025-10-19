@@ -2,9 +2,10 @@ package com.jerae.jsecurity.commands;
 
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.FreezeManager;
+import com.jerae.jsecurity.managers.FreezeManager;
+import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PermissionUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -44,8 +45,8 @@ public class UnfreezeCommand implements CommandExecutor {
         }
 
         freezeManager.unfreeze(target);
-        target.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("unfreeze-message")));
-        sender.sendMessage(configManager.getUnfrozenMessage(target.getName()));
+        target.sendMessage(ColorUtil.colorize(configManager.getMessage("unfreeze-message")));
+        sender.sendMessage(ColorUtil.colorize(configManager.getUnfrozenMessage(target.getName())));
 
         return true;
     }
