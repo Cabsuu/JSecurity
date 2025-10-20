@@ -1,0 +1,24 @@
+<changelist name="Uncommitted_changes_before_Update_at_20_10_2025_12_47_AM_[Changes]" date="1760892446278" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_20_10_2025_12_47_AM_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 20/10/2025 12:47 AM [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="target/JSecurity-0.1.0-shaded.jar" />
+    <option name="AFTER_PATH" value="target/JSecurity-0.1.0-shaded.jar" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_20_10_2025_12_47_AM_[Changes]/JSecurity-0.1.0-shaded.jar" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="target/test-classes/com/jerae/jsecurity/commands/StaffChatCommandTest.class" />
+    <option name="AFTER_PATH" value="target/test-classes/com/jerae/jsecurity/commands/StaffChatCommandTest.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_20_10_2025_12_47_AM_[Changes]/StaffChatCommandTest.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="target/original-JSecurity-0.1.0.jar" />
+    <option name="AFTER_PATH" value="target/original-JSecurity-0.1.0.jar" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_20_10_2025_12_47_AM_[Changes]/original-JSecurity-0.1.0.jar" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="target/JSecurity-0.1.0.jar" />
+    <option name="AFTER_PATH" value="target/JSecurity-0.1.0.jar" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_20_10_2025_12_47_AM_[Changes]/JSecurity-0.1.0.jar" />
+  </binary>
+</changelist>

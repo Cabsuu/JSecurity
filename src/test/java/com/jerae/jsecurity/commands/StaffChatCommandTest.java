@@ -39,6 +39,11 @@ class StaffChatCommandTest {
 
     private MockedStatic<Bukkit> bukkitMock;
 
+    StaffChatCommandTest(StaffChatManager staffChatManager, ConfigManager configManager) {
+        this.staffChatManager = staffChatManager;
+        this.configManager = configManager;
+    }
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
