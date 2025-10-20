@@ -28,4 +28,11 @@ class ColorUtilTest {
         String colorizedMessage = ColorUtil.colorize(message);
         assertEquals("§cHello §x§F§F§0§0§0§0World", colorizedMessage);
     }
+
+    @Test
+    void testGradientWithLegacyBold() {
+        String message = "<#FF0000:#00FF00>Hello &lWorld";
+        String colorizedMessage = ColorUtil.colorize(message);
+        assertEquals("§x§F§F§0§0§0§0H§x§E§A§1§5§1§5e§x§D§5§2§B§2§Al§x§C§0§4§0§4§0l§x§A§B§5§5§5§5o§x§9§6§6§B§6§A §lW§x§6§C§9§5§9§5o§x§5§7§A§B§A§A§lr§x§4§2§C§0§C§0l§x§2§D§D§5§D§5d", colorizedMessage);
+    }
 }
