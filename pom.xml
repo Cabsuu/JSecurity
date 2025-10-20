@@ -61,7 +61,6 @@
                         <exclude>**/VanishListenerTest.java</exclude>
                         <exclude>**/AuthCommandsTest.java</exclude>
                         <exclude>**/StaffChatCommandTest.java</exclude>
-                        <exclude>**/ColorUtilTest.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
