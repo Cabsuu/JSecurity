@@ -107,7 +107,7 @@ other:
       unregistered: "&a{player} has been unregistered."
       confirm: "&eAre you sure you want to unregister {player}? This action cannot be undone. Re-enter the command to confirm."
     help:
-      header: "<#55C156>-- JSecurity Help --"
+      header: "<#FFFFFF:#55C156>-- JSecurity Help --"
       help: "&e/js help &7- Shows this help message."
       reload: "&e/js reload &7- Reloads the configuration."
       record: "&e/js record [page] [-sort] &7- Shows player records."

@@ -97,7 +97,7 @@ class StaffChatCommandTest {
         staffChatCommand.onCommand(player, command, "sc", new String[]{"hello", "staff"});
 
         // Then
-        verify(staffPlayer).sendMessage("&8[&cStaffChat&8] &7TestPlayer: {message}");
+        verify(staffPlayer).sendMessage("§8[§cStaffChat§8] §7TestPlayer: hello staff");
     }
 
     @Test

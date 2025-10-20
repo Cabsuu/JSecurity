@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 public class ColorUtil {
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
-    private static final Pattern GRADIENT_PATTERN = Pattern.compile("<#([A-Fa-f0-9]{6})>(.+?)<#([A-Fa-f0-9]{6})>");
+    private static final Pattern GRADIENT_PATTERN = Pattern.compile("<#([A-Fa-f0-9]{6}):#([A-Fa-f0-9]{6})>(.+?)");
 
     public static String colorize(String message) {
         if (message == null) {
@@ -19,8 +19,8 @@ public class ColorUtil {
         Matcher matcher = GRADIENT_PATTERN.matcher(message);
         while (matcher.find()) {
             String startColor = matcher.group(1);
-            String content = matcher.group(2);
-            String endColor = matcher.group(3);
+            String endColor = matcher.group(2);
+            String content = matcher.group(3);
             message = message.replace(matcher.group(), applyGradient(content, startColor, endColor));
         }
 

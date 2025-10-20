@@ -17,9 +17,9 @@ class ColorUtilTest {
 
     @Test
     void testGradientColor() {
-        String gradientMessage = "<#FF0000>Hello<#00FF00>";
+        String gradientMessage = "<#FF0000:#00FF00>Hello";
         String colorizedMessage = ColorUtil.colorize(gradientMessage);
-        assert(!colorizedMessage.equals("<#FF0000>Hello<#00FF00>"));
+        assertEquals("§x§F§F§0§0§0§0H§x§C§C§3§3§3§3e§x§9§9§6§6§6§6l§x§6§6§9§9§9§9l§x§3§3§C§C§C§Co", colorizedMessage);
     }
 
     @Test
