@@ -19,7 +19,7 @@ class ColorUtilTest {
     void testGradientColor() {
         String gradientMessage = "<#FF0000:#00FF00>Hello";
         String colorizedMessage = ColorUtil.colorize(gradientMessage);
-        assertEquals("§x§F§F§0§0§0§0H§x§C§C§3§3§3§3e§x§9§9§6§6§6§6l§x§6§6§9§9§9§9l§x§3§3§C§C§C§Co", colorizedMessage);
+        assertEquals("§x§f§f§0§0§0§0H§x§b§f§3§f§0§0e§x§7§f§7§f§0§0l§x§3§f§b§f§0§0l§x§0§0§f§f§0§0o", colorizedMessage);
     }
 
     @Test
@@ -27,5 +27,12 @@ class ColorUtilTest {
         String message = "&cHello &#FF0000World";
         String colorizedMessage = ColorUtil.colorize(message);
         assertEquals("§cHello §x§F§F§0§0§0§0World", colorizedMessage);
+    }
+
+    @Test
+    void testGradientWithLegacyBold() {
+        String message = "<#FF0000:#00FF00>Hello &lWorld";
+        String colorizedMessage = ColorUtil.colorize(message);
+        assertEquals("§x§f§f§0§0§0§0H§x§e§5§1§9§0§0e§x§c§c§3§3§0§0l§x§b§2§4§c§0§0l§x§9§9§6§6§0§0o§x§7§f§7§f§0§0 §x§6§6§9§9§0§0§lW§x§4§c§b§2§0§0§lo§x§3§2§c§c§0§0§lr§x§1§9§e§5§0§0§ll§x§0§0§f§f§0§0§ld", colorizedMessage);
     }
 }

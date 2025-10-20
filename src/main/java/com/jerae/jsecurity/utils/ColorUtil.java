@@ -1,59 +1,90 @@
 package com.jerae.jsecurity.utils;
 
-// Make sure to import this one, NOT org.bukkit.ChatColor
 import net.md_5.bungee.api.ChatColor;
 
+import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ColorUtil {
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
-    private static final Pattern GRADIENT_PATTERN = Pattern.compile("<#([A-Fa-f0-9]{6}):#([A-Fa-f0-9]{6})>(.+?)");
+    private static final Pattern GRADIENT_PATTERN = Pattern.compile("<(#(?:[A-Fa-f0-9]{6})):(#(?:[A-Fa-f0-9]{6}))>([^<]+)");
 
     public static String colorize(String message) {
-        if (message == null) {
-            return "";
-        }
+        if (message == null) return "";
 
-        Matcher matcher = GRADIENT_PATTERN.matcher(message);
-        while (matcher.find()) {
-            String startColor = matcher.group(1);
-            String endColor = matcher.group(2);
-            String content = matcher.group(3);
-            message = message.replace(matcher.group(), applyGradient(content, startColor, endColor));
+        // Apply gradients first
+        Matcher gradientMatcher = GRADIENT_PATTERN.matcher(message);
+        StringBuffer buffer = new StringBuffer();
+        while (gradientMatcher.find()) {
+            String startHex = gradientMatcher.group(1);
+            String endHex = gradientMatcher.group(2);
+            String text = gradientMatcher.group(3);
+            String replacement = Matcher.quoteReplacement(applyGradient(text, startHex, endHex));
+            gradientMatcher.appendReplacement(buffer, replacement);
         }
+        gradientMatcher.appendTail(buffer);
+        message = buffer.toString();
 
-        matcher = HEX_PATTERN.matcher(message);
-        while (matcher.find()) {
-            String hexCode = matcher.group(1);
-            message = message.replace(matcher.group(), ChatColor.of("#" + hexCode).toString());
+        // Then apply hex colors
+        Matcher hexMatcher = HEX_PATTERN.matcher(message);
+        buffer = new StringBuffer();
+        while (hexMatcher.find()) {
+            String hexCode = hexMatcher.group(1);
+            hexMatcher.appendReplacement(buffer, Matcher.quoteReplacement(ChatColor.of("#" + hexCode).toString()));
         }
+        hexMatcher.appendTail(buffer);
+        message = buffer.toString();
 
+        // Finally, translate alternate color codes
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
-    private static String applyGradient(String str, String startHex, String endHex) {
+    private static String applyGradient(String text, String startHex, String endHex) {
+        Color start = Color.decode(startHex);
+        Color end = Color.decode(endHex);
         StringBuilder sb = new StringBuilder();
-        int[] start = hexToRgb(startHex);
-        int[] end = hexToRgb(endHex);
-        int len = str.length();
 
-        for (int i = 0; i < len; i++) {
-            double ratio = (double) i / (len - 1);
-            int r = (int) (start[0] * (1 - ratio) + end[0] * ratio);
-            int g = (int) (start[1] * (1 - ratio) + end[1] * ratio);
-            int b = (int) (start[2] * (1 - ratio) + end[2] * ratio);
-            sb.append(ChatColor.of(new java.awt.Color(r, g, b))).append(str.charAt(i));
+        StringBuilder justTextBuilder = new StringBuilder();
+        Map<Integer, String> formatMap = new HashMap<>();
+        StringBuilder currentFormat = new StringBuilder();
+
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '&' && i + 1 < text.length()) {
+                char code = Character.toLowerCase(text.charAt(i + 1));
+                if ("klmno".indexOf(code) != -1) {
+                    currentFormat.append('&').append(code);
+                    i++;
+                    continue;
+                }
+                if (code == 'r' || ("0123456789abcdef".indexOf(code) != -1)) {
+                    currentFormat.setLength(0); // Reset formatting
+                    i++;
+                    continue;
+                }
+            }
+            formatMap.put(justTextBuilder.length(), currentFormat.toString());
+            justTextBuilder.append(text.charAt(i));
+        }
+
+        String justText = justTextBuilder.toString();
+        int textLength = justText.length();
+
+        for (int i = 0; i < textLength; i++) {
+            double ratio = (textLength > 1) ? (double) i / (textLength - 1) : 0.5;
+
+            int r = (int) (start.getRed() * (1 - ratio) + end.getRed() * ratio);
+            int g = (int) (start.getGreen() * (1 - ratio) + end.getGreen() * ratio);
+            int b = (int) (start.getBlue() * (1 - ratio) + end.getBlue() * ratio);
+
+            sb.append(ChatColor.of(new Color(r, g, b)));
+            sb.append(formatMap.get(i));
+            sb.append(justText.charAt(i));
         }
 
         return sb.toString();
-    }
-
-    private static int[] hexToRgb(String hex) {
-        int r = Integer.valueOf(hex.substring(0, 2), 16);
-        int g = Integer.valueOf(hex.substring(2, 4), 16);
-        int b = Integer.valueOf(hex.substring(4, 6), 16);
-        return new int[]{r, g, b};
     }
 }
