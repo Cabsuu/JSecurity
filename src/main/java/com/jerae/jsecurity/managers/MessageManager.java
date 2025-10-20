@@ -1,7 +1,6 @@
 package com.jerae.jsecurity.managers;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -28,8 +27,8 @@ public class MessageManager {
                 .replace("{sender}", sender.getName())
                 .replace("{content}", message);
 
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', toSender));
-        target.sendMessage(ChatColor.translateAlternateColorCodes('&', toReceiver));
+        sender.sendMessage(com.jerae.jsecurity.utils.ColorUtil.colorize(toSender));
+        target.sendMessage(com.jerae.jsecurity.utils.ColorUtil.colorize(toReceiver));
 
         lastMessage.put(sender.getUniqueId(), target.getUniqueId());
         lastMessage.put(target.getUniqueId(), sender.getUniqueId());
@@ -37,7 +36,7 @@ public class MessageManager {
         for (UUID uuid : socialSpy) {
             Player spy = Bukkit.getPlayer(uuid);
             if (spy != null && spy.hasPermission("jsecurity.socialspy.view") && !sender.hasPermission("jsecurity.socialspy.exempt") && !target.hasPermission("jsecurity.socialspy.exempt")) {
-                spy.sendMessage(ChatColor.GRAY + "[Spy] " + sender.getName() + " -> " + target.getName() + ": " + message);
+                spy.sendMessage(com.jerae.jsecurity.utils.ColorUtil.colorize("&7[Spy] " + sender.getName() + " -> " + target.getName() + ": " + message));
             }
         }
     }
@@ -45,13 +44,13 @@ public class MessageManager {
     public void replyToMessage(Player sender, String message) {
         UUID targetUUID = lastMessage.get(sender.getUniqueId());
         if (targetUUID == null) {
-            sender.sendMessage(ChatColor.RED + "You have no one to reply to.");
+            sender.sendMessage(com.jerae.jsecurity.utils.ColorUtil.colorize("&cYou have no one to reply to."));
             return;
         }
 
         Player target = Bukkit.getPlayer(targetUUID);
         if (target == null) {
-            sender.sendMessage(ChatColor.RED + "The player you were talking to is no longer online.");
+            sender.sendMessage(com.jerae.jsecurity.utils.ColorUtil.colorize("&cThe player you were talking to is no longer online."));
             return;
         }
 

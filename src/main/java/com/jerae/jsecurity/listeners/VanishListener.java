@@ -43,8 +43,11 @@ public class VanishListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        if (vanishManager.isVanished(event.getPlayer())) {
-            event.setQuitMessage(null);
+        Player player = event.getPlayer();
+        if (vanishManager.isVanished(player)) {
+            if (player.hasPermission("jsecurity.vanish.silentquit")) {
+                event.setQuitMessage(null);
+            }
         }
     }
 

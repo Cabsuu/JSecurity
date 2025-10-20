@@ -1,18 +1,19 @@
 package com.jerae.jsecurity.commands;
 
-import org.bukkit.ChatColor;
+import com.jerae.jsecurity.managers.ConfigManager;
+import com.jerae.jsecurity.utils.ColorUtil;
 import org.bukkit.command.CommandSender;
 
 public class HelpCommand {
 
-    public static void execute(CommandSender sender) {
-        sender.sendMessage(ChatColor.GOLD + "--- JSecurity Help ---");
-        sender.sendMessage(ChatColor.YELLOW + "/js help" + ChatColor.WHITE + " - Shows this help message.");
-        sender.sendMessage(ChatColor.YELLOW + "/js reload" + ChatColor.WHITE + " - Reloads the configuration.");
-        sender.sendMessage(ChatColor.YELLOW + "/js record [page] [-sort]" + ChatColor.WHITE + " - Shows player records.");
-        sender.sendMessage(ChatColor.YELLOW + "/js profile <player>" + ChatColor.WHITE + " - Shows a player's profile.");
-        sender.sendMessage(ChatColor.YELLOW + "/js log [page]" + ChatColor.WHITE + " - Shows the punishment log.");
-        sender.sendMessage(ChatColor.YELLOW + "/js history <player> [page]" + ChatColor.WHITE + " - Shows a player's punishment history.");
-        sender.sendMessage(ChatColor.YELLOW + "/js note <player> <note>" + ChatColor.WHITE + " - Adds a note to a player's profile.");
+    public static void execute(CommandSender sender, ConfigManager configManager) {
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityHelpHeader()));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityHelpHelpMessage()));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityHelpReloadMessage()));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityHelpRecordMessage()));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityHelpProfileMessage()));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityHelpLogMessage()));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityHelpHistoryMessage()));
+        sender.sendMessage(ColorUtil.colorize(configManager.getJsecurityHelpNoteMessage()));
     }
 }

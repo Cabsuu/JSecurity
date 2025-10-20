@@ -20,38 +20,38 @@ public class LoginCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("This command can only be used by players.");
+            sender.sendMessage(configManager.getPlayerOnlyCommandMessage());
             return true;
         }
 
-        if (!configManager.getBoolean("authentication.enabled")) {
-            sender.sendMessage("The authentication system is disabled.");
+        if (!configManager.isAuthEnabled()) {
+            sender.sendMessage(configManager.getAuthDisabledMessage());
             return true;
         }
 
         Player player = (Player) sender;
         if (authManager.isLoggedIn(player)) {
-            player.sendMessage("You are already logged in.");
+            player.sendMessage(configManager.getAlreadyLoggedInMessage());
             return true;
         }
 
         if (!authManager.isRegistered(player.getUniqueId())) {
-            player.sendMessage("You are not registered. Please register using /register <password> <confirmPassword>");
+            player.sendMessage(configManager.getNotRegisteredMessage());
             return true;
         }
 
         if (args.length < 1) {
-            player.sendMessage("Usage: /login <password>");
+            player.sendMessage(configManager.getLoginUsageMessage());
             return true;
         }
 
         String password = args[0];
         if (authManager.checkPassword(player.getUniqueId(), password)) {
             authManager.loginPlayer(player);
-            player.sendMessage("You have logged in successfully.");
+            player.sendMessage(configManager.getLoginSuccessMessage());
             System.out.println(player.getName() + " has logged in.");
         } else {
-            player.sendMessage("Incorrect password.");
+            player.sendMessage(configManager.getLoginFailMessage());
         }
         return true;
     }

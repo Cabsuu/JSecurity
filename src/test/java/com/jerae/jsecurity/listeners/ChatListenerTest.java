@@ -1,85 +1,76 @@
 package com.jerae.jsecurity.listeners;
 
-import com.jerae.jsecurity.JSecurity;
 import com.jerae.jsecurity.managers.ConfigManager;
+import com.jerae.jsecurity.managers.StaffChatManager;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-import org.bukkit.entity.Player;
+class ChatListenerTest {
 
-public class ChatListenerTest {
-
+    @Mock
     private ConfigManager configManager;
-    private ChatListener chatListener;
+
+    @Mock
+    private StaffChatManager staffChatManager;
+
+    @Mock
     private Player player;
 
+    @Mock
+    private AsyncPlayerChatEvent event;
+
+    private ChatListener chatListener;
+
     @BeforeEach
-    public void setUp() {
-        configManager = Mockito.mock(ConfigManager.class);
-        chatListener = new ChatListener(configManager);
-        player = Mockito.mock(Player.class);
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        chatListener = new ChatListener(configManager, staffChatManager);
     }
 
     @Test
-    public void testKeywordReplacementWholeWord() {
-        // Given
-        when(configManager.isKeywordReplacementEnabled()).thenReturn(true);
+    void testKeywordReplacement() {
         Map<String, String> replacementMap = new HashMap<>();
-        replacementMap.put("fuck", "fudge");
-        replacementMap.put("fck", "fudge");
-        replacementMap.put("fk", "fudge");
-        replacementMap.put("shit", "poop");
+        replacementMap.put("badword", "goodword");
+        replacementMap.put("anotherbadword", "anothergoodword");
+
+        when(configManager.isKeywordReplacementEnabled()).thenReturn(true);
+        when(player.hasPermission("jsecurity.replaceword.bypass")).thenReturn(false);
         when(configManager.getKeywordReplacementMap()).thenReturn(replacementMap);
+        when(event.getPlayer()).thenReturn(player);
+        doCallRealMethod().when(event).getMessage();
+        doCallRealMethod().when(event).setMessage(anyString());
+        event.setMessage("This is a badword and anotherbadword");
 
-        // When
-        AsyncPlayerChatEvent event = new AsyncPlayerChatEvent(false, player, "you are a fcking idiot", null);
         chatListener.onPlayerChat(event);
 
-        // Then
-        assertEquals("you are a fcking idiot", event.getMessage());
+        assertEquals("This is a goodword and anothergoodword", event.getMessage());
+    }
 
-        // When
-        event = new AsyncPlayerChatEvent(false, player, "fuck you", null);
+    @Test
+    void testKeywordReplacementWithPartialWord() {
+        Map<String, String> replacementMap = new HashMap<>();
+        replacementMap.put("bad", "good");
+
+        when(configManager.isKeywordReplacementEnabled()).thenReturn(true);
+        when(player.hasPermission("jsecurity.replaceword.bypass")).thenReturn(false);
+        when(configManager.getKeywordReplacementMap()).thenReturn(replacementMap);
+        when(event.getPlayer()).thenReturn(player);
+        doCallRealMethod().when(event).getMessage();
+        doCallRealMethod().when(event).setMessage(anyString());
+        event.setMessage("This is a badword");
+
         chatListener.onPlayerChat(event);
 
-        // Then
-        assertEquals("fudge you", event.getMessage());
-
-        // When
-        event = new AsyncPlayerChatEvent(false, player, "what the fuck!", null);
-        chatListener.onPlayerChat(event);
-
-        // Then
-        assertEquals("what the fudge!", event.getMessage());
-
-        // When
-        event = new AsyncPlayerChatEvent(false, player, "this is a test, not a fckn test", null);
-        chatListener.onPlayerChat(event);
-
-        // Then
-        assertEquals("this is a test, not a fckn test", event.getMessage());
-
-        // When
-        event = new AsyncPlayerChatEvent(false, player, "fk", null);
-        chatListener.onPlayerChat(event);
-
-        // Then
-        assertEquals("fudge", event.getMessage());
-
-        // When
-        event = new AsyncPlayerChatEvent(false, player, "that's some real shit", null);
-        chatListener.onPlayerChat(event);
-
-        // Then
-        assertEquals("that's some real poop", event.getMessage());
+        assertEquals("This is a goodword", event.getMessage());
     }
 }

@@ -25,29 +25,29 @@ public class UnregisterCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("This command can only be used by players.");
+            sender.sendMessage(configManager.getPlayerOnlyCommandMessage());
             return true;
         }
 
-        if (!configManager.getBoolean("authentication.enabled")) {
-            sender.sendMessage("The authentication system is disabled.");
+        if (!configManager.isAuthEnabled()) {
+            sender.sendMessage(configManager.getAuthDisabledMessage());
             return true;
         }
 
         Player player = (Player) sender;
         if (!authManager.isRegistered(player.getUniqueId())) {
-            player.sendMessage("You are not registered.");
+            player.sendMessage(configManager.getNotRegisteredMessage());
             return true;
         }
 
         if (args.length < 1) {
-            player.sendMessage("Usage: /unregister <password>");
+            player.sendMessage(configManager.getUnregisterUsageMessage());
             return true;
         }
 
         String password = args[0];
         if (!authManager.checkPassword(player.getUniqueId(), password)) {
-            player.sendMessage("Incorrect password.");
+            player.sendMessage(configManager.getUnregisterFailMessage());
             return true;
         }
 
@@ -55,11 +55,11 @@ public class UnregisterCommand implements CommandExecutor {
         if (confirmationMap.containsKey(playerUUID) && (System.currentTimeMillis() - confirmationMap.get(playerUUID)) < 60000) {
             authManager.unregisterPlayer(playerUUID);
             authManager.setUnauthenticated(player);
-            player.sendMessage("You have been unregistered successfully.");
+            player.sendMessage(configManager.getUnregisterSuccessMessage());
             System.out.println(player.getName() + " has unregistered.");
             confirmationMap.remove(playerUUID);
         } else {
-            player.sendMessage("Are you sure you want to unregister? This action cannot be undone. Re-enter the command within 60 seconds to confirm.");
+            player.sendMessage(configManager.getUnregisterConfirmMessage());
             confirmationMap.put(playerUUID, System.currentTimeMillis());
         }
 

@@ -69,6 +69,10 @@ commands:
   changepass:
     description: Changes a player's password.
     usage: /changepass <oldPassword> <newPassword>
+  staffchat:
+    description: Sends a message to the staff chat.
+    usage: /staffchat <message>
+    aliases: [sc]
 permissions:
   jsecurity.*:
     description: Gives access to all jSecurity commands.
@@ -90,10 +94,12 @@ permissions:
       jsecurity.socialspy.view: true
       jsecurity.socialspy.exempt: true
       jsecurity.chat.delay.bypass: true
+      jsecurity.replaceword.bypass: true
       jsecurity.vanish: true
       jsecurity.vanish.see: true
       jsecurity.vanish.interact: true
       jsecurity.vanish.silentjoin: true
+      jsecurity.vanish.silentquit: true
       jsecurity.help: true
       jsecurity.record: true
       jsecurity.profile: true
@@ -103,6 +109,7 @@ permissions:
       jsecurity.message: true
       jsecurity.reply: true
       jsecurity.unregister: true
+      jsecurity.staffchat: true
   jsecurity.ban:
     description: Allows banning players.
   jsecurity.tempban:
@@ -133,6 +140,8 @@ permissions:
     description: Exempts a player from being spied on.
   jsecurity.chat.delay.bypass:
     description: Allows bypassing the chat delay.
+  jsecurity.replaceword.bypass:
+    description: Allows bypassing the keyword replacement.
   jsecurity.vanish:
     description: Allows toggling vanish mode.
   jsecurity.vanish.see:
@@ -141,6 +150,8 @@ permissions:
     description: Allows interacting with players while vanished.
   jsecurity.vanish.silentjoin:
     description: Allows joining the server silently while vanished.
+  jsecurity.vanish.silentquit:
+    description: Allows leaving the server silently while vanished.
   jsecurity.help:
     description: Allows using the /js help command.
   jsecurity.record:
@@ -161,3 +172,5 @@ permissions:
     description: Allows freezing players.
   jsecurity.unfreeze:
     description: Allows unfreezing players.
+  jsecurity.staffchat:
+    description: Allows using the staff chat.

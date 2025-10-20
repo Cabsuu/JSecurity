@@ -2,9 +2,10 @@ package com.jerae.jsecurity.commands;
 
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.FreezeManager;
+import com.jerae.jsecurity.managers.FreezeManager;
+import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PermissionUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,24 +29,24 @@ public class UnfreezeCommand implements CommandExecutor {
         }
 
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: /unfreeze <player>");
+            sender.sendMessage(configManager.getUnfreezeUsageMessage());
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            sender.sendMessage(ChatColor.RED + "Player not found.");
+            sender.sendMessage(configManager.getPlayerNotFoundMessage());
             return true;
         }
 
         if (!freezeManager.isFrozen(target)) {
-            sender.sendMessage(ChatColor.RED + "That player is not frozen.");
+            sender.sendMessage(configManager.getNotFrozenMessage(target.getName()));
             return true;
         }
 
         freezeManager.unfreeze(target);
-        target.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("unfreeze-message")));
-        sender.sendMessage(ChatColor.GREEN + "You have unfrozen " + target.getName() + ".");
+        target.sendMessage(ColorUtil.colorize(configManager.getMessage("unfreeze-message")));
+        sender.sendMessage(ColorUtil.colorize(configManager.getUnfrozenMessage(target.getName())));
 
         return true;
     }

@@ -8,10 +8,9 @@ import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
 import com.jerae.jsecurity.models.PlayerData;
 import com.jerae.jsecurity.utils.PermissionUtils;
+import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PlaceholderAPI;
 import com.jerae.jsecurity.utils.TimeUtil;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -48,22 +47,19 @@ public class TempBanCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2) {
-            Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /tempban <player> <duration> [reason] [-s]");
-            sender.sendMessage(usageMessage);
+            sender.sendMessage(ColorUtil.colorize("&cUsage: /tempban <player> <duration> [reason] [-s]"));
             return true;
         }
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (!target.hasPlayedBefore() && !target.isOnline()) {
-            Component playerNotFoundMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cPlayer not found.");
-            sender.sendMessage(playerNotFoundMessage);
+            sender.sendMessage(ColorUtil.colorize("&cPlayer not found."));
             return true;
         }
 
         UUID targetUUID = target.getUniqueId();
         if (punishmentManager.isBanned(targetUUID)) {
-            Component alreadyBannedMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cThat player is already banned.");
-            sender.sendMessage(alreadyBannedMessage);
+            sender.sendMessage(ColorUtil.colorize("&cThat player is already banned."));
             return true;
         }
 
@@ -110,10 +106,10 @@ public class TempBanCommand implements CommandExecutor, TabCompleter {
 
         String kickMessagePath = "tempban-kick-message";
         String kickMessageStr = configManager.getMessage(kickMessagePath, hasReason);
-        Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(kickMessageStr, data));
+        String kickMessage = ColorUtil.colorize(PlaceholderAPI.setPlaceholders(kickMessageStr, data));
 
         if (target.isOnline()) {
-            target.getPlayer().kick(kickMessage);
+            target.getPlayer().kickPlayer(kickMessage);
         }
 
         playerListener.onPlayerBan(target, ipAddress);
@@ -121,8 +117,8 @@ public class TempBanCommand implements CommandExecutor, TabCompleter {
         if (!silent) {
             String broadcastMessagePath = "tempban-broadcast";
             String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason);
-            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
-            Bukkit.getServer().broadcast(broadcastMessage);
+            String broadcastMessage = ColorUtil.colorize(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
+            Bukkit.getServer().broadcastMessage(broadcastMessage);
         }
 
         return true;

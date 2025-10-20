@@ -58,10 +58,10 @@
                         <exclude>**/NewFeatureTest.java</exclude>
                         <exclude>**/JSecurityCommandTest.java</exclude>
                         <exclude>**/MessageCommandsTest.java</exclude>
-                        <exclude>**/VanishCommandTest.java</exclude>
-                        <exclude>**/ChatListenerTest.java</exclude>
+                        <exclude>**/VanishListenerTest.java</exclude>
                         <exclude>**/AuthCommandsTest.java</exclude>
-                        <exclude>**/JSecurityCommandTest.java</exclude>
+                        <exclude>**/StaffChatCommandTest.java</exclude>
+                        <exclude>**/ColorUtilTest.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>

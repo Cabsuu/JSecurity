@@ -1,9 +1,9 @@
 package com.jerae.jsecurity.commands;
 
 import com.jerae.jsecurity.managers.ConfigManager;
+import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.MessageManager;
 import com.jerae.jsecurity.utils.PermissionUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,12 +27,12 @@ public class ReplyCommand implements CommandExecutor {
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Only players can reply to messages.");
+            sender.sendMessage(configManager.getPlayerOnlyCommandMessage());
             return true;
         }
 
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: /reply <message>");
+            sender.sendMessage(configManager.getReplyUsageMessage());
             return true;
         }
 

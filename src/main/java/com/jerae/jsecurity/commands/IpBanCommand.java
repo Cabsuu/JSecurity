@@ -7,10 +7,9 @@ import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
 import com.jerae.jsecurity.models.PlayerData;
+import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PermissionUtils;
 import com.jerae.jsecurity.utils.PlaceholderAPI;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -47,8 +46,7 @@ public class IpBanCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 1) {
-            Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /ipban <player/ip> [reason] [-s]");
-            sender.sendMessage(usageMessage);
+            sender.sendMessage(ColorUtil.colorize("&cUsage: /ipban <player/ip> [reason] [-s]"));
             return true;
         }
 
@@ -80,14 +78,14 @@ public class IpBanCommand implements CommandExecutor, TabCompleter {
                 if (playerData != null && !playerData.getIps().isEmpty()) {
                     ipAddress = playerData.getIps().get(playerData.getIps().size() - 1);
                 } else {
-                    sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&cCannot get IP address of an offline player. Please ban their IP directly if known."));
+                    sender.sendMessage(ColorUtil.colorize("&cCannot get IP address of an offline player. Please ban their IP directly if known."));
                     return true;
                 }
             }
         }
 
         if (punishmentManager.isIpBanned(ipAddress) || (target.hasPlayedBefore() && punishmentManager.isBanned(target.getUniqueId()))) {
-            sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&cThat player or IP is already banned."));
+            sender.sendMessage(ColorUtil.colorize("&cThat player or IP is already banned."));
             return true;
         }
 
@@ -112,10 +110,10 @@ public class IpBanCommand implements CommandExecutor, TabCompleter {
 
         String kickMessagePath = "ipban-kick-message";
         String kickMessageStr = configManager.getMessage(kickMessagePath, hasReason);
-        Component kickMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(kickMessageStr, data));
+        String kickMessage = ColorUtil.colorize(PlaceholderAPI.setPlaceholders(kickMessageStr, data));
 
         if (target.isOnline()) {
-            target.getPlayer().kick(kickMessage);
+            target.getPlayer().kickPlayer(kickMessage);
         }
 
         playerListener.onPlayerBan(target, ipAddress);
@@ -123,8 +121,8 @@ public class IpBanCommand implements CommandExecutor, TabCompleter {
         if (!silent) {
             String broadcastMessagePath = "ipban-broadcast";
             String broadcastMessageStr = configManager.getMessage(broadcastMessagePath, hasReason);
-            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
-            Bukkit.getServer().broadcast(broadcastMessage);
+            String broadcastMessage = ColorUtil.colorize(PlaceholderAPI.setPlaceholders(broadcastMessageStr, data));
+            Bukkit.getServer().broadcastMessage(broadcastMessage);
         }
 
         return true;

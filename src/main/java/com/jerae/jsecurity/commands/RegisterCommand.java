@@ -20,23 +20,23 @@ public class RegisterCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("This command can only be used by players.");
+            sender.sendMessage(configManager.getPlayerOnlyCommandMessage());
             return true;
         }
 
-        if (!configManager.getBoolean("authentication.enabled")) {
-            sender.sendMessage("The authentication system is disabled.");
+        if (!configManager.isAuthEnabled()) {
+            sender.sendMessage(configManager.getAuthDisabledMessage());
             return true;
         }
 
         Player player = (Player) sender;
         if (authManager.isRegistered(player.getUniqueId())) {
-            player.sendMessage("You are already registered.");
+            player.sendMessage(configManager.getAlreadyRegisteredMessage());
             return true;
         }
 
         if (args.length < 2) {
-            player.sendMessage("Usage: /register <password> <confirmPassword>");
+            player.sendMessage(configManager.getRegisterUsageMessage());
             return true;
         }
 
@@ -44,7 +44,7 @@ public class RegisterCommand implements CommandExecutor {
         String confirmPassword = args[1];
 
         if (!password.equals(confirmPassword)) {
-            player.sendMessage("Passwords do not match.");
+            player.sendMessage(configManager.getPasswordMismatchMessage());
             return true;
         }
 
@@ -55,7 +55,7 @@ public class RegisterCommand implements CommandExecutor {
         }
 
         authManager.registerPlayer(player.getUniqueId(), password);
-        player.sendMessage("You have been registered successfully. Please log in using /login <password>");
+        player.sendMessage(configManager.getRegisterSuccessMessage());
         System.out.println(player.getName() + " has registered.");
         return true;
     }

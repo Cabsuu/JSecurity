@@ -2,10 +2,11 @@ package com.jerae.jsecurity.commands;
 
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.MuteEntry;
+import com.jerae.jsecurity.managers.ConfigManager;
+import com.jerae.jsecurity.managers.MuteEntry;
 import com.jerae.jsecurity.managers.PunishmentManager;
+import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PermissionUtils;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -37,8 +38,7 @@ public class UnmuteCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 1) {
-            Component usageMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /unmute <player> [-s]");
-            sender.sendMessage(usageMessage);
+            sender.sendMessage(ColorUtil.colorize("&cUsage: /unmute <player> [-s]"));
             return true;
         }
 
@@ -47,8 +47,7 @@ public class UnmuteCommand implements CommandExecutor, TabCompleter {
         MuteEntry muteEntry = punishmentManager.getMute(targetUUID);
 
         if (muteEntry == null) {
-            Component notMutedMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&cThat player is not muted.");
-            sender.sendMessage(notMutedMessage);
+            sender.sendMessage(ColorUtil.colorize("&cThat player is not muted."));
             return true;
         }
 
@@ -61,12 +60,11 @@ public class UnmuteCommand implements CommandExecutor, TabCompleter {
             String broadcastMessageStr = configManager.getMessage("unmute-broadcast")
                     .replace("{player}", targetName)
                     .replace("{staff}", sender.getName());
-            Component broadcastMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(broadcastMessageStr);
-            Bukkit.getServer().broadcast(broadcastMessage);
+            String broadcastMessage = ColorUtil.colorize(broadcastMessageStr);
+            Bukkit.getServer().broadcastMessage(broadcastMessage);
         }
 
-        Component successMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&aSuccessfully unmuted " + targetName + ".");
-        sender.sendMessage(successMessage);
+        sender.sendMessage(ColorUtil.colorize("&aSuccessfully unmuted " + targetName + "."));
 
         return true;
     }

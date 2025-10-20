@@ -3,12 +3,10 @@ package com.jerae.jsecurity.listeners;
 import com.jerae.jsecurity.managers.BanEntry;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
+import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PlaceholderAPI;
 import com.jerae.jsecurity.utils.TimeUtil;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -91,7 +89,7 @@ public class PlayerListener implements Listener {
                 data.setDuration(TimeUtil.formatRemainingTime(ban.getExpiration()));
                 kickMessage = configManager.getMessage("tempban-kick-message", hasReason);
             }
-            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(kickMessage, data)));
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, ColorUtil.colorize(PlaceholderAPI.setPlaceholders(kickMessage, data)));
             return;
         }
 
@@ -104,7 +102,7 @@ public class PlayerListener implements Listener {
                 PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData().setBannedPlayer(originalBannedPlayer);
 
                 String kickMessage = configManager.getMessage("ban-evasion-kick-message");
-                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(kickMessage, data)));
+                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, ColorUtil.colorize(PlaceholderAPI.setPlaceholders(kickMessage, data)));
 
                 // Create a new ban entry for the evading account
                 String evasionReason = configManager.getMessage("ban-evasion-reason");
@@ -147,8 +145,7 @@ public class PlayerListener implements Listener {
                             .setBannedPlayer(bannedPlayer.getName());
 
                     String kickMessage = configManager.getMessage("kick-messages.alt-account-banned");
-                    Component kickComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(kickMessage, data));
-                    onlinePlayer.kick(kickComponent);
+                    onlinePlayer.kickPlayer(ColorUtil.colorize(PlaceholderAPI.setPlaceholders(kickMessage, data)));
                 }
             }
         }
@@ -224,7 +221,7 @@ public class PlayerListener implements Listener {
                 data.setDuration(TimeUtil.formatRemainingTime(mute.getExpiration()));
                 muteMessage = configManager.getMessage("tempmute-message");
             }
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(muteMessage, data)));
+            player.sendMessage(ColorUtil.colorize(PlaceholderAPI.setPlaceholders(muteMessage, data)));
         }
     }
 

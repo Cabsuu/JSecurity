@@ -1,11 +1,11 @@
 package com.jerae.jsecurity.commands;
 
 import com.jerae.jsecurity.managers.ConfigManager;
+import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PunishmentManager;
 import com.jerae.jsecurity.models.WarnEntry;
+import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PermissionUtils;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -37,13 +37,13 @@ public class WarnCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2) {
-            sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&cUsage: /warn <player> <reason> [-s]"));
+            sender.sendMessage(ColorUtil.colorize("&cUsage: /warn <player> <reason> [-s]"));
             return true;
         }
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (!target.hasPlayedBefore() && !target.isOnline()) {
-            sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&cPlayer not found."));
+            sender.sendMessage(ColorUtil.colorize("&cPlayer not found."));
             return true;
         }
 
@@ -54,7 +54,7 @@ public class WarnCommand implements CommandExecutor, TabCompleter {
                 .collect(Collectors.joining(" "));
 
         if (reason.isEmpty()) {
-            sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&cPlease provide a reason for the warning."));
+            sender.sendMessage(ColorUtil.colorize("&cPlease provide a reason for the warning."));
             return true;
         }
 
@@ -66,7 +66,7 @@ public class WarnCommand implements CommandExecutor, TabCompleter {
         if (target.isOnline()) {
             String warnMessage = configManager.getMessage("warn-message", true)
                     .replace("{reason}", reason);
-            target.getPlayer().sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(warnMessage));
+            target.getPlayer().sendMessage(ColorUtil.colorize(warnMessage));
         }
 
         if (!silent) {
@@ -74,7 +74,7 @@ public class WarnCommand implements CommandExecutor, TabCompleter {
                     .replace("{player}", target.getName())
                     .replace("{staff}", staffName)
                     .replace("{reason}", reason);
-            Bukkit.getServer().broadcast(LegacyComponentSerializer.legacyAmpersand().deserialize(broadcastMessage));
+            Bukkit.getServer().broadcastMessage(ColorUtil.colorize(broadcastMessage));
         }
 
         return true;

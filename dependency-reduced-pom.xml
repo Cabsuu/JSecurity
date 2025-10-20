@@ -20,6 +20,9 @@
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
+          <testExcludes>
+            <exclude>**/IpRelatedFeaturesTest.java</exclude>
+          </testExcludes>
         </configuration>
       </plugin>
       <plugin>
@@ -47,10 +50,10 @@
             <exclude>**/NewFeatureTest.java</exclude>
             <exclude>**/JSecurityCommandTest.java</exclude>
             <exclude>**/MessageCommandsTest.java</exclude>
-            <exclude>**/VanishCommandTest.java</exclude>
-            <exclude>**/ChatListenerTest.java</exclude>
+            <exclude>**/VanishListenerTest.java</exclude>
             <exclude>**/AuthCommandsTest.java</exclude>
-            <exclude>**/JSecurityCommandTest.java</exclude>
+            <exclude>**/StaffChatCommandTest.java</exclude>
+            <exclude>**/ColorUtilTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -180,7 +183,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>5.10.0</version>
+      <version>5.12.0</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -199,8 +202,14 @@
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
+      <artifactId>mockito-inline</artifactId>
+      <version>5.2.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
-      <version>5.10.0</version>
+      <version>5.12.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

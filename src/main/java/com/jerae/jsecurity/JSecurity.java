@@ -17,6 +17,7 @@ public class JSecurity extends JavaPlugin {
     private MessageManager messageManager;
     private VanishManager vanishManager;
     private AuthManager authManager;
+    private StaffChatManager staffChatManager;
     private LoginCommandFilter filter;
     private DatabaseManager databaseManager;
     private InventoryManager inventoryManager;
@@ -35,17 +36,19 @@ public class JSecurity extends JavaPlugin {
         inventoryManager = new InventoryManager();
         ipManager = new IpManager(this, playerDataManager, punishmentManager, configManager);
         authManager = new AuthManager(this, configManager, databaseManager, inventoryManager, ipManager);
+        staffChatManager = new StaffChatManager();
 
         // Register listeners
         PlayerListener playerListener = new PlayerListener(this, punishmentManager, configManager, playerDataManager, authManager, inventoryManager);
         getServer().getPluginManager().registerEvents(playerListener, this);
         getServer().getPluginManager().registerEvents(new PlayerFreezeListener(freezeManager), this);
         getServer().getPluginManager().registerEvents(new PlayerDataListener(playerDataManager, configManager), this);
-        getServer().getPluginManager().registerEvents(new ChatListener(configManager), this);
+        getServer().getPluginManager().registerEvents(new ChatListener(configManager, staffChatManager), this);
         getServer().getPluginManager().registerEvents(new VanishListener(this, vanishManager), this);
 
 
         // Register commands
+        getCommand("staffchat").setExecutor(new StaffChatCommand(staffChatManager, configManager));
         getCommand("ban").setExecutor(new BanCommand(punishmentManager, configManager, playerListener, playerDataManager));
         getCommand("tempban").setExecutor(new TempBanCommand(punishmentManager, configManager, playerListener, playerDataManager));
         getCommand("ipban").setExecutor(new IpBanCommand(punishmentManager, configManager, playerListener, playerDataManager));
