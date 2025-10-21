@@ -9,7 +9,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -43,7 +45,7 @@ public class ChatListener implements Listener {
 
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 if (onlinePlayer.hasPermission("jsecurity.staffchat")) {
-                    onlinePlayer.sendMessage(ColorUtil.colorize(format));
+                    onlinePlayer.sendMessage(format);
                 }
             }
             event.setCancelled(true);
@@ -54,7 +56,7 @@ public class ChatListener implements Listener {
             if (chatDelay.containsKey(player.getUniqueId())) {
                 long timeLeft = (long) ((chatDelay.get(player.getUniqueId()) + (configManager.getChatDelay() * 1000L)) - System.currentTimeMillis());
                 if (timeLeft > 0) {
-                    player.sendMessage(ColorUtil.colorize(configManager.getChatDelayMessage().replace("{time}", String.format("%.2f", timeLeft / 1000.0))));
+                    player.sendMessage(configManager.getChatDelayMessage().replace("{time}", String.format("%.2f", timeLeft / 1000.0)));
                     event.setCancelled(true);
                     return;
                 }
@@ -70,7 +72,11 @@ public class ChatListener implements Listener {
                 return;
             }
 
-            for (String keyword : replacementMap.keySet()) {
+            List<String> sortedKeywords = replacementMap.keySet().stream()
+                    .sorted(Comparator.comparingInt(String::length).reversed())
+                    .collect(Collectors.toList());
+
+            for (String keyword : sortedKeywords) {
                 if (message.toLowerCase().contains(keyword.toLowerCase())) {
                     String replacement = replacementMap.get(keyword);
                     String literalKeyword = Pattern.quote(keyword);

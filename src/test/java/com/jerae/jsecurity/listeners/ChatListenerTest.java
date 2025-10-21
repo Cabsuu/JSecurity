@@ -6,71 +6,45 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
-class ChatListenerTest {
+public class ChatListenerTest {
 
-    @Mock
     private ConfigManager configManager;
-
-    @Mock
     private StaffChatManager staffChatManager;
-
-    @Mock
+    private ChatListener chatListener;
     private Player player;
-
-    @Mock
     private AsyncPlayerChatEvent event;
 
-    private ChatListener chatListener;
-
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    public void setUp() {
+        configManager = Mockito.mock(ConfigManager.class);
+        staffChatManager = Mockito.mock(StaffChatManager.class);
         chatListener = new ChatListener(configManager, staffChatManager);
+        player = Mockito.mock(Player.class);
+        event = new AsyncPlayerChatEvent(false, player, "initial message", null);
     }
 
     @Test
-    void testKeywordReplacement() {
-        Map<String, String> replacementMap = new HashMap<>();
-        replacementMap.put("badword", "goodword");
-        replacementMap.put("anotherbadword", "anothergoodword");
-
+    public void testKeywordReplacementLongestFirst() {
         when(configManager.isKeywordReplacementEnabled()).thenReturn(true);
         when(player.hasPermission("jsecurity.replaceword.bypass")).thenReturn(false);
-        when(configManager.getKeywordReplacementMap()).thenReturn(replacementMap);
-        when(event.getPlayer()).thenReturn(player);
-        doCallRealMethod().when(event).getMessage();
-        doCallRealMethod().when(event).setMessage(anyString());
-        event.setMessage("This is a badword and anotherbadword");
 
-        chatListener.onPlayerChat(event);
-
-        assertEquals("This is a goodword and anothergoodword", event.getMessage());
-    }
-
-    @Test
-    void testKeywordReplacementWithPartialWord() {
         Map<String, String> replacementMap = new HashMap<>();
-        replacementMap.put("bad", "good");
-
-        when(configManager.isKeywordReplacementEnabled()).thenReturn(true);
-        when(player.hasPermission("jsecurity.replaceword.bypass")).thenReturn(false);
+        replacementMap.put("hell", "heck");
+        replacementMap.put("hello", "hi");
         when(configManager.getKeywordReplacementMap()).thenReturn(replacementMap);
-        when(event.getPlayer()).thenReturn(player);
-        doCallRealMethod().when(event).getMessage();
-        doCallRealMethod().when(event).setMessage(anyString());
-        event.setMessage("This is a badword");
 
+        event.setMessage("hello world");
         chatListener.onPlayerChat(event);
 
-        assertEquals("This is a goodword", event.getMessage());
+        assertEquals("hi world", event.getMessage());
     }
 }

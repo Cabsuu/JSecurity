@@ -108,11 +108,9 @@ public class IpManager {
             String alertMessage = configManager.getMessage("alt-account-alert");
             String formattedMessage = PlaceholderAPI.setPlaceholders(alertMessage, data);
 
-            Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(formattedMessage);
-
             Bukkit.getOnlinePlayers().stream()
                     .filter(p -> p.hasPermission("jsecurity.alt.alert"))
-                    .forEach(p -> p.sendMessage(component));
+                    .forEach(p -> p.sendMessage(formattedMessage));
         }
     }
 }

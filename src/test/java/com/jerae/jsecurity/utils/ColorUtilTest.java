@@ -35,4 +35,11 @@ class ColorUtilTest {
         String colorizedMessage = ColorUtil.colorize(message);
         assertEquals("§x§f§f§0§0§0§0H§x§e§5§1§9§0§0e§x§c§c§3§3§0§0l§x§b§2§4§c§0§0l§x§9§9§6§6§0§0o§x§7§f§7§f§0§0 §x§6§6§9§9§0§0§lW§x§4§c§b§2§0§0§lo§x§3§2§c§c§0§0§lr§x§1§9§e§5§0§0§ll§x§0§0§f§f§0§0§ld", colorizedMessage);
     }
+
+    @Test
+    public void testColorize() {
+        String message = "&aHello, &cWorld!";
+        String expected = "§aHello, §cWorld!";
+        assertEquals(expected, ColorUtil.colorize(message));
+    }
 }

@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.jerae.jsecurity.managers.PlayerDataManagerTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.159 s -- in com.jerae.jsecurity.managers.PlayerDataManagerTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.142 s -- in com.jerae.jsecurity.managers.PlayerDataManagerTest
