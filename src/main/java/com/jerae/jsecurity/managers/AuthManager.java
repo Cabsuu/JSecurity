@@ -1,9 +1,8 @@
 package com.jerae.jsecurity.managers;
 
 import com.jerae.jsecurity.JSecurity;
+import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.TimeUtil;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -179,7 +178,7 @@ public class AuthManager {
                 long limit = TimeUtil.parseDuration(configManager.getSessionLimitTimer());
                 if (System.currentTimeMillis() - sessionTime < limit) {
                     loginPlayer(player);
-                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&aYou have logged back in! (Session Reconnection)"));
+                    player.sendMessage(ColorUtil.colorize("&aYou have logged back in! (Session Reconnection)"));
                     return;
                 }
             }

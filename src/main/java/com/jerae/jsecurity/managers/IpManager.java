@@ -2,6 +2,7 @@ package com.jerae.jsecurity.managers;
 
 import com.jerae.jsecurity.JSecurity;
 import com.jerae.jsecurity.models.PlayerData;
+import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -61,7 +62,7 @@ public class IpManager {
                 PlaceholderAPI.PlaceholderData data = new PlaceholderAPI.PlaceholderData().setBannedPlayer(originalBannedPlayer);
 
                 String kickMessage = configManager.getMessage("ban-evasion-kick-message");
-                Component kickComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(kickMessage, data));
+                Component kickComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(ColorUtil.colorize(PlaceholderAPI.setPlaceholders(kickMessage, data)));
                 player.kick(kickComponent);
 
                 String evasionReason = configManager.getMessage("ban-evasion-reason");
@@ -108,11 +109,9 @@ public class IpManager {
             String alertMessage = configManager.getMessage("alt-account-alert");
             String formattedMessage = PlaceholderAPI.setPlaceholders(alertMessage, data);
 
-            Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(formattedMessage);
-
             Bukkit.getOnlinePlayers().stream()
                     .filter(p -> p.hasPermission("jsecurity.alt.alert"))
-                    .forEach(p -> p.sendMessage(component));
+                    .forEach(p -> p.sendMessage(ColorUtil.colorize(formattedMessage)));
         }
     }
 }

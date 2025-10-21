@@ -9,7 +9,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -70,7 +72,11 @@ public class ChatListener implements Listener {
                 return;
             }
 
-            for (String keyword : replacementMap.keySet()) {
+            List<String> sortedKeywords = replacementMap.keySet().stream()
+                    .sorted(Comparator.comparingInt(String::length).reversed())
+                    .collect(Collectors.toList());
+
+            for (String keyword : sortedKeywords) {
                 if (message.toLowerCase().contains(keyword.toLowerCase())) {
                     String replacement = replacementMap.get(keyword);
                     String literalKeyword = Pattern.quote(keyword);

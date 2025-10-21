@@ -3,6 +3,7 @@ package com.jerae.jsecurity.listeners;
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.PlayerDataManager;
 import com.jerae.jsecurity.models.PlayerData;
+import com.jerae.jsecurity.utils.ColorUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -53,7 +54,7 @@ public class PlayerDataListener implements Listener {
             String message = configManager.getNewPlayerBroadcastMessage()
                     .replace("{player_count}", String.valueOf(playerCount))
                     .replace("{player}", player.getName());
-            Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
+            Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(ColorUtil.colorize(message));
             Bukkit.getServer().broadcast(component);
         }
     }
