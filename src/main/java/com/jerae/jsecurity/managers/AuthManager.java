@@ -1,7 +1,6 @@
 package com.jerae.jsecurity.managers;
 
 import com.jerae.jsecurity.JSecurity;
-import com.jerae.jsecurity.utils.ColorUtil;
 import com.jerae.jsecurity.utils.TimeUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -178,7 +177,7 @@ public class AuthManager {
                 long limit = TimeUtil.parseDuration(configManager.getSessionLimitTimer());
                 if (System.currentTimeMillis() - sessionTime < limit) {
                     loginPlayer(player);
-                    player.sendMessage(ColorUtil.colorize("&aYou have logged back in! (Session Reconnection)"));
+                    player.sendMessage("&aYou have logged back in! (Session Reconnection)");
                     return;
                 }
             }

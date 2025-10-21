@@ -6,7 +6,6 @@ import org.bukkit.command.CommandSender;
 public class PermissionUtils {
 
     public static void sendNoPermissionMessage(CommandSender sender, ConfigManager configManager) {
-        String noPermissionMessage = ColorUtil.colorize(configManager.getNoPermissionMessage());
-        sender.sendMessage(noPermissionMessage);
+        sender.sendMessage(configManager.getNoPermissionMessage());
     }
 }

@@ -45,7 +45,7 @@ public class ChatListener implements Listener {
 
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 if (onlinePlayer.hasPermission("jsecurity.staffchat")) {
-                    onlinePlayer.sendMessage(ColorUtil.colorize(format));
+                    onlinePlayer.sendMessage(format);
                 }
             }
             event.setCancelled(true);
@@ -56,7 +56,7 @@ public class ChatListener implements Listener {
             if (chatDelay.containsKey(player.getUniqueId())) {
                 long timeLeft = (long) ((chatDelay.get(player.getUniqueId()) + (configManager.getChatDelay() * 1000L)) - System.currentTimeMillis());
                 if (timeLeft > 0) {
-                    player.sendMessage(ColorUtil.colorize(configManager.getChatDelayMessage().replace("{time}", String.format("%.2f", timeLeft / 1000.0))));
+                    player.sendMessage(configManager.getChatDelayMessage().replace("{time}", String.format("%.2f", timeLeft / 1000.0)));
                     event.setCancelled(true);
                     return;
                 }
