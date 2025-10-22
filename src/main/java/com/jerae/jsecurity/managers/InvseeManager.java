@@ -45,7 +45,7 @@ public class InvseeManager {
                     cancel();
                     return;
                 }
-                updateInventory(staff, target, inv);
+                updateInventory(target, inv);
             }
         };
 
@@ -53,7 +53,7 @@ public class InvseeManager {
         viewingTasks.put(staff, task);
     }
 
-    private void updateInventory(Player staff, Player target, Inventory inv) {
+    private void updateInventory(Player target, Inventory inv) {
         inv.clear();
 
         // Row 1: Player Head, Armor, Offhand, Close Button
@@ -63,7 +63,7 @@ public class InvseeManager {
         inv.setItem(3, target.getInventory().getLeggings());
         inv.setItem(4, target.getInventory().getBoots());
         inv.setItem(6, target.getInventory().getItemInOffHand());
-        inv.setItem(8, createButton(Material.BARRIER, configManager.getCloseButtonName()));
+        inv.setItem(8, createButton(Material.OAK_DOOR, configManager.getCloseButtonName()));
 
         // Rows 2-4: Main Inventory (slots 9-35)
         for (int i = 9; i <= 35; i++) {
@@ -109,7 +109,7 @@ public class InvseeManager {
                     cancel();
                     return;
                 }
-                updateEnderChest(staff, target, inv);
+                updateEnderChest(target, inv);
             }
         };
 
@@ -117,7 +117,7 @@ public class InvseeManager {
         viewingTasks.put(staff, task);
     }
 
-    private void updateEnderChest(Player staff, Player target, Inventory inv) {
+    private void updateEnderChest(Player target, Inventory inv) {
         inv.clear();
 
         // Rows 1-3: Ender Chest Contents
