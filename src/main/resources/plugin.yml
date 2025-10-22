@@ -1,6 +1,7 @@
 name: JSecurity
 version: 0.1.0
 main: com.jerae.jsecurity.JSecurity
+api-version: '1.21'
 softdepend: [Purpur]
 authors: [ Jerae ]
 description: A security plugin for Minecraft servers.
@@ -73,6 +74,9 @@ commands:
     description: Sends a message to the staff chat.
     usage: /staffchat <message>
     aliases: [sc]
+  invsee:
+    description: Allows a staff member to see a player's inventory.
+    usage: /invsee <player>
 permissions:
   jsecurity.*:
     description: Gives access to all jSecurity commands.
@@ -110,6 +114,10 @@ permissions:
       jsecurity.reply: true
       jsecurity.unregister: true
       jsecurity.staffchat: true
+      jsecurity.invsee: true
+      jsecurity.invsee.clear: true
+      jsecurity.invsee.enderchest: true
+      jsecurity.invsee.teleport: true
   jsecurity.ban:
     description: Allows banning players.
   jsecurity.tempban:
@@ -174,3 +182,11 @@ permissions:
     description: Allows unfreezing players.
   jsecurity.staffchat:
     description: Allows using the staff chat.
+  jsecurity.invsee:
+    description: Allows a staff member to see a player's inventory.
+  jsecurity.invsee.clear:
+    description: Allows a staff member to clear a player's inventory.
+  jsecurity.invsee.enderchest:
+    description: Allows a staff member to see a player's enderchest.
+  jsecurity.invsee.teleport:
+    description: Allows a staff member to teleport to a player.
