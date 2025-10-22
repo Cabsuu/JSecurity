@@ -2,7 +2,7 @@ package com.jerae.jsecurity.listeners;
 
 import com.jerae.jsecurity.managers.ConfigManager;
 import com.jerae.jsecurity.managers.InvseeManager;
-import com.jerae.jsecurity.utils.ColorUtil;
+import com.jerae.jsecurity.utils.PlaceholderUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -41,7 +41,7 @@ public class InvseeListener implements Listener {
                 case 47: // Clear
                     if (staff.hasPermission("jsecurity.invsee.clear")) {
                         target.getInventory().clear();
-                        staff.sendMessage(configManager.getInventoryClearedMessage().replace("{player}", target.getName()));
+                        staff.sendMessage(PlaceholderUtil.setPlaceholders(target, configManager.getInventoryClearedMessage()));
                     } else {
                         staff.sendMessage(configManager.getNoPermissionMessage());
                     }
@@ -56,7 +56,7 @@ public class InvseeListener implements Listener {
                 case 51: // Teleport
                     if (staff.hasPermission("jsecurity.invsee.teleport")) {
                         staff.teleport(target.getLocation());
-                        staff.sendMessage(configManager.getTeleportSuccessMessage().replace("{player}", target.getName()));
+                        staff.sendMessage(PlaceholderUtil.setPlaceholders(target, configManager.getTeleportSuccessMessage()));
                     } else {
                         staff.sendMessage(configManager.getNoPermissionMessage());
                     }
@@ -82,7 +82,7 @@ public class InvseeListener implements Listener {
         }
 
         Player staff = (Player) event.getPlayer();
-        if (event.getInventory().getHolder() instanceof InvseeManager.InvseeHolder) {
+        if (event.getInventory().getHolder() instanceof InvseeManager.InvseeHolder || event.getInventory().getHolder() instanceof InvseeManager.EnderchestHolder) {
             invseeManager.closeInventory(staff);
         }
     }

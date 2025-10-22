@@ -525,11 +525,11 @@ public class ConfigManager {
     }
 
     public String getInvseeTitle() {
-        return getColorizedMessage("invsee.invsee-title", "{player}''s Inventory");
+        return getColorizedMessage("invsee.invsee-title", "%player_name%''s Inventory");
     }
 
     public String getEnderChestTitle() {
-        return getColorizedMessage("invsee.enderchest-title", "{player}''s Ender Chest");
+        return getColorizedMessage("invsee.enderchest-title", "%player_name%''s Ender Chest");
     }
 
     public String getClearButtonName() {
@@ -557,10 +557,10 @@ public class ConfigManager {
     }
 
     public String getTeleportSuccessMessage() {
-        return getColorizedMessage("invsee.teleport-success", "&aSuccessfully teleported to {player}.");
+        return getColorizedMessage("invsee.teleport-success", "&aSuccessfully teleported to %player_name%.");
     }
 
     public String getInventoryClearedMessage() {
-        return getColorizedMessage("invsee.inventory-cleared", "&aSuccessfully cleared {player}''s inventory.");
+        return getColorizedMessage("invsee.inventory-cleared", "&aSuccessfully cleared %player_name%''s inventory.");
     }
 }

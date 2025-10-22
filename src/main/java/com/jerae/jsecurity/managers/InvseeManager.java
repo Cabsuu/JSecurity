@@ -30,6 +30,8 @@ public class InvseeManager {
     }
 
     public void openInventory(Player staff, Player target) {
+        closeInventory(staff); // Cancel any existing tasks
+
         String title = configManager.getInvseeTitle();
         Inventory inv = Bukkit.createInventory(new InvseeHolder(), 54, ColorUtil.colorize(PlaceholderUtil.setPlaceholders(target, title)));
 
@@ -74,7 +76,7 @@ public class InvseeManager {
         }
 
         // Row 6: Action Buttons
-        inv.setItem(47, createButton(Material.TNT, configManager.getClearButtonName()));
+        inv.setItem(47, createButton(Material.BARRIER, configManager.getClearButtonName()));
         inv.setItem(49, createButton(Material.ENDER_CHEST, configManager.getEnderChestButtonName()));
         inv.setItem(51, createButton(Material.ENDER_PEARL, configManager.getTeleportButtonName()));
 
@@ -92,8 +94,31 @@ public class InvseeManager {
     }
 
     public void openEnderChest(Player staff, Player target) {
+        closeInventory(staff); // Cancel any existing tasks
+
         String title = configManager.getEnderChestTitle();
         Inventory inv = Bukkit.createInventory(new EnderchestHolder(), 36, ColorUtil.colorize(PlaceholderUtil.setPlaceholders(target, title)));
+
+        staff.openInventory(inv);
+        viewingMap.put(staff, target);
+
+        BukkitRunnable task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!staff.isOnline() || !staff.getOpenInventory().getTopInventory().equals(inv)) {
+                    cancel();
+                    return;
+                }
+                updateEnderChest(staff, target, inv);
+            }
+        };
+
+        task.runTaskTimer(plugin, 0L, 20L);
+        viewingTasks.put(staff, task);
+    }
+
+    private void updateEnderChest(Player staff, Player target, Inventory inv) {
+        inv.clear();
 
         // Rows 1-3: Ender Chest Contents
         for (int i = 0; i < 27; i++) {
@@ -105,13 +130,6 @@ public class InvseeManager {
 
         // Fillers
         ItemStack filler = createFiller();
-        for (int i = 27; i < 35; i++) {
-            inv.setItem(i, filler);
-        }
-
-        staff.openInventory(inv);
-
-        // Explicitly set fillers for the 4th row
         for (int i = 27; i < 35; i++) {
             inv.setItem(i, filler);
         }
