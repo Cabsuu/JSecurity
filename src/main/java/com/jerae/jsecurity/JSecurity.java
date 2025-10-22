@@ -22,6 +22,7 @@ public class JSecurity extends JavaPlugin {
     private DatabaseManager databaseManager;
     private InventoryManager inventoryManager;
     private IpManager ipManager;
+    private InvseeManager invseeManager;
 
     @Override
     public void onEnable() {
@@ -37,6 +38,7 @@ public class JSecurity extends JavaPlugin {
         ipManager = new IpManager(this, playerDataManager, punishmentManager, configManager);
         authManager = new AuthManager(this, configManager, databaseManager, inventoryManager, ipManager);
         staffChatManager = new StaffChatManager();
+        invseeManager = new InvseeManager(this, configManager);
 
         // Register listeners
         PlayerListener playerListener = new PlayerListener(this, punishmentManager, configManager, playerDataManager, authManager, inventoryManager);
@@ -45,6 +47,7 @@ public class JSecurity extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerDataListener(playerDataManager, configManager), this);
         getServer().getPluginManager().registerEvents(new ChatListener(configManager, staffChatManager), this);
         getServer().getPluginManager().registerEvents(new VanishListener(this, vanishManager), this);
+        getServer().getPluginManager().registerEvents(new InvseeListener(invseeManager, configManager), this);
 
 
         // Register commands
@@ -69,6 +72,7 @@ public class JSecurity extends JavaPlugin {
         getCommand("login").setExecutor(new LoginCommand(authManager, configManager));
         getCommand("unregister").setExecutor(new UnregisterCommand(authManager, configManager));
         getCommand("changepass").setExecutor(new ChangePassCommand(authManager, configManager));
+        getCommand("invsee").setExecutor(new InvseeCommand(invseeManager, configManager));
 
 
         Logger rootLogger = (Logger) LogManager.getRootLogger();

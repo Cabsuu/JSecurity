@@ -523,4 +523,44 @@ public class ConfigManager {
     public String getSessionLimitTimer() {
         return config.getString("authentication.session-limit-timer", "6h");
     }
+
+    public String getInvseeTitle() {
+        return getColorizedMessage("invsee.invsee-title", "{player}''s Inventory");
+    }
+
+    public String getEnderChestTitle() {
+        return getColorizedMessage("invsee.enderchest-title", "{player}''s Ender Chest");
+    }
+
+    public String getClearButtonName() {
+        return getColorizedMessage("invsee.clear-button-name", "&cClear Inventory");
+    }
+
+    public String getEnderChestButtonName() {
+        return getColorizedMessage("invsee.enderchest-button-name", "&5Ender Chest");
+    }
+
+    public String getTeleportButtonName() {
+        return getColorizedMessage("invsee.teleport-button-name", "&aTeleport to Player");
+    }
+
+    public String getCloseButtonName() {
+        return getColorizedMessage("invsee.close-button-name", "&cClose");
+    }
+
+    public String getBackButtonName() {
+        return getColorizedMessage("invsee.back-button-name", "&cBack to Inventory");
+    }
+
+    public String getInvseeUsageMessage() {
+        return getColorizedMessage("invsee.usage", "&cUsage: /invsee <player>");
+    }
+
+    public String getTeleportSuccessMessage() {
+        return getColorizedMessage("invsee.teleport-success", "&aSuccessfully teleported to {player}.");
+    }
+
+    public String getInventoryClearedMessage() {
+        return getColorizedMessage("invsee.inventory-cleared", "&aSuccessfully cleared {player}''s inventory.");
+    }
 }
