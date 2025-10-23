@@ -18,6 +18,8 @@ JSecurity is a comprehensive security and administration plugin for Minecraft se
 -   **Chat Management:**
     -   **Staff Chat:** A private channel for staff members to communicate (`/staffchat` or `/sc`).
     -   **Keyword Replacement:** Automatically replace configurable keywords or phrases in chat.
+    -   **Chat Filter:** Block configurable keywords or phrases in chat.
+    -   **Clear Chat:** Clear the chat for all players (`/clearchat`).
     -   **Chat Delay:** Prevent spam by setting a cooldown between player messages.
     -   **Private Messaging:** Send private messages (`/msg`) and reply (`/r`) to conversations.
     -   **Social Spy:** Monitor private messages sent on the server (`/socialspy`).
@@ -50,6 +52,7 @@ JSecurity is a comprehensive security and administration plugin for Minecraft se
 -   `/login <password>` - Logs in a registered player.
 -   `/unregister <password>` - Unregisters yourself.
 -   `/changepass <oldPassword> <newPassword>` - Changes your password.
+-   `/clearchat` - Clears the chat.
 
 ## Permissions
 
@@ -73,12 +76,16 @@ JSecurity is a comprehensive security and administration plugin for Minecraft se
 -   `jsecurity.alt.alert` - Notifies staff on possible alt account join.
 -   `jsecurity.socialspy` - Allows toggling social spy.
 -   `jsecurity.socialspy.view` - Allows viewing private messages with social spy.
+-   `jsecurity.socialspy.exempt` - Exempts a player from being spied on.
 -   `jsecurity.chat.delay.bypass` - Allows bypassing the chat delay.
 -   `jsecurity.replaceword.bypass` - Allows bypassing the keyword replacement.
+-   `jsecurity.chatfilter.bypass` - Allows bypassing the chat filter.
+-   `jsecurity.clearchat` - Allows clearing the chat.
 -   `jsecurity.staffchat` - Allows using the staff chat.
 -   `jsecurity.vanish` - Allows toggling vanish mode.
 -   `jsecurity.vanish.see` - Allows seeing vanished players.
 -   `jsecurity.vanish.interact` - Allows interacting with players while vanished.
+-   `jsecurity.vanish.attack` - Allows attacking players while vanished.
 -   `jsecurity.vanish.silentjoin` - Allows joining the server silently while vanished.
 -   `jsecurity.vanish.silentquit` - Allows leaving the server silently while vanished.
 

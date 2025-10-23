@@ -55,7 +55,7 @@ public class VanishListener implements Listener {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
             Player player = (Player) event.getDamager();
-            if (vanishManager.isVanished(player) && !player.hasPermission("jsecurity.vanish.interact")) {
+            if (vanishManager.isVanished(player) && !player.hasPermission("jsecurity.vanish.attack")) {
                 event.setCancelled(true);
             }
         }

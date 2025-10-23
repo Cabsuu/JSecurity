@@ -28,6 +28,13 @@ chat-delay:
   # Delay in seconds
   period: 3
 
+# Chat Filter
+chat-filter:
+  enabled: false
+  blocked-keywords:
+    - "www."
+    - ".com"
+
 # Keyword Replacement
 keyword-replacement:
   enabled: false

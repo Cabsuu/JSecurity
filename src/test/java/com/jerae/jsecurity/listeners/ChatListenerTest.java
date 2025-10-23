@@ -47,4 +47,34 @@ public class ChatListenerTest {
 
         assertEquals("hi world", event.getMessage());
     }
+
+    @Test
+    public void onPlayerChat_chatFilter_blocked() {
+        when(configManager.isChatFilterEnabled()).thenReturn(true);
+        when(player.hasPermission("jsecurity.chatfilter.bypass")).thenReturn(false);
+        when(configManager.getBlockedKeywords()).thenReturn(java.util.Collections.singletonList("test"));
+        event.setMessage("this is a test message");
+        chatListener.onPlayerChat(event);
+        assertEquals(true, event.isCancelled());
+    }
+
+    @Test
+    public void onPlayerChat_chatFilter_notBlocked() {
+        when(configManager.isChatFilterEnabled()).thenReturn(true);
+        when(player.hasPermission("jsecurity.chatfilter.bypass")).thenReturn(false);
+        when(configManager.getBlockedKeywords()).thenReturn(java.util.Collections.singletonList("test"));
+        event.setMessage("this is a message");
+        chatListener.onPlayerChat(event);
+        assertEquals(false, event.isCancelled());
+    }
+
+    @Test
+    public void onPlayerChat_chatFilter_bypass() {
+        when(configManager.isChatFilterEnabled()).thenReturn(true);
+        when(player.hasPermission("jsecurity.chatfilter.bypass")).thenReturn(true);
+        when(configManager.getBlockedKeywords()).thenReturn(java.util.Collections.singletonList("test"));
+        event.setMessage("this is a test message");
+        chatListener.onPlayerChat(event);
+        assertEquals(false, event.isCancelled());
+    }
 }
