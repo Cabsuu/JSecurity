@@ -148,6 +148,22 @@ public class ConfigManager {
         return getColorizedMessage("other.chat-delay-message", "&cYou must wait {time} seconds before chatting again.");
     }
 
+    public String getChatClearedMessage() {
+        return getColorizedMessage("other.chat-cleared", "&aThe chat has been cleared by a staff member.");
+    }
+
+    public boolean isChatFilterEnabled() {
+        return config.getBoolean("chat-filter.enabled", false);
+    }
+
+    public List<String> getBlockedKeywords() {
+        return config.getStringList("chat-filter.blocked-keywords");
+    }
+
+    public String getChatFilterBlockedKeywordMessage() {
+        return getColorizedMessage("other.chat-filter-blocked-keyword", "&cYour message contains a blocked keyword.");
+    }
+
     public boolean isKeywordReplacementEnabled() {
         return config.getBoolean("keyword-replacement.enabled", false);
     }

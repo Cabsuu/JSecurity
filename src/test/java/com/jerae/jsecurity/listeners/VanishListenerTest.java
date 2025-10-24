@@ -61,4 +61,32 @@ class VanishListenerTest {
         // Then
         assert event.getQuitMessage().equals(message);
     }
+
+    @Test
+    void onEntityDamageByEntity_vanishedPlayerWithoutAttackPermission_eventCancelled() {
+        // Given
+        when(vanishManager.isVanished(player)).thenReturn(true);
+        when(player.hasPermission("jsecurity.vanish.attack")).thenReturn(false);
+        org.bukkit.event.entity.EntityDamageByEntityEvent event = new org.bukkit.event.entity.EntityDamageByEntityEvent(player, player, org.bukkit.event.entity.EntityDamageEvent.DamageCause.CUSTOM, 1.0);
+
+        // When
+        vanishListener.onEntityDamageByEntity(event);
+
+        // Then
+        assert event.isCancelled();
+    }
+
+    @Test
+    void onEntityDamageByEntity_vanishedPlayerWithAttackPermission_eventNotCancelled() {
+        // Given
+        when(vanishManager.isVanished(player)).thenReturn(true);
+        when(player.hasPermission("jsecurity.vanish.attack")).thenReturn(true);
+        org.bukkit.event.entity.EntityDamageByEntityEvent event = new org.bukkit.event.entity.EntityDamageByEntityEvent(player, player, org.bukkit.event.entity.EntityDamageEvent.DamageCause.CUSTOM, 1.0);
+
+        // When
+        vanishListener.onEntityDamageByEntity(event);
+
+        // Then
+        assert !event.isCancelled();
+    }
 }

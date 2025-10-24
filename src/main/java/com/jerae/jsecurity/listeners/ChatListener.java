@@ -64,6 +64,17 @@ public class ChatListener implements Listener {
             chatDelay.put(player.getUniqueId(), System.currentTimeMillis());
         }
 
+        if (configManager.isChatFilterEnabled() && !player.hasPermission("jsecurity.chatfilter.bypass")) {
+            String message = event.getMessage().toLowerCase();
+            for (String keyword : configManager.getBlockedKeywords()) {
+                if (message.contains(keyword.toLowerCase())) {
+                    player.sendMessage(configManager.getChatFilterBlockedKeywordMessage());
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
+
         if (configManager.isKeywordReplacementEnabled() && !player.hasPermission("jsecurity.replaceword.bypass")) {
             String message = event.getMessage();
             Map<String, String> replacementMap = configManager.getKeywordReplacementMap();

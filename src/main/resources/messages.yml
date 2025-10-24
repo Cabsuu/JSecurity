@@ -45,6 +45,8 @@ punishments:
 # Other messages
 other:
   chat-delay-message: "&cYou must wait {time} seconds before chatting again."
+  chat-filter-blocked-keyword: "&cYour message contains a blocked keyword."
+  chat-cleared: "&aThe chat has been cleared by a staff member."
   no-permission: "&cYou do not have permission to use this command."
   staff-chat-format: "&8[&cStaffChat&8] &7{player}: {message}"
   staff-chat-usage: "&cUsage: /staffchat <message> or /sc <message>"

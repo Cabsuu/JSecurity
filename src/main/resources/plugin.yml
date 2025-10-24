@@ -77,6 +77,9 @@ commands:
   invsee:
     description: Allows a staff member to see a player's inventory.
     usage: /invsee <player>
+  clearchat:
+    description: Clears the chat for all players.
+    usage: /clearchat
 permissions:
   jsecurity.*:
     description: Gives access to all jSecurity commands.
@@ -104,8 +107,11 @@ permissions:
       jsecurity.vanish.interact: true
       jsecurity.vanish.silentjoin: true
       jsecurity.vanish.silentquit: true
+      jsecurity.vanish.attack: true
       jsecurity.help: true
       jsecurity.record: true
+      jsecurity.chatfilter.bypass: true
+      jsecurity.clearchat: true
       jsecurity.profile: true
       jsecurity.log: true
       jsecurity.history: true
@@ -160,8 +166,14 @@ permissions:
     description: Allows joining the server silently while vanished.
   jsecurity.vanish.silentquit:
     description: Allows leaving the server silently while vanished.
+  jsecurity.vanish.attack:
+    description: Allows attacking players while vanished.
   jsecurity.help:
     description: Allows using the /js help command.
+  jsecurity.chatfilter.bypass:
+    description: Allows bypassing the chat filter.
+  jsecurity.clearchat:
+    description: Allows clearing the chat.
   jsecurity.record:
     description: Allows using the /js record command.
   jsecurity.profile:

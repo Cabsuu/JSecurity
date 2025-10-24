@@ -73,6 +73,7 @@ public class JSecurity extends JavaPlugin {
         getCommand("unregister").setExecutor(new UnregisterCommand(authManager, configManager));
         getCommand("changepass").setExecutor(new ChangePassCommand(authManager, configManager));
         getCommand("invsee").setExecutor(new InvseeCommand(invseeManager, configManager));
+        getCommand("clearchat").setExecutor(new ClearChatCommand(configManager));
 
 
         Logger rootLogger = (Logger) LogManager.getRootLogger();
